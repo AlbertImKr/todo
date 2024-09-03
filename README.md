@@ -91,14 +91,20 @@
 
 ### 할일 API
 
-| Endpoint             | HTTP Method | 설명                   |
-|----------------------|-------------|----------------------|
-| `/todos`             | POST        | 새로운 할일을 생성합니다.       |
-| `/todos/{id}`        | PUT         | 기존 할일의 정보를 수정합니다.    |
-| `/todos/{id}`        | DELETE	     | 	특정 할일을 삭제합니다.       |
-| `/todos/{id}`        | GET         | 특정 할일의 상세 정보를 조회합니다. |
-| `/todos/{id}/status` | PUT         | 할일의 상태를 업데이트합니다.     |
-| `/todos/{id}/tags`   | PUT         | 할일의 태그를 업데이트합니다.     |
+| Endpoint                 | HTTP Method | 설명                      |
+|--------------------------|-------------|-------------------------|
+| `/todos`                 | POST        | 새로운 할일을 생성합니다.          |
+| `/todos/{id}`            | PUT         | 기존 할일의 정보를 수정합니다.       |
+| `/todos/{id}`            | DELETE	     | 	특정 할일을 삭제합니다.          |
+| `/todos/{id}`            | GET         | 특정 할일의 상세 정보를 조회합니다.    |
+| `/todos/{id}/status`     | PUT         | 특정 할일의 상태를 업데이트합니다.     |
+| `/todos/{id}/tags`       | PUT         | 특정 할일의 태그를 업데이트합니다.     |
+| `/todos/{id}/recurrence` | POST        | 특정 할일에 대해 반복 설정을 추가합니다. |
+| `/todos/{id}/recurrence` | PUT         | 특정 할일의 반복 설정을 수정합니다.    |
+| `/todos/{id}/recurrence` | DELETE      | 특정 할일의 반복 설정을 삭제합니다.    |
+| `/todos/{id}/recurrence` | GET         | 특정 할일의 반복 설정을 조회합니다.    |
+| 	`/todos/{id}/assign`    | POST        | 특정 할일을 특정 사용자에게 할당합니다.  |
+| `/todos/{id}/assign`     | DELETE      | 특정 할일의 할당을 해제합니다.       |
 
 ### 그룹 API
 
