@@ -68,3 +68,12 @@
 
 - Spring Boot Actuator: 애플리케이션의 상태를 모니터링하고 관리할 수 있는 도구입니다. 애플리케이션의 메트릭, 로그, 상태 정보를 제공하여 모니터링과 관리 작업을 쉽게 할 수 있습니다.
 - prometheus & Grafana: 시스템 메트릭을 모니터링하고 시각화합니다. Prometheus는 메트릭 수집 및 저장을 담당하고 Grafana는 시각화와 대시보드를 제공합니다. 함께 사용하여 효과적인 모니터링과 분석을 수행할 수 있습니다.
+
+## ERD
+
+[![ERD](assets/images/erd.png)](https://www.erdcloud.com/d/g7iKqHQtHMdXrKiEu)
+
+> [!TIP] 
+> 클릭하면 ERDCloud로 넘어갑니다.
+
+
