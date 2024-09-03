@@ -54,7 +54,8 @@
 
 ### CI/CD
 
-- Git Actions: GitHub와 통합이 잘 되어 있으며 다양한 앱과 플러그인을 지원하여 CI/CD 파이프라인을 편리하게 구현할 수 있습니다. GitHub와의 통합으로 개발과 배포 과정을 자동화하고 효율적으로 관리할 수 있습니다.
+- Git Actions: GitHub와 통합이 잘 되어 있으며 다양한 앱과 플러그인을 지원하여 CI/CD 파이프라인을 편리하게 구현할 수 있습니다. GitHub와의 통합으로 개발과 배포 과정을 자동화하고 효율적으로
+  관리할 수 있습니다.
 
 ### Infra
 
@@ -67,13 +68,59 @@
 ### 모니터링
 
 - Spring Boot Actuator: 애플리케이션의 상태를 모니터링하고 관리할 수 있는 도구입니다. 애플리케이션의 메트릭, 로그, 상태 정보를 제공하여 모니터링과 관리 작업을 쉽게 할 수 있습니다.
-- prometheus & Grafana: 시스템 메트릭을 모니터링하고 시각화합니다. Prometheus는 메트릭 수집 및 저장을 담당하고 Grafana는 시각화와 대시보드를 제공합니다. 함께 사용하여 효과적인 모니터링과 분석을 수행할 수 있습니다.
+- prometheus & Grafana: 시스템 메트릭을 모니터링하고 시각화합니다. Prometheus는 메트릭 수집 및 저장을 담당하고 Grafana는 시각화와 대시보드를 제공합니다. 함께 사용하여 효과적인
+  모니터링과 분석을 수행할 수 있습니다.
 
 ## ERD
 
 [![ERD](assets/images/erd.png)](https://www.erdcloud.com/d/g7iKqHQtHMdXrKiEu)
 
-> [!TIP] 
+> [!TIP]
 > 클릭하면 ERDCloud로 넘어갑니다.
+
+## API 설계
+
+### 유저 API
+
+| Endpoint                     | HTTP Method | 설명                                  |
+|------------------------------|-------------|-------------------------------------|
+| `/users`                     | POST        | 새로운 사용자를 등록합니다.                     |
+| `/users/login`               | POST        | AccessToken 및 RefreshToken을 발급받습니다. |
+| `/users/{id}/assigend-todos` | GET         | 유저에게 할당된 할일을 조회합니다.                 |
+| `/users/{id}/todos`          | GET         | 유저가 생성한 할일을 조회합니다.                  |
+
+### 할일 API
+
+| Endpoint             | HTTP Method | 설명                   |
+|----------------------|-------------|----------------------|
+| `/todos`             | POST        | 새로운 할일을 생성합니다.       |
+| `/todos/{id}`        | PUT         | 기존 할일의 정보를 수정합니다.    |
+| `/todos/{id}`        | DELETE	     | 	특정 할일을 삭제합니다.       |
+| `/todos/{id}`        | GET         | 특정 할일의 상세 정보를 조회합니다. |
+| `/todos/{id}/status` | PUT         | 할일의 상태를 업데이트합니다.     |
+| `/todos/{id}/tags`   | PUT         | 할일의 태그를 업데이트합니다.     |
+
+### 그룹 API
+
+| Endpoint             | HTTP Method | 설명                   |
+|----------------------|-------------|----------------------|
+| `/groups`            | POST        | 새로운 그룹을 생성합니다.       |
+| `/groups/{id}`       | PUT         | 기존 그룹의 정보를 수정합니다.    |
+| `/groups/{id}`       | DELETE      | 특정 그룹을 삭제합니다.        |
+| `/groups/{id}`       | GET         | 특정 그룹의 상세 정보를 조회합니다. |
+| `/groups/`           | GET         | 모든 그룹을 조회합니다.        |
+| `/groups/{id}/todos` | POST        | 특정 그룹에 할일을 추가합니다.    |
+| `/groups/{id}/todos` | DELETE      | 특정 그룹에 속한 할일을 삭제합니다. |
+| `/groups/{id}/todos` | GET         | 특정 그룹에 속한 할일을 조회합니다. |
+
+### 알림 API
+
+| Endpoint                | HTTP Method | 설명                   |
+|-------------------------|-------------|----------------------|
+| `/notifications/`       | GET         | 모든 알림을 가져옵니다.        |
+| `/notifications/counts` | GET         | 읽지 않은 알림의 개수를 조회합니다. |
+| `/notifications/{id}`   | PUT         | 특정 알림의 상태를 업데이트합니다.  |
+| `/notifications/{id}`   | GET         | 특정 알림의 상세 정보를 조회합니다. |
+
 
 
