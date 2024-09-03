@@ -73,10 +73,10 @@
 
 ## ERD
 
-[![ERD](assets/images/erd.png)](https://www.erdcloud.com/d/g7iKqHQtHMdXrKiEu)
+![ERD](assets/images/erd.png)
 
 > [!TIP]
-> 클릭하면 ERDCloud로 넘어갑니다.
+> [클릭하면 ERDCloud로 넘어갑니다.](https://www.erdcloud.com/d/g7iKqHQtHMdXrKiEu)
 
 ## API 설계
 
