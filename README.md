@@ -128,5 +128,11 @@
 | `/notifications/{id}`   | PUT         | 특정 알림의 상태를 업데이트합니다.  |
 | `/notifications/{id}`   | GET         | 특정 알림의 상세 정보를 조회합니다. |
 
+## WBS
 
+![WBS1](assets/images/WBS1.png)
+![WBS2](assets/images/WBS2.png)
+![WBS3](assets/images/WBS3.png)
+> [!TIP]
+> [클릭하면 WBS로 넘어갑니다.](https://github.com/users/AlbertImKr/projects/7/views/1)
 
