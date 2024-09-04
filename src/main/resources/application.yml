@@ -1,5 +1,5 @@
 spring:
   profiles:
     group:
-        local: localdb
+      local: localdb,jwt
     active: local

@@ -28,4 +28,8 @@ public class Account {
         this.username = username;
         this.password = password;
     }
+
+    public boolean matchPassword(String password) {
+        return this.password.equals(password);
+    }
 }

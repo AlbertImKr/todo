@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.AccountSteps.로그인_요청;
 import static me.albert.todo.controller.AccountSteps.화원_가입_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,6 +29,29 @@ class AccountControllerTest extends TodoAcceptanceTest {
         // then
         assertThat(target.statusCode()).isEqualTo(201);
 
+    }
+
+    @DisplayName("로그인 성공 시 토큰을 반환한다")
+    @Test
+    void login_returns_tokens() {
+        // given
+        var registerBody = new HashMap<>();
+        registerBody.put("username", "newUser");
+        registerBody.put("password", "Password1!");
+        registerBody.put("confirmPassword", "Password1!");
+        화원_가입_요청(registerBody);
+
+        var loginBody = new HashMap<>();
+        loginBody.put("username", "newUser");
+        loginBody.put("password", "Password1!");
+
+        // when
+        var target = 로그인_요청(loginBody);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
+        assertThat(target.body().jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(target.body().jsonPath().getString("refreshToken")).isNotBlank();
     }
 
     @Nested
@@ -250,6 +274,80 @@ class AccountControllerTest extends TodoAcceptanceTest {
                     () -> assertThat(target.statusCode()).isEqualTo(400),
                     () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
                             "유저 이름은 영문과 숫자만 포함한 5자 이상 20자 이하로 입력해주세요.")
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("로그인 실패 테스트")
+    class LoginFailure {
+
+        @DisplayName("유저 이름이 존재하지 않으면 401 상태 코드를 반환한다")
+        @Test
+        void login_returns_unauthorized_when_username_not_exist() {
+            // given
+            var body = new HashMap<>();
+            body.put("username", "newUser");
+            body.put("password", "Password1!");
+
+            // when
+            var target = 로그인_요청(body);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(401),
+                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
+                            "유저 이름 또는 비밀번호가 일치하지 않습니다.")
+            );
+        }
+
+        @DisplayName("비밀번호가 일치하지 않으면 401 상태 코드를 반환한다")
+        @Test
+        void login_returns_unauthorized_when_password_not_matched() {
+            // given
+            var registerBody = new HashMap<>();
+            registerBody.put("username", "newUser");
+            registerBody.put("password", "Password1!");
+            registerBody.put("confirmPassword", "Password1!");
+            화원_가입_요청(registerBody);
+
+            var loginBody = new HashMap<>();
+            loginBody.put("username", "newUser");
+            loginBody.put("password", "Password2!");
+
+            // when
+            var target = 로그인_요청(loginBody);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(401),
+                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
+                            "유저 이름 또는 비밀번호가 일치하지 않습니다.")
+            );
+        }
+
+        @DisplayName("비밀번호가 공백인 경우 401 상태 코드를 반환한다")
+        @Test
+        void login_returns_unauthorized_when_password_is_blank() {
+            // given
+            var registerBody = new HashMap<>();
+            registerBody.put("username", "newUser");
+            registerBody.put("password", "Password1!");
+            registerBody.put("confirmPassword", "Password1!");
+            화원_가입_요청(registerBody);
+
+            var loginBody = new HashMap<>();
+            loginBody.put("username", "newUser");
+            loginBody.put("password", "Password1!!");
+
+            // when
+            var target = 로그인_요청(loginBody);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(401),
+                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
+                            "유저 이름 또는 비밀번호가 일치하지 않습니다.")
             );
         }
     }
