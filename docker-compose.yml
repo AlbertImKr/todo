@@ -1,0 +1,17 @@
+version: '1.0'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-todo
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: todo
+      MYSQL_USER: test
+      MYSQL_PASSWORD: testpassword
+    ports:
+      - "3306:3306"
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-time-zone=+09:00
