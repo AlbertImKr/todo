@@ -1,5 +1,6 @@
 package me.albert.todo.service;
 
+import me.albert.todo.domain.Account;
 import me.albert.todo.service.dto.response.TokensResponse;
 
 public interface AccountService {
@@ -22,4 +23,13 @@ public interface AccountService {
      * @throws IllegalArgumentException 유저 이름이 존재하지 않거나 비밀번호가 일치하지 않을 경우 발생
      */
     TokensResponse login(String username, String password);
+
+    /**
+     * 사용자 이름으로 사용자를 조회합니다.
+     *
+     * @param username 유저 이름
+     * @return 사용자 정보
+     * @throws IllegalArgumentException 유저 이름이 존재하지 않을 경우 발생
+     */
+    Account findByUsername(String username);
 }

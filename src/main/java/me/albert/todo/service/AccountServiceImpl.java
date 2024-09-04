@@ -16,6 +16,7 @@ public class AccountServiceImpl implements AccountService {
 
     public static final String USERNAME_IS_EXISTED = "이미 존재하는 유저 이름입니다.";
     public static final String USERNAME_OR_PASSWORD_NOT_MATCHED = "유저 이름 또는 비밀번호가 일치하지 않습니다.";
+    public static final String USERNAME_NOT_EXISTED = "존재하지 않는 유저 이름입니다.";
 
     private final AccountRepository accountRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -41,5 +42,11 @@ public class AccountServiceImpl implements AccountService {
                 jwtTokenProvider.generateAccessToken(username, signTime),
                 jwtTokenProvider.generateRefreshToken(username, signTime)
         );
+    }
+
+    @Override
+    public Account findByUsername(String username) {
+        return accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AuthenticationFailedException(USERNAME_NOT_EXISTED));
     }
 }

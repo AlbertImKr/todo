@@ -28,4 +28,19 @@ public class AccountSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static String getAccessToken() {
+        var registerBody = new HashMap<>();
+        registerBody.put("username", "newUser");
+        registerBody.put("password", "Password1!");
+        registerBody.put("confirmPassword", "Password1!");
+        화원_가입_요청(registerBody);
+
+        var loginBody = new HashMap<>();
+        loginBody.put("username", "newUser");
+        loginBody.put("password", "Password1!");
+        var response = 로그인_요청(loginBody);
+
+        return response.jsonPath().getString("accessToken");
+    }
 }
