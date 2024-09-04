@@ -77,7 +77,7 @@ class GroupRequestTest {
     void group_description_length_is_greater_than_100() {
         // given
         var toolongDescription = """
-                                 descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription
+                                 descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptionde
                                  """; // 101 characters
         var request = new GroupRequest("group", toolongDescription);
 

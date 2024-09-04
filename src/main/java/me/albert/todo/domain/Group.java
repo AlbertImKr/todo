@@ -7,7 +7,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import me.albert.todo.domain.exception.AccessDeniedException;
+import me.albert.todo.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 
 @Table(name = "todo_group")
 @Entity
@@ -43,7 +44,7 @@ public class Group {
 
     public void update(Account account, String name, String description, LocalDateTime updatedAt) {
         if (!isOwner(account)) {
-            throw new AccessDeniedException("해당 그룹을 수정할 권한이 없습니다.");
+            throw new BusinessException("해당 그룹을 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
         this.name = name;
         this.description = description;

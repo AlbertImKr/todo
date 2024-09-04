@@ -4,10 +4,11 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
+import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.AccountRepository;
 import me.albert.todo.service.dto.response.TokensResponse;
-import me.albert.todo.service.exception.AuthenticationFailedException;
 import me.albert.todo.utils.JwtTokenProvider;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void register(String username, String password) {
         if (accountRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException(USERNAME_IS_EXISTED);
+            throw new BusinessException(USERNAME_IS_EXISTED, HttpStatus.BAD_REQUEST);
         }
         accountRepository.save(new Account(username, password));
     }
@@ -33,9 +34,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public TokensResponse login(String username, String password) {
         Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new AuthenticationFailedException(USERNAME_OR_PASSWORD_NOT_MATCHED));
+                .orElseThrow(() -> new BusinessException(USERNAME_OR_PASSWORD_NOT_MATCHED, HttpStatus.NOT_FOUND));
         if (!account.matchPassword(password)) {
-            throw new AuthenticationFailedException(USERNAME_OR_PASSWORD_NOT_MATCHED);
+            throw new BusinessException(USERNAME_OR_PASSWORD_NOT_MATCHED, HttpStatus.UNAUTHORIZED);
         }
         LocalDateTime signTime = LocalDateTime.now();
         return new TokensResponse(
@@ -47,6 +48,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account findByUsername(String username) {
         return accountRepository.findByUsername(username)
-                .orElseThrow(() -> new AuthenticationFailedException(USERNAME_NOT_EXISTED));
+                .orElseThrow(() -> new BusinessException(USERNAME_NOT_EXISTED, HttpStatus.NOT_FOUND));
     }
 }

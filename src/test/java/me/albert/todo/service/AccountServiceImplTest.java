@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import me.albert.todo.domain.Account;
+import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.AccountRepository;
 import me.albert.todo.service.exception.AuthenticationFailedException;
 import me.albert.todo.utils.JwtTokenProvider;
@@ -52,7 +53,7 @@ class AccountServiceImplTest {
 
         // when, then
         assertThatThrownBy(() -> accountService.register(username, password))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessage(AccountServiceImpl.USERNAME_IS_EXISTED);
     }
 
@@ -82,7 +83,7 @@ class AccountServiceImplTest {
 
         // when, then
         assertThatThrownBy(() -> accountService.login(username, password))
-                .isInstanceOf(AuthenticationFailedException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessage(AccountServiceImpl.USERNAME_OR_PASSWORD_NOT_MATCHED);
     }
 
@@ -97,7 +98,7 @@ class AccountServiceImplTest {
 
         // when, then
         assertThatThrownBy(() -> accountService.login(username, password))
-                .isInstanceOf(AuthenticationFailedException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessage(AccountServiceImpl.USERNAME_OR_PASSWORD_NOT_MATCHED);
     }
 
@@ -106,7 +107,8 @@ class AccountServiceImplTest {
     void find_by_username_if_success() {
         // given
         String username = "test";
-        when(accountRepository.findByUsername(username)).thenReturn(java.util.Optional.of(new Account(username, "password")));
+        when(accountRepository.findByUsername(username)).thenReturn(
+                java.util.Optional.of(new Account(username, "password")));
 
         // when
         var result = accountService.findByUsername(username);
@@ -124,7 +126,7 @@ class AccountServiceImplTest {
 
         // when, then
         assertThatThrownBy(() -> accountService.findByUsername(username))
-                .isInstanceOf(AuthenticationFailedException.class)
+                .isInstanceOf(BusinessException.class)
                 .hasMessage(AccountServiceImpl.USERNAME_NOT_EXISTED);
     }
 }

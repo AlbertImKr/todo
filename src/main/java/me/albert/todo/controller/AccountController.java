@@ -5,6 +5,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.UserLoginRequest;
 import me.albert.todo.controller.dto.request.UserRegisterRequest;
+import me.albert.todo.exception.BusinessException;
 import me.albert.todo.service.AccountService;
 import me.albert.todo.service.dto.response.TokensResponse;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class AccountController {
     @PostMapping("/users")
     public void register(@Valid @RequestBody UserRegisterRequest request) {
         if (!Objects.equals(request.password(), request.confirmPassword())) {
-            throw new IllegalArgumentException(PASSWORD_NOT_MATCHED);
+            throw new BusinessException(PASSWORD_NOT_MATCHED, HttpStatus.BAD_REQUEST);
         }
         accountService.register(request.username(), request.password());
     }

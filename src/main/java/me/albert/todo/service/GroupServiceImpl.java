@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class GroupServiceImpl implements GroupService {
 
     public static final String GROUP_NOT_FOUND = "그룹이 존재하지 않습니다.";
-    public static final String NOT_GROUP_OWNER = "그룹의 소유자가 아닙니다.";
 
     private final GroupRepository groupRepository;
     private final AccountService accountService;

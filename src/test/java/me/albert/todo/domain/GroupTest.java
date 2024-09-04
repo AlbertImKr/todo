@@ -1,9 +1,11 @@
 package me.albert.todo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
+import me.albert.todo.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,13 +57,9 @@ class GroupTest {
         var name = "new group";
         var description = "new description";
 
-        // when
-        var exception = org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            group.update(otherAccount, name, description, LocalDateTime.now());
-        });
-
-        // then
-        assertThat(exception.getMessage()).isEqualTo("그룹의 소유자가 아닙니다.");
+        // when, then
+        assertThatThrownBy(() -> group.update(otherAccount, name, description, LocalDateTime.now()))
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("그룹의 소유자인데 그룹을 수정하면 그룹이 수정된다")
