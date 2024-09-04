@@ -100,4 +100,31 @@ class AccountServiceImplTest {
                 .isInstanceOf(AuthenticationFailedException.class)
                 .hasMessage(AccountServiceImpl.USERNAME_OR_PASSWORD_NOT_MATCHED);
     }
+
+    @DisplayName("유저 이름으로 사용자를 조회하면 사용자 정보를 반환해야 한다.")
+    @Test
+    void find_by_username_if_success() {
+        // given
+        String username = "test";
+        when(accountRepository.findByUsername(username)).thenReturn(java.util.Optional.of(new Account(username, "password")));
+
+        // when
+        var result = accountService.findByUsername(username);
+
+        // then
+        assertThat(result).isNotNull();
+    }
+
+    @DisplayName("유저 이름으로 사용자를 조회 시 존재하지 않으면 예외가 발생해야 한다.")
+    @Test
+    void find_by_username_if_not_exist() {
+        // given
+        String username = "test";
+        when(accountRepository.findByUsername(username)).thenReturn(java.util.Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> accountService.findByUsername(username))
+                .isInstanceOf(AuthenticationFailedException.class)
+                .hasMessage(AccountServiceImpl.USERNAME_NOT_EXISTED);
+    }
 }
