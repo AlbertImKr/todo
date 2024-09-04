@@ -1,6 +1,9 @@
 package me.albert.todo.service;
 
+import java.util.List;
+import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
+import org.springframework.data.domain.Pageable;
 
 public interface GroupService {
 
@@ -26,4 +29,12 @@ public interface GroupService {
      * @throws IllegalArgumentException 사용자 이름이 존재하지 않을 경우 발생
      */
     void update(long id, String name, String description, String username);
+
+    /**
+     * 사용자의 그룹 목록을 조회합니다.
+     *
+     * @param username 사용자 이름
+     * @param pageable 페이지 정보
+     */
+    List<GroupResponse> list(String username, Pageable pageable);
 }

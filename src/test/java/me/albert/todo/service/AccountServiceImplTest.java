@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import me.albert.todo.domain.Account;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.AccountRepository;
-import me.albert.todo.service.exception.AuthenticationFailedException;
 import me.albert.todo.utils.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

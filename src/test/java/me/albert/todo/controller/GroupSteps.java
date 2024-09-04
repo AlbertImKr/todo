@@ -29,4 +29,13 @@ public class GroupSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 그룹_목록_조회_요청(String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups")
+                .then().log().all()
+                .extract();
+    }
 }

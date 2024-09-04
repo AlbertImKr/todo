@@ -2,8 +2,9 @@ package me.albert.todo.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -16,15 +17,17 @@ public class Group {
 
     @Getter
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Getter
     private String name;
     @Getter
     private String description;
-    @OneToOne
+    @ManyToOne
     private Account owner;
+    @Getter
     private LocalDateTime createdAt;
+    @Getter
     private LocalDateTime updatedAt;
 
     public Group() {
