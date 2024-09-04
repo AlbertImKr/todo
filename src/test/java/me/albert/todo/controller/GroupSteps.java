@@ -18,4 +18,15 @@ public class GroupSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 그룹_수정_요청(HashMap<Object, Object> body, Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/" + id)
+                .then().log().all()
+                .extract();
+    }
 }

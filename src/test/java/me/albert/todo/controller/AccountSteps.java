@@ -43,4 +43,20 @@ public class AccountSteps {
 
         return response.jsonPath().getString("accessToken");
     }
+
+
+    public static String getOtherAccessToken() {
+        var registerBody = new HashMap<>();
+        registerBody.put("username", "otherNewUser");
+        registerBody.put("password", "Password1!");
+        registerBody.put("confirmPassword", "Password1!");
+        화원_가입_요청(registerBody);
+
+        var loginBody = new HashMap<>();
+        loginBody.put("username", "otherNewUser");
+        loginBody.put("password", "Password1!");
+        var response = 로그인_요청(loginBody);
+
+        return response.jsonPath().getString("accessToken");
+    }
 }

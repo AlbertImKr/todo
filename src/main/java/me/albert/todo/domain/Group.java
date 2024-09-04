@@ -7,6 +7,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import me.albert.todo.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 
 @Table(name = "todo_group")
 @Entity
@@ -16,7 +18,9 @@ public class Group {
     @Id
     @GeneratedValue
     private Long id;
+    @Getter
     private String name;
+    @Getter
     private String description;
     @OneToOne
     private Account owner;
@@ -31,6 +35,19 @@ public class Group {
         this.description = description;
         this.owner = owner;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isOwner(Account account) {
+        return owner.equals(account);
+    }
+
+    public void update(Account account, String name, String description, LocalDateTime updatedAt) {
+        if (!isOwner(account)) {
+            throw new BusinessException("해당 그룹을 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+        this.name = name;
+        this.description = description;
         this.updatedAt = updatedAt;
     }
 }

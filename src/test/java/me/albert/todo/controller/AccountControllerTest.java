@@ -295,7 +295,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
 
             // then
             Assertions.assertAll(
-                    () -> assertThat(target.statusCode()).isEqualTo(401),
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
                     () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
                             "유저 이름 또는 비밀번호가 일치하지 않습니다.")
             );
