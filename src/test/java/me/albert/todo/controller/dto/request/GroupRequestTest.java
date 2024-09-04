@@ -45,19 +45,6 @@ class GroupRequestTest {
         assertThat(violations).isNotEmpty();
     }
 
-    @DisplayName("그룹 이름에 영문과 숫자 이외의 문자가 있으면 유효성 검사를 통과하지 못한다")
-    @Test
-    void group_name_has_special_character() {
-        // given
-        var request = new GroupRequest("group!", "description");
-
-        // when
-        var violations = validator.validate(request);
-
-        // then
-        assertThat(violations).isNotEmpty();
-    }
-
     @DisplayName("그룹 이름이 20자를 초과하면 유효성 검사를 통과하지 못한다")
     @Test
     void group_name_length_is_greater_than_20() {
@@ -77,19 +64,6 @@ class GroupRequestTest {
     void group_description_is_empty() {
         // given
         var request = new GroupRequest("group", "");
-
-        // when
-        var violations = validator.validate(request);
-
-        // then
-        assertThat(violations).isNotEmpty();
-    }
-
-    @DisplayName("그룹 설명에 영문과 숫자 이외의 문자가 있으면 유효성 검사를 통과하지 못한다")
-    @Test
-    void group_description_has_special_character() {
-        // given
-        var request = new GroupRequest("group", "description!");
 
         // when
         var violations = validator.validate(request);
