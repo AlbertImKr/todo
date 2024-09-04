@@ -3,8 +3,10 @@ package me.albert.todo.controller;
 import jakarta.validation.Valid;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import me.albert.todo.controller.dto.request.UserLoginRequest;
 import me.albert.todo.controller.dto.request.UserRegisterRequest;
 import me.albert.todo.service.AccountService;
+import me.albert.todo.service.dto.response.TokensResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,5 +28,10 @@ public class AccountController {
             throw new IllegalArgumentException(PASSWORD_NOT_MATCHED);
         }
         accountService.register(request.username(), request.password());
+    }
+
+    @PostMapping("/users/login")
+    public TokensResponse login(@Valid @RequestBody UserLoginRequest request) {
+        return accountService.login(request.username(), request.password());
     }
 }

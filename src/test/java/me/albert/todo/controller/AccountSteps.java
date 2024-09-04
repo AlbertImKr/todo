@@ -18,4 +18,14 @@ public class AccountSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 로그인_요청(HashMap<Object, Object> body) {
+        return given().log().all()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post("/users/login")
+                .then().log().all()
+                .extract();
+    }
 }

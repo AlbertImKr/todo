@@ -1,0 +1,4 @@
+jwt:
+  secretKey: "dGVzdC1zZWNyZXQta2V5LWluZm8="
+  accessTokenExpiration: 3600
+  refreshTokenExpiration: 604800
