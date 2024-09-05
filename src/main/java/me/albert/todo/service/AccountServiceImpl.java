@@ -1,6 +1,5 @@
 package me.albert.todo.service;
 
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
@@ -10,6 +9,7 @@ import me.albert.todo.service.dto.response.TokensResponse;
 import me.albert.todo.utils.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(new Account(username, password));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public TokensResponse login(String username, String password) {
         Account account = accountRepository.findByUsername(username)
@@ -45,6 +46,7 @@ public class AccountServiceImpl implements AccountService {
         );
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Account findByUsername(String username) {
         return accountRepository.findByUsername(username)
