@@ -52,4 +52,13 @@ public class TodoSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 할일_조회_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/todos/" + id)
+                .then().log().all()
+                .extract();
+    }
 }
