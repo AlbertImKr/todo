@@ -2,6 +2,8 @@ package me.albert.todo.controller;
 
 import static me.albert.todo.controller.AccountSteps.getAccessToken;
 import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_생성_요청;
+import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_수정_요청;
+import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_아이디;
 import static me.albert.todo.controller.TodoSteps.할일_이이디_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +38,61 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(201);
+    }
+
+    @DisplayName("반복 작업 수정 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void update_recurring_task() {
+        // given
+        var id = 반복_작업_아이디(todoId, accessToken);
+        var body = new HashMap<>();
+        body.put("recurrencePattern", "P2D");
+
+        // when
+        var response = 반복_작업_수정_요청(body, id, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("반복 작업 수정 실패 테스트")
+    @Nested
+    class UpdateRecurringTaskFailTest {
+
+        long recurringTaskId;
+
+        @BeforeEach
+        void setUp() {
+            recurringTaskId = 반복_작업_아이디(todoId, accessToken);
+        }
+
+        @DisplayName("반복 주기가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void recurrence_pattern_is_empty() {
+            // given
+            var body = new HashMap<>();
+            body.put("recurrencePattern", null);
+
+            // when
+            var response = 반복_작업_수정_요청(body, recurringTaskId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("반복 주기 형식이 잘못되면 400 상태 코드를 반환한다.")
+        @Test
+        void recurrence_pattern_is_invalid() {
+            // given
+            var body = new HashMap<>();
+            body.put("recurrencePattern", "P1");
+
+            // when
+            var response = 반복_작업_수정_요청(body, recurringTaskId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
     }
 
     @DisplayName("반복 작업 생성 샐패 테스트")

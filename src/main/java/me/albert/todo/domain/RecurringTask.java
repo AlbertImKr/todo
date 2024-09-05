@@ -19,7 +19,9 @@ public class RecurringTask {
     private Long id;
     @OneToOne
     private Todo task;
+    @Getter
     private Period recurrencePattern;
+    @Getter
     private LocalDateTime nextOccurrence;
 
     public RecurringTask() {
@@ -29,5 +31,10 @@ public class RecurringTask {
         this.task = task;
         this.recurrencePattern = recurrencePattern;
         this.nextOccurrence = nextOccurrence;
+    }
+
+    public void updatePeriod(Period recurrencePattern, LocalDateTime updatedTime) {
+        this.recurrencePattern = recurrencePattern;
+        this.nextOccurrence = updatedTime.plus(recurrencePattern);
     }
 }

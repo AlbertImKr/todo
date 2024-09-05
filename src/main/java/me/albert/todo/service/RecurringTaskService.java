@@ -14,4 +14,13 @@ public interface RecurringTaskService {
      * @return 생성된 반복 작업 ID
      */
     IdResponse createRecurringTask(Long todoId, Period recurrencePattern, String username);
+
+    /**
+     * 반복 작업을 수정합니다.
+     *
+     * @param recurringTaskId 반복 작업 ID
+     * @param period          반복 주기
+     * @param username        사용자 이름
+     */
+    void updateRecurringTask(Long recurringTaskId, Period period, String username);
 }
