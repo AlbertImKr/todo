@@ -1,6 +1,8 @@
 package me.albert.todo.controller;
 
 import static me.albert.todo.controller.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.TodoSteps.할일_삭제_요청;
 import static me.albert.todo.controller.TodoSteps.할일_생성_요청;
 import static me.albert.todo.controller.TodoSteps.할일_수정_요청;
 import static me.albert.todo.controller.TodoSteps.할일_이이디_생성_요청;
@@ -423,6 +425,61 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
+        }
+    }
+
+    @DisplayName("할 일 삭제 성공 시 204 No Content 반환")
+    @Test
+    void delete_todo_if_success() {
+        // given
+        var todoId = 할일_이이디_생성_요청(accessToken);
+
+        // when
+        var target = 할일_삭제_요청(todoId, accessToken);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(204);
+    }
+
+    @DisplayName("할 일 삭제 실패")
+    @Nested
+    class DeleteTodoFail {
+
+        long todoId;
+
+        @BeforeEach
+        void setTodo() {
+            todoId = 할일_이이디_생성_요청(accessToken);
+        }
+
+        @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void todo_not_found() {
+            // when
+            var notExistTodoId = 100L;
+            var target = 할일_삭제_요청(notExistTodoId, accessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+            );
+        }
+
+        @DisplayName("다른 사용자의 할 일을 삭제하려고 하면 할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void delete_other_user_todo() {
+            // given
+            var otherUserAccessToken = getOtherAccessToken();
+
+            // when
+            var target = 할일_삭제_요청(todoId, otherUserAccessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+            );
         }
     }
 }

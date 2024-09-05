@@ -43,4 +43,13 @@ public class TodoSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 할일_삭제_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/todos/" + id)
+                .then().log().all()
+                .extract();
+    }
 }

@@ -56,4 +56,13 @@ public class TodoServiceImpl implements TodoService {
                 request.status()
         );
     }
+
+    @Transactional
+    @Override
+    public void delete(Long id, String username) {
+        Account owner = accountService.findByUsername(username);
+        Todo todo = todoRepository.findByIdAndOwner(id, owner)
+                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        todoRepository.delete(todo);
+    }
 }
