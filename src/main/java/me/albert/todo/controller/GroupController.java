@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GroupController {
 
-    public static final String GROUP_ID_REQUIRED = "그룹 ID가 필요합니다.";
-
     private final GroupService groupService;
 
     @ResponseStatus(HttpStatus.CREATED)
