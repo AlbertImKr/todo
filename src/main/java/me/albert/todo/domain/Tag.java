@@ -23,7 +23,7 @@ public class Tag {
     private String name;
     @ManyToMany
     @JoinTable(
-            name = "todo_tag",
+            name = "todo_tags",
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "todo_id")
     )

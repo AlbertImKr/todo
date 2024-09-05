@@ -85,4 +85,11 @@ public class TodoServiceImpl implements TodoService {
         LocalDateTime updatedAt = LocalDateTime.now();
         todo.updateStatus(status, updatedAt);
     }
+
+    @Override
+    public Todo getTodoByIdAndUsername(Long todoId, String username) {
+        Account owner = accountService.findByUsername(username);
+        return todoRepository.findByIdAndOwner(todoId, owner)
+                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
 }
