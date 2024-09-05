@@ -19,13 +19,18 @@ public class Todo {
     @Id
     @GeneratedValue
     private Long id;
+    @Getter
     private String title;
     @Column(length = 1000)
+    @Getter
     private String description;
+    @Getter
     @Enumerated(EnumType.STRING)
     private TodoStatus status;
+    @Getter
     private LocalDateTime dueDate;
     private LocalDateTime createdAt;
+    @Getter
     private LocalDateTime updatedAt;
     @ManyToOne
     private Account owner;
@@ -44,6 +49,20 @@ public class Todo {
         this.dueDate = localDateTime;
         this.owner = account;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.status = status;
+    }
+
+    public void update(
+            String title,
+            String description,
+            LocalDateTime dueDate,
+            LocalDateTime updatedAt,
+            TodoStatus status
+    ) {
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
         this.updatedAt = updatedAt;
         this.status = status;
     }

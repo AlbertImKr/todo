@@ -1,15 +1,20 @@
 package me.albert.todo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.domain.TodoStatus;
+import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.TodoRepository;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
+import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,5 +49,39 @@ class TodoServiceImplTest {
 
         // then
         assertThat(response.id()).isEqualTo(1L);
+    }
+
+    @DisplayName("할 일 수정 성공 시 예외가 발생하지 않는다.")
+    @Test
+    void update_todo() {
+        // given
+        var request = new TodoUpdateRequest(
+                "title", "description", LocalDateTime.now().plusDays(1), TodoStatus.COMPLETED);
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), null
+        );
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.update(request, 1L, "username");
+    }
+
+    @DisplayName("할 일 수정 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void update_todo_not_found() {
+        // given
+        var request = new TodoUpdateRequest(
+                "title", "description", LocalDateTime.now().plusDays(1), TodoStatus.COMPLETED);
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.update(request, 1L, "username"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
     }
 }
