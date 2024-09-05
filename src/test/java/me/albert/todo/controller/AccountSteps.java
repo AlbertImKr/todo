@@ -29,6 +29,11 @@ public class AccountSteps {
                 .extract();
     }
 
+    /**
+     * newUser의 엑세스 토큰을 가져온다.
+     *
+     * @return 엑세스 토큰
+     */
     public static String getAccessToken() {
         var registerBody = new HashMap<>();
         registerBody.put("username", "newUser");
@@ -44,7 +49,11 @@ public class AccountSteps {
         return response.jsonPath().getString("accessToken");
     }
 
-
+    /**
+     * otherNewUser의 엑세스 토큰을 가져온다.
+     *
+     * @return 엑세스 토큰
+     */
     public static String getOtherAccessToken() {
         var registerBody = new HashMap<>();
         registerBody.put("username", "otherNewUser");

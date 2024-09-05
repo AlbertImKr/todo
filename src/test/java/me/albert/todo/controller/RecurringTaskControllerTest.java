@@ -1,6 +1,8 @@
 package me.albert.todo.controller;
 
 import static me.albert.todo.controller.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_삭제_요청;
 import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_생성_요청;
 import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_수정_요청;
 import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_아이디;
@@ -49,10 +51,23 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
         body.put("recurrencePattern", "P2D");
 
         // when
-        var response = 반복_작업_수정_요청(body, id, accessToken);
+        var response = 반복_작업_수정_요청(body, id, todoId, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("반복 작업 삭제 성공 시 204 상태 코드를 반환한다.")
+    @Test
+    void delete_recurring_task() {
+        // given
+        var recurringTaskId = 반복_작업_아이디(todoId, accessToken);
+
+        // when
+        var response = 반복_작업_삭제_요청(todoId, recurringTaskId, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(204);
     }
 
     @DisplayName("반복 작업 수정 실패 테스트")
@@ -74,7 +89,7 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
             body.put("recurrencePattern", null);
 
             // when
-            var response = 반복_작업_수정_요청(body, recurringTaskId, accessToken);
+            var response = 반복_작업_수정_요청(body, recurringTaskId, todoId, accessToken);
 
             // then
             assertThat(response.statusCode()).isEqualTo(400);
@@ -88,10 +103,25 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
             body.put("recurrencePattern", "P1");
 
             // when
-            var response = 반복_작업_수정_요청(body, recurringTaskId, accessToken);
+            var response = 반복_작업_수정_요청(body, recurringTaskId, todoId, accessToken);
 
             // then
             assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("반복 작업이 다른 사용자의 것이면 404 상태 코드를 반환한다.")
+        @Test
+        void update_recurring_task_with_different_user() {
+            // given
+            var otherAccessToken = getOtherAccessToken();
+            var body = new HashMap<>();
+            body.put("recurrencePattern", "P1D");
+
+            // when
+            var response = 반복_작업_수정_요청(body, recurringTaskId, todoId, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
         }
     }
 
@@ -139,6 +169,38 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(400);
+        }
+    }
+
+    @DisplayName("반복 작업 삭제 실패 테스트")
+    @Nested
+    class DeleteRecurringTaskFailTest {
+
+        @DisplayName("반복 작업이 없으면 404 상태 코드를 반환한다.")
+        @Test
+        void delete_recurring_task_fail() {
+            // given
+            var recurringTaskId = 0L;
+
+            // when
+            var response = 반복_작업_삭제_요청(todoId, recurringTaskId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("반복 작업이 다른 사용자의 것이면 404 상태 코드를 반환한다.")
+        @Test
+        void delete_recurring_task_with_different_user() {
+            // given
+            var recurringTaskId = 반복_작업_아이디(todoId, accessToken);
+            var otherAccessToken = getOtherAccessToken();
+
+            // when
+            var response = 반복_작업_삭제_요청(todoId, recurringTaskId, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
         }
     }
 }
