@@ -17,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("GroupService 테스트")
+@DisplayName("그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class GroupServiceImplTest {
 
