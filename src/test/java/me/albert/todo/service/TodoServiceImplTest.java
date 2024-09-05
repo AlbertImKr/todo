@@ -84,4 +84,34 @@ class TodoServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
     }
+
+    @DisplayName("할 일 삭제 성공 시 예외가 발생하지 않는다.")
+    @Test
+    void delete_todo_if_success() {
+        // given
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), null
+        );
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.delete(1L, "username");
+    }
+
+    @DisplayName("할 일 삭제 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void delete_todo_if_not_found() {
+        // given
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.delete(1L, "username"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+    }
 }

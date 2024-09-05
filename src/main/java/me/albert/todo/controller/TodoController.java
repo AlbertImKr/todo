@@ -7,6 +7,7 @@ import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,5 +32,11 @@ public class TodoController {
             @Valid @RequestBody TodoUpdateRequest request, @PathVariable Long id, @CurrentUsername String username
     ) {
         todoService.update(request, id, username);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/todos/{id}")
+    public void delete(@PathVariable Long id, @CurrentUsername String username) {
+        todoService.delete(id, username);
     }
 }
