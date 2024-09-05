@@ -6,8 +6,10 @@ import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.TodoResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,5 +40,10 @@ public class TodoController {
     @DeleteMapping("/todos/{id}")
     public void delete(@PathVariable Long id, @CurrentUsername String username) {
         todoService.delete(id, username);
+    }
+
+    @GetMapping("/todos/{id}")
+    public TodoResponse get(@PathVariable Long id, @CurrentUsername String username) {
+        return todoService.get(id, username);
     }
 }

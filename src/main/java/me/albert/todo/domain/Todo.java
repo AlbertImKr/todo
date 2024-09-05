@@ -29,6 +29,7 @@ public class Todo {
     private TodoStatus status;
     @Getter
     private LocalDateTime dueDate;
+    @Getter
     private LocalDateTime createdAt;
     @Getter
     private LocalDateTime updatedAt;
