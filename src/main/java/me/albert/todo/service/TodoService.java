@@ -66,4 +66,15 @@ public interface TodoService {
      * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
      */
     Todo getTodoByIdAndUsername(Long todoId, String username);
+
+    /**
+     * 할 일에 사용자를 할당합니다.
+     *
+     * @param todoId          할 일 ID
+     * @param username        사용자 이름
+     * @param currentUsername 현재 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     */
+    void assignUser(Long todoId, String username, String currentUsername);
+
 }

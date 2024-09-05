@@ -1,6 +1,6 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.TagSteps.태그_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +18,7 @@ class TagControllerTest extends TodoAcceptanceTest {
 
     @BeforeEach
     void setUser() {
-        accessToken = getAccessToken();
+        accessToken = getFixtureFirstAccountAccessToken();
     }
 
     @DisplayName("태그 생성 성공 시 201 상태 코드를 반환한다.")

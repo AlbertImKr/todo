@@ -1,7 +1,7 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.steps.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
@@ -22,7 +22,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
     @BeforeEach
     void setUser() {
-        accessToken = getAccessToken();
+        accessToken = getFixtureFirstAccountAccessToken();
     }
 
     @DisplayName("그룹 생성 성공 시 201 상태 코드를 반환한다.")
@@ -236,7 +236,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         @Test
         void update_group_with_other_user() {
             // given
-            var otherAccessToken = getOtherAccessToken();
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
             var body = new HashMap<>();
             body.put("name", "group");
             body.put("description", "description");

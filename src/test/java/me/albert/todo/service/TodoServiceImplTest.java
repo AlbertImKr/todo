@@ -214,4 +214,35 @@ class TodoServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
     }
+
+    @DisplayName("할 일에 사용자를 할당 성공 시 예외가 발생하지 않는다.")
+    @Test
+    void assign_user() {
+        // given
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING
+        );
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(accountService.findByUsername("currentUsername")).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.assignUser(1L, "username", "currentUsername");
+    }
+
+    @DisplayName("할 일에 사용자를 할당 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void assign_user_not_found() {
+        // given
+        var account = new Account();
+        when(accountService.findByUsername("currentUsername")).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.assignUser(1L, "username", "currentUsername"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+    }
 }

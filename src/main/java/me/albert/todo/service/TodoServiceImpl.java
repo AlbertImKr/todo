@@ -86,10 +86,21 @@ public class TodoServiceImpl implements TodoService {
         todo.updateStatus(status, updatedAt);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Todo getTodoByIdAndUsername(Long todoId, String username) {
         Account owner = accountService.findByUsername(username);
         return todoRepository.findByIdAndOwner(todoId, owner)
                 .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
+
+    @Transactional
+    @Override
+    public void assignUser(Long todoId, String username, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findByIdAndOwner(todoId, owner)
+                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Account assignee = accountService.findByUsername(username);
+        todo.assignUser(assignee);
     }
 }

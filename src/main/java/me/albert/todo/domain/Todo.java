@@ -6,11 +6,15 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 
 @Table(name = "todo")
@@ -41,6 +45,13 @@ public class Todo {
     private Group group;
     @ManyToMany(mappedBy = "todos")
     private List<Tag> tags;
+    @Getter
+    @ManyToMany
+    @JoinTable(name = "todo_assignee",
+            joinColumns = @JoinColumn(name = "todo_id"),
+            inverseJoinColumns = @JoinColumn(name = "assignee_id")
+    )
+    private List<Account> assignees = new ArrayList<>();
 
     public Todo() {
     }
@@ -75,5 +86,32 @@ public class Todo {
     public void updateStatus(TodoStatus status, LocalDateTime updatedAt) {
         this.status = status;
         this.updatedAt = updatedAt;
+    }
+
+    public void assignUser(Account assignee) {
+        if (this.assignees.contains(assignee)) {
+            return;
+        }
+        this.assignees.add(assignee);
+    }
+
+    public boolean containsAssignee(Account assignee) {
+        return this.assignees.contains(assignee);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Todo todo)) {
+            return false;
+        }
+        return Objects.equals(getId(), todo.getId());
     }
 }
