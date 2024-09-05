@@ -31,13 +31,14 @@ public class RecurringTaskController {
         return recurringTaskService.createRecurringTask(todoId, request.recurrencePattern(), username);
     }
 
-    @PutMapping("/recurring-tasks/{recurringTaskId}")
+    @PutMapping("/todos/{todoId}/recurring-tasks/{recurringTaskId}")
     public void updateRecurringTask(
+            @PathVariable Long todoId,
             @PathVariable Long recurringTaskId,
             @Valid @RequestBody RecurringTaskUpdateRequest request,
             @CurrentUsername String username
     ) {
-        recurringTaskService.updateRecurringTask(recurringTaskId, request.recurrencePattern(), username);
+        recurringTaskService.updateRecurringTask(recurringTaskId, request.recurrencePattern(), todoId, username);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

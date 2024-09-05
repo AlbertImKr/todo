@@ -59,13 +59,16 @@ class RecurringTaskServiceImplTest {
     void update_recurring_task_success() {
         // given
         Long recurringTaskId = 1L;
+        var todoId = 1L;
         Period period = Period.ofDays(1);
         String username = "username";
         RecurringTask recurringTask = mock(RecurringTask.class);
-        when(recurringTaskRepository.findById(recurringTaskId)).thenReturn(Optional.of(recurringTask));
+        var todo = mock(Todo.class);
+        when(todoService.getTodoByIdAndUsername(todoId, username)).thenReturn(todo);
+        when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.of(recurringTask));
 
         // when, then
-        recurringTaskService.updateRecurringTask(recurringTaskId, period, username);
+        recurringTaskService.updateRecurringTask(recurringTaskId, period, todoId, username);
     }
 
     @DisplayName("반복 할 일 수정 실패 시 예외가 발생한다.")
@@ -73,12 +76,15 @@ class RecurringTaskServiceImplTest {
     void update_recurring_task_fail() {
         // given
         Long recurringTaskId = 1L;
+        var todoId = 1L;
         Period period = Period.ofDays(1);
         String username = "username";
-        when(recurringTaskRepository.findById(recurringTaskId)).thenReturn(Optional.empty());
+        var todo = mock(Todo.class);
+        when(todoService.getTodoByIdAndUsername(todoId, username)).thenReturn(todo);
+        when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> recurringTaskService.updateRecurringTask(recurringTaskId, period, username))
+        assertThatThrownBy(() -> recurringTaskService.updateRecurringTask(recurringTaskId, period, todoId, username))
                 .isInstanceOf(BusinessException.class);
     }
 

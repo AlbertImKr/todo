@@ -20,9 +20,10 @@ public interface RecurringTaskService {
      *
      * @param recurringTaskId 반복 작업 ID
      * @param period          반복 주기
+     * @param todoId          할 일 ID
      * @param username        사용자 이름
      */
-    void updateRecurringTask(Long recurringTaskId, Period period, String username);
+    void updateRecurringTask(Long recurringTaskId, Period period, Long todoId, String username);
 
     /**
      * 반복 작업을 삭제합니다.

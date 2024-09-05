@@ -43,15 +43,24 @@ public class RecurringTaskSteps {
                 .extract().jsonPath().getLong("id");
     }
 
+    /**
+     * 반복 작업 수정 요청
+     *
+     * @param body            수정할 정보
+     * @param recurringTaskId 반복 작업 아이디
+     * @param todoId          할일 아이디
+     * @param accessToken     엑세스 토큰
+     * @return 응답
+     */
     public static ExtractableResponse<Response> 반복_작업_수정_요청(
-            HashMap<Object, Object> body, long recurringTaskId, String accessToken
+            HashMap<Object, Object> body, long recurringTaskId, long todoId, String accessToken
     ) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/recurring-tasks/" + recurringTaskId)
+                .put("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
                 .then().log().all()
                 .extract();
     }
