@@ -47,6 +47,6 @@ public class RecurringTaskController {
             @PathVariable Long recurringTaskId,
             @CurrentUsername String username
     ) {
-        recurringTaskService.deleteRecurringTask(username, todoId, recurringTaskId);
+        recurringTaskService.deleteRecurringTask(recurringTaskId, todoId, username);
     }
 }

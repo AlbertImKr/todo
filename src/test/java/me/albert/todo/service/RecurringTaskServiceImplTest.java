@@ -95,7 +95,7 @@ class RecurringTaskServiceImplTest {
         when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.of(recurringTask));
 
         // when
-        recurringTaskService.deleteRecurringTask(username, todoId, recurringTaskId);
+        recurringTaskService.deleteRecurringTask(recurringTaskId, todoId, username);
 
         // then
         verify(recurringTaskRepository).delete(recurringTask);
@@ -113,7 +113,7 @@ class RecurringTaskServiceImplTest {
         when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> recurringTaskService.deleteRecurringTask(username, todoId, recurringTaskId))
+        assertThatThrownBy(() -> recurringTaskService.deleteRecurringTask(recurringTaskId, todoId, username))
                 .isInstanceOf(BusinessException.class);
     }
 }

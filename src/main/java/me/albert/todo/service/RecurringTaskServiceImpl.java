@@ -42,7 +42,7 @@ public class RecurringTaskServiceImpl implements RecurringTaskService {
 
     @Transactional
     @Override
-    public void deleteRecurringTask(String username, Long todoId, Long recurringTaskId) {
+    public void deleteRecurringTask(Long recurringTaskId, Long todoId, String username) {
         Todo todo = todoService.getTodoByIdAndUsername(todoId, username);
         RecurringTask recurringTask = recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)
                 .orElseThrow(() -> new BusinessException(RECURRING_TASK_NOT_FOUND, HttpStatus.NOT_FOUND));

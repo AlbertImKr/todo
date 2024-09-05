@@ -32,5 +32,5 @@ public interface RecurringTaskService {
      * @param recurringTaskId 반복 작업 ID
      * @throws me.albert.todo.exception.BusinessException 반복 작업이 존재하지 않을 경우
      */
-    void deleteRecurringTask(String username, Long todoId, Long recurringTaskId);
+    void deleteRecurringTask(Long recurringTaskId, Long todoId, String username);
 }
