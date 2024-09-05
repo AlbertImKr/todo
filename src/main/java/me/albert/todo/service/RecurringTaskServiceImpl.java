@@ -39,4 +39,13 @@ public class RecurringTaskServiceImpl implements RecurringTaskService {
         LocalDateTime updatedAt = LocalDateTime.now();
         recurringTask.updatePeriod(recurrencePattern, updatedAt);
     }
+
+    @Transactional
+    @Override
+    public void deleteRecurringTask(String username, Long todoId, Long recurringTaskId) {
+        Todo todo = todoService.getTodoByIdAndUsername(todoId, username);
+        RecurringTask recurringTask = recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)
+                .orElseThrow(() -> new BusinessException(RECURRING_TASK_NOT_FOUND, HttpStatus.NOT_FOUND));
+        recurringTaskRepository.delete(recurringTask);
+    }
 }

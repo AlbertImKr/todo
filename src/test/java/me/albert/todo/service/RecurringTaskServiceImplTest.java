@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Period;
+import java.util.Optional;
 import me.albert.todo.domain.RecurringTask;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
@@ -60,7 +62,7 @@ class RecurringTaskServiceImplTest {
         Period period = Period.ofDays(1);
         String username = "username";
         RecurringTask recurringTask = mock(RecurringTask.class);
-        when(recurringTaskRepository.findById(recurringTaskId)).thenReturn(java.util.Optional.of(recurringTask));
+        when(recurringTaskRepository.findById(recurringTaskId)).thenReturn(Optional.of(recurringTask));
 
         // when, then
         recurringTaskService.updateRecurringTask(recurringTaskId, period, username);
@@ -73,10 +75,45 @@ class RecurringTaskServiceImplTest {
         Long recurringTaskId = 1L;
         Period period = Period.ofDays(1);
         String username = "username";
-        when(recurringTaskRepository.findById(recurringTaskId)).thenReturn(java.util.Optional.empty());
+        when(recurringTaskRepository.findById(recurringTaskId)).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> recurringTaskService.updateRecurringTask(recurringTaskId, period, username))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("반복 할 일 삭제 성공 시 예외가 발생하지 않는다.")
+    @Test
+    void delete_recurring_task_success() {
+        // given
+        Long recurringTaskId = 1L;
+        String username = "username";
+        Long todoId = 1L;
+        RecurringTask recurringTask = mock(RecurringTask.class);
+        var todo = mock(Todo.class);
+        when(todoService.getTodoByIdAndUsername(todoId, username)).thenReturn(todo);
+        when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.of(recurringTask));
+
+        // when
+        recurringTaskService.deleteRecurringTask(username, todoId, recurringTaskId);
+
+        // then
+        verify(recurringTaskRepository).delete(recurringTask);
+    }
+
+    @DisplayName("반복 할 일 삭제 실패 시 예외가 발생한다.")
+    @Test
+    void delete_recurring_task_fail() {
+        // given
+        Long recurringTaskId = 1L;
+        String username = "username";
+        Long todoId = 1L;
+        var todo = mock(Todo.class);
+        when(todoService.getTodoByIdAndUsername(todoId, username)).thenReturn(todo);
+        when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> recurringTaskService.deleteRecurringTask(username, todoId, recurringTaskId))
                 .isInstanceOf(BusinessException.class);
     }
 }

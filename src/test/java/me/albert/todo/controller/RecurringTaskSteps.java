@@ -55,4 +55,24 @@ public class RecurringTaskSteps {
                 .then().log().all()
                 .extract();
     }
+
+    /**
+     * 반복 작업 삭제 요청
+     *
+     * @param recurringTaskId 반복 작업 아이디
+     * @param accessToken     엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 반복_작업_삭제_요청(
+            long todoId,
+            long recurringTaskId,
+            String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
+                .then().log().all()
+                .extract();
+    }
 }

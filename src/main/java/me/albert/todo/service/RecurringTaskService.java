@@ -23,4 +23,14 @@ public interface RecurringTaskService {
      * @param username        사용자 이름
      */
     void updateRecurringTask(Long recurringTaskId, Period period, String username);
+
+    /**
+     * 반복 작업을 삭제합니다.
+     *
+     * @param username        사용자 이름
+     * @param todoId          할 일 ID
+     * @param recurringTaskId 반복 작업 ID
+     * @throws me.albert.todo.exception.BusinessException 반복 작업이 존재하지 않을 경우
+     */
+    void deleteRecurringTask(String username, Long todoId, Long recurringTaskId);
 }
