@@ -75,4 +75,14 @@ public class TodoServiceImpl implements TodoService {
                 .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         return TodoResponse.from(todo);
     }
+
+    @Transactional
+    @Override
+    public void updateStatus(Long id, TodoStatus status, String username) {
+        Account owner = accountService.findByUsername(username);
+        Todo todo = todoRepository.findByIdAndOwner(id, owner)
+                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        LocalDateTime updatedAt = LocalDateTime.now();
+        todo.updateStatus(status, updatedAt);
+    }
 }

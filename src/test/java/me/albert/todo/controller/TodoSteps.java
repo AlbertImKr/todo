@@ -61,4 +61,15 @@ public class TodoSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 할일_상태_변경_요청(Long id, HashMap<Object, Object> body, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/todos/" + id + "/status")
+                .then().log().all()
+                .extract();
+    }
 }

@@ -67,4 +67,9 @@ public class Todo {
         this.updatedAt = updatedAt;
         this.status = status;
     }
+
+    public void updateStatus(TodoStatus status, LocalDateTime updatedAt) {
+        this.status = status;
+        this.updatedAt = updatedAt;
+    }
 }

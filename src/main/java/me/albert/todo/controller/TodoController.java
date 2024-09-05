@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
+import me.albert.todo.service.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -45,5 +46,12 @@ public class TodoController {
     @GetMapping("/todos/{id}")
     public TodoResponse get(@PathVariable Long id, @CurrentUsername String username) {
         return todoService.get(id, username);
+    }
+
+    @PutMapping("/todos/{id}/status")
+    public void updateStatus(
+            @PathVariable Long id, @Valid @RequestBody TodoStatusUpdateRequest request, @CurrentUsername String username
+    ) {
+        todoService.updateStatus(id, request.status(), username);
     }
 }
