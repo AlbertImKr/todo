@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.RecurringTaskCreateRequest;
 import me.albert.todo.service.RecurringTaskService;
@@ -20,7 +21,8 @@ public class RecurringTaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/todos/{todoId}/recurring-tasks")
     public IdResponse createRecurringTask(
-            @PathVariable Long todoId, @RequestBody RecurringTaskCreateRequest request, @CurrentUsername String username
+            @PathVariable Long todoId, @Valid @RequestBody RecurringTaskCreateRequest request,
+            @CurrentUsername String username
     ) {
         return recurringTaskService.createRecurringTask(todoId, request.recurrencePattern(), username);
     }

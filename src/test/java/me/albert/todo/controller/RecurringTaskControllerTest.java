@@ -9,6 +9,7 @@ import java.util.HashMap;
 import me.albert.todo.TodoAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("반복 작업 관련 인수 테스트")
@@ -28,12 +29,59 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
     void create_recurring_task() {
         // given
         var body = new HashMap<>();
-        body.put("recurrencePattern", "PT1H");
+        body.put("recurrencePattern", "P1D");
 
         // when
         var response = 반복_작업_생성_요청(body, todoId, accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(201);
+    }
+
+    @DisplayName("반복 작업 생성 샐패 테스트")
+    @Nested
+    class CreateRecurringTaskFailTest {
+
+        @DisplayName("할일이 없으면 404 상태 코드를 반환한다.")
+        @Test
+        void create_recurring_task_fail() {
+            // given
+            var body = new HashMap<>();
+            body.put("recurrencePattern", "P1D");
+
+            // when
+            var response = 반복_작업_생성_요청(body, 0, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("반복 주기가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void recurrence_pattern_is_empty() {
+            // given
+            var body = new HashMap<>();
+            body.put("recurrencePattern", null);
+
+            // when
+            var response = 반복_작업_생성_요청(body, todoId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("반복 주기 형식이 잘못되면 400 상태 코드를 반환한다.")
+        @Test
+        void recurrence_pattern_is_invalid() {
+            // given
+            var body = new HashMap<>();
+            body.put("recurrencePattern", "P1");
+
+            // when
+            var response = 반복_작업_생성_요청(body, todoId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
     }
 }

@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.time.Duration;
+import java.time.Period;
 import me.albert.todo.domain.RecurringTask;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.repository.RecurringTaskRepository;
@@ -33,7 +33,7 @@ class RecurringTaskServiceImplTest {
     void create_recurring_task_success() {
         // given
         Long todoId = 1L;
-        Duration duration = Duration.ofDays(1);
+        Period period = Period.ofDays(1);
         String username = "username";
         Todo todo = mock(Todo.class);
         var expectId = 1L;
@@ -44,7 +44,7 @@ class RecurringTaskServiceImplTest {
         when(recurringTask.getId()).thenReturn(expectId);
 
         // when
-        IdResponse idResponse = recurringTaskService.createRecurringTask(todoId, duration, username);
+        IdResponse idResponse = recurringTaskService.createRecurringTask(todoId, period, username);
 
         // then
         assertThat(idResponse).isEqualTo(expect);

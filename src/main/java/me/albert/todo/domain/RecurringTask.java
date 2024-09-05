@@ -5,8 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import lombok.Getter;
 
 @Table(name = "recurring_task")
@@ -19,13 +19,13 @@ public class RecurringTask {
     private Long id;
     @OneToOne
     private Todo task;
-    private Duration recurrencePattern;
+    private Period recurrencePattern;
     private LocalDateTime nextOccurrence;
 
     public RecurringTask() {
     }
 
-    public RecurringTask(Todo task, Duration recurrencePattern, LocalDateTime nextOccurrence) {
+    public RecurringTask(Todo task, Period recurrencePattern, LocalDateTime nextOccurrence) {
         this.task = task;
         this.recurrencePattern = recurrencePattern;
         this.nextOccurrence = nextOccurrence;
