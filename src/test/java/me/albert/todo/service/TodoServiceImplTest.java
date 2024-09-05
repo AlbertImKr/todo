@@ -178,4 +178,39 @@ class TodoServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
     }
+
+    @DisplayName("할 일 ID로 조회 성공 시 할 일 정보를 반환한다.")
+    @Test
+    void get_todo_by_id() {
+        // given
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING
+        );
+        var username = "username";
+        var account = new Account();
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+
+        // when
+        var response = todoService.getTodoByIdAndUsername(1L, username);
+
+        // then
+        assertThat(response).isEqualTo(todo);
+    }
+
+    @DisplayName("할 일 ID로 조회 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void get_todo_by_id_not_found() {
+        // given
+        var username = "username";
+        var account = new Account();
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.getTodoByIdAndUsername(1L, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+    }
 }
