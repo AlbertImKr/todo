@@ -1,12 +1,12 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.AccountSteps.getOtherAccessToken;
-import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_삭제_요청;
-import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_생성_요청;
-import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_수정_요청;
-import static me.albert.todo.controller.RecurringTaskSteps.반복_작업_아이디;
-import static me.albert.todo.controller.TodoSteps.할일_이이디_생성_요청;
+import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_삭제_요청;
+import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_생성_요청;
+import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_수정_요청;
+import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_아이디;
+import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;

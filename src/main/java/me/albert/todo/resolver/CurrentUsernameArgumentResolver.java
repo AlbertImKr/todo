@@ -1,5 +1,6 @@
-package me.albert.todo.controller;
+package me.albert.todo.resolver;
 
+import me.albert.todo.controller.CurrentUsername;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

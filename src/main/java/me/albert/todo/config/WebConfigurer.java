@@ -2,7 +2,7 @@ package me.albert.todo.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import me.albert.todo.controller.CurrentUsernameArgumentResolver;
+import me.albert.todo.resolver.CurrentUsernameArgumentResolver;
 import me.albert.todo.utils.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

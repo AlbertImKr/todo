@@ -1,4 +1,4 @@
-package me.albert.todo.controller;
+package me.albert.todo.controller.steps;
 
 import static io.restassured.RestAssured.given;
 
