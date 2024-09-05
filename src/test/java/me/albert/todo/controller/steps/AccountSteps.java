@@ -9,6 +9,9 @@ import java.util.HashMap;
 
 public class AccountSteps {
 
+    public static String FIXTURE_FIRST_ACCOUNT_USERNAME = "newUser";
+    public static String FIXTURE_SECOND_ACCOUNT_USERNAME = "otherNewUser";
+
     public static ExtractableResponse<Response> 화원_가입_요청(HashMap<Object, Object> body) {
         return given().log().all()
                 .contentType(ContentType.JSON)
@@ -34,9 +37,9 @@ public class AccountSteps {
      *
      * @return 엑세스 토큰
      */
-    public static String getAccessToken() {
+    public static String getFixtureFirstAccountAccessToken() {
         var registerBody = new HashMap<>();
-        registerBody.put("username", "newUser");
+        registerBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
         registerBody.put("password", "Password1!");
         registerBody.put("confirmPassword", "Password1!");
         화원_가입_요청(registerBody);
@@ -54,9 +57,9 @@ public class AccountSteps {
      *
      * @return 엑세스 토큰
      */
-    public static String getOtherAccessToken() {
+    public static String getFixtureSecondAccountAccessToken() {
         var registerBody = new HashMap<>();
-        registerBody.put("username", "otherNewUser");
+        registerBody.put("username", FIXTURE_SECOND_ACCOUNT_USERNAME);
         registerBody.put("password", "Password1!");
         registerBody.put("confirmPassword", "Password1!");
         화원_가입_요청(registerBody);

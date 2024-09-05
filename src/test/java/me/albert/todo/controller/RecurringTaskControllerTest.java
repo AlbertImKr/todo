@@ -1,7 +1,7 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.steps.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_삭제_요청;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_생성_요청;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_수정_요청;
@@ -25,7 +25,7 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
 
     @BeforeEach
     void setUser() {
-        accessToken = getAccessToken();
+        accessToken = getFixtureFirstAccountAccessToken();
         todoId = 할일_이이디_생성_요청(accessToken);
     }
 
@@ -106,7 +106,7 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
         void get_recurring_task_with_different_user() {
             // given
             var recurringTaskId = 반복_작업_아이디(todoId, accessToken);
-            var otherAccessToken = getOtherAccessToken();
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
 
             // when
             var response = 반복_작업_조회_요청(recurringTaskId, todoId, otherAccessToken);
@@ -159,7 +159,7 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
         @Test
         void update_recurring_task_with_different_user() {
             // given
-            var otherAccessToken = getOtherAccessToken();
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
             var body = new HashMap<>();
             body.put("recurrencePattern", "P1D");
 
@@ -240,7 +240,7 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
         void delete_recurring_task_with_different_user() {
             // given
             var recurringTaskId = 반복_작업_아이디(todoId, accessToken);
-            var otherAccessToken = getOtherAccessToken();
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
 
             // when
             var response = 반복_작업_삭제_요청(todoId, recurringTaskId, otherAccessToken);

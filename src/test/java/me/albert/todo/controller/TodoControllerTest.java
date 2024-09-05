@@ -1,7 +1,10 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.steps.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT_USERNAME;
+import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
+import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_삭제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_상태_변경_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
@@ -27,7 +30,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
     @BeforeEach
     void setUser() {
-        accessToken = getAccessToken();
+        accessToken = getFixtureFirstAccountAccessToken();
     }
 
     @DisplayName("할 일 생성 성공 시 201 Created 반환")
@@ -121,6 +124,127 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("할 일에 사용자 할당 성공 시 200 OK 반환")
+    @Test
+    void assign_user_to_todo_if_success() {
+        // given
+        var todoId = 할일_이이디_생성_요청(accessToken);
+        var assignUserBody = new HashMap<>();
+        assignUserBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
+
+        // when
+        var target = 할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("할 일에 여러 사용자 할당 성공 시 200 OK 반환")
+    @Test
+    void assign_multiple_users_to_todo_if_success() {
+        // given
+        var todoId = 할일_이이디_생성_요청(accessToken);
+        var assignUserBody = new HashMap<>();
+        assignUserBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
+        getFixtureSecondAccountAccessToken();
+        할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+        assignUserBody.put("username", FIXTURE_SECOND_ACCOUNT_USERNAME);
+
+        // when
+        var target = 할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @Nested
+    @DisplayName("할 일에 사용자 할당 실패")
+    class AssignUserToTodoFail {
+
+        long todoId;
+
+        @BeforeEach
+        void setTodo() {
+            todoId = 할일_이이디_생성_요청(accessToken);
+        }
+
+        @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void todo_not_found() {
+            // when
+            var notExistTodoId = 100L;
+            var assignUserBody = new HashMap<>();
+            assignUserBody.put("username", "newUser");
+            var target = 할일_사용자_할당_요청(notExistTodoId, assignUserBody, accessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+            );
+        }
+
+        @DisplayName("다른 사용자의 할 일에 사용자를 할당하려고 하면 할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void assign_user_to_other_user_todo() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+            var assignUserBody = new HashMap<>();
+            assignUserBody.put("username", "newUser");
+
+            // when
+            var target = 할일_사용자_할당_요청(todoId, assignUserBody, otherUserAccessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+            );
+        }
+
+        @DisplayName("사용자 이름이 없으면 400 Bad Request 반환")
+        @Test
+        void username_is_empty() {
+            // given
+            var assignUserBody = new HashMap<>();
+            assignUserBody.put("username", "");
+
+            // when
+            var target = 할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("사용자 이름에 영문과 숫자 이외의 문자가 있으면 400 Bad Request 반환")
+        @Test
+        void username_has_special_character() {
+            // given
+            var assignUserBody = new HashMap<>();
+            assignUserBody.put("username", "newUser!");
+
+            // when
+            var target = 할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("사용자 이름이 존재하지 않으면 404 Bad Request 반환")
+        @Test
+        void username_not_exist() {
+            // given
+            var assignUserBody = new HashMap<>();
+            assignUserBody.put("username", "notExistUser");
+
+            // when
+            var target = 할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(404);
+        }
     }
 
     @Nested
@@ -509,7 +633,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void delete_other_user_todo() {
             // given
-            var otherUserAccessToken = getOtherAccessToken();
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
 
             // when
             var target = 할일_삭제_요청(todoId, otherUserAccessToken);
@@ -551,7 +675,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void get_other_user_todo() {
             // given
-            var otherUserAccessToken = getOtherAccessToken();
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
 
             // when
             var target = 할일_조회_요청(todoId, otherUserAccessToken);

@@ -60,4 +60,57 @@ class TodoTest {
                 () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
         );
     }
+
+    @DisplayName("할일에 사용자를 할당한다.")
+    @Test
+    void assign_user() {
+        // given
+        var assignee = new Account();
+
+        // when
+        todo.assignUser(assignee);
+
+        // then
+        assertThat(todo.containsAssignee(assignee)).isTrue();
+    }
+
+    @DisplayName("할일에 사용자를 중복해서 할당하면 중복으로 할당되지 않는다.")
+    @Test
+    void assign_user_duplicate() {
+        // given
+        var assignee = new Account();
+        todo.assignUser(assignee);
+
+        // when
+        todo.assignUser(assignee);
+
+        // then
+        assertThat(todo.getAssignees()).hasSize(1);
+    }
+
+    @DisplayName("할일에 여러 사용자를 할당한다.")
+    @Test
+    void assign_multiple_users() {
+        // given
+        var assignee1 = new Account();
+        var assignee2 = new Account();
+
+        // when
+        todo.assignUser(assignee1);
+        todo.assignUser(assignee2);
+
+        // then
+        assertThat(todo.getAssignees()).hasSize(2);
+    }
+
+    @DisplayName("할일의 ID가 같으면 같은 할일로 판단한다.")
+    @Test
+    void equals_todo() {
+        // given
+        var todo1 = new Todo();
+        var todo2 = new Todo();
+
+        // then
+        assertThat(todo1).isEqualTo(todo2);
+    }
 }
