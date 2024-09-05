@@ -2,6 +2,7 @@ package me.albert.todo.service;
 
 import java.time.Period;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.RecurringTaskResponse;
 
 public interface RecurringTaskService {
 
@@ -34,4 +35,15 @@ public interface RecurringTaskService {
      * @throws me.albert.todo.exception.BusinessException 반복 작업이 존재하지 않을 경우
      */
     void deleteRecurringTask(Long recurringTaskId, Long todoId, String username);
+
+    /**
+     * 반복 작업을 조회합니다.
+     *
+     * @param recurringTaskId 반복 작업 ID
+     * @param todoId          할 일 ID
+     * @param username        사용자 이름
+     * @return RecurringTaskResponse 반복 작업 응답
+     * @throws me.albert.todo.exception.BusinessException 반복 작업이 존재하지 않을 경우
+     */
+    RecurringTaskResponse getRecurringTask(Long recurringTaskId, Long todoId, String username);
 }

@@ -14,6 +14,7 @@ import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.RecurringTaskRepository;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.RecurringTaskResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -120,6 +121,42 @@ class RecurringTaskServiceImplTest {
 
         // when, then
         assertThatThrownBy(() -> recurringTaskService.deleteRecurringTask(recurringTaskId, todoId, username))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("반복 할 일 조회 성공 시 RecurringTaskResponse를 반환한다.")
+    @Test
+    void get_recurring_task_success() {
+        // given
+        Long recurringTaskId = 1L;
+        Long todoId = 1L;
+        String username = "username";
+        RecurringTask recurringTask = mock(RecurringTask.class);
+        var todo = mock(Todo.class);
+        when(todoService.getTodoByIdAndUsername(todoId, username)).thenReturn(todo);
+        when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.of(recurringTask));
+
+        // when
+        RecurringTaskResponse recurringTaskResponse = recurringTaskService.getRecurringTask(
+                recurringTaskId, todoId, username);
+
+        // then
+        assertThat(recurringTaskResponse).isNotNull();
+    }
+
+    @DisplayName("반복 할 일 조회 시 반복 할 일이 존재하지 않으면 예외가 발생한다.")
+    @Test
+    void get_recurring_task_fail() {
+        // given
+        Long recurringTaskId = 1L;
+        Long todoId = 1L;
+        String username = "username";
+        var todo = mock(Todo.class);
+        when(todoService.getTodoByIdAndUsername(todoId, username)).thenReturn(todo);
+        when(recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> recurringTaskService.getRecurringTask(recurringTaskId, todoId, username))
                 .isInstanceOf(BusinessException.class);
     }
 }

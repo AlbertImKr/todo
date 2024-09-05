@@ -1,13 +1,13 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.AccountSteps.getOtherAccessToken;
-import static me.albert.todo.controller.TodoSteps.할일_삭제_요청;
-import static me.albert.todo.controller.TodoSteps.할일_상태_변경_요청;
-import static me.albert.todo.controller.TodoSteps.할일_생성_요청;
-import static me.albert.todo.controller.TodoSteps.할일_수정_요청;
-import static me.albert.todo.controller.TodoSteps.할일_이이디_생성_요청;
-import static me.albert.todo.controller.TodoSteps.할일_조회_요청;
+import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.steps.TodoSteps.할일_삭제_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_상태_변경_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_수정_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;

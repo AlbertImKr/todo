@@ -1,4 +1,4 @@
-package me.albert.todo.controller;
+package me.albert.todo.controller.steps;
 
 import static io.restassured.RestAssured.given;
 
@@ -81,6 +81,26 @@ public class RecurringTaskSteps {
                 .auth().oauth2(accessToken)
                 .when()
                 .delete("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 반복 작업 조회 요청
+     *
+     * @param todoId      할일 아이디
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 반복_작업_조회_요청(
+            long recurringTaskId,
+            long todoId,
+            String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
                 .then().log().all()
                 .extract();
     }

@@ -8,6 +8,7 @@ import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.RecurringTaskRepository;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.RecurringTaskResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,5 +49,14 @@ public class RecurringTaskServiceImpl implements RecurringTaskService {
         RecurringTask recurringTask = recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)
                 .orElseThrow(() -> new BusinessException(RECURRING_TASK_NOT_FOUND, HttpStatus.NOT_FOUND));
         recurringTaskRepository.delete(recurringTask);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public RecurringTaskResponse getRecurringTask(Long recurringTaskId, Long todoId, String username) {
+        Todo todo = todoService.getTodoByIdAndUsername(todoId, username);
+        RecurringTask recurringTask = recurringTaskRepository.findByIdAndTask(recurringTaskId, todo)
+                .orElseThrow(() -> new BusinessException(RECURRING_TASK_NOT_FOUND, HttpStatus.NOT_FOUND));
+        return RecurringTaskResponse.from(recurringTask);
     }
 }

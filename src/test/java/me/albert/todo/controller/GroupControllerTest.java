@@ -1,10 +1,10 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.AccountSteps.getOtherAccessToken;
-import static me.albert.todo.controller.GroupSteps.그룹_목록_조회_요청;
-import static me.albert.todo.controller.GroupSteps.그룹_생성_요청;
-import static me.albert.todo.controller.GroupSteps.그룹_수정_요청;
+import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.getOtherAccessToken;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;

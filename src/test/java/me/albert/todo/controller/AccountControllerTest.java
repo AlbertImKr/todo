@@ -1,7 +1,7 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.AccountSteps.로그인_요청;
-import static me.albert.todo.controller.AccountSteps.화원_가입_요청;
+import static me.albert.todo.controller.steps.AccountSteps.로그인_요청;
+import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;

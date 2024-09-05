@@ -1,4 +1,4 @@
-package me.albert.todo.controller;
+package me.albert.todo.handler;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 

@@ -1,7 +1,7 @@
 package me.albert.todo.controller;
 
-import static me.albert.todo.controller.AccountSteps.getAccessToken;
-import static me.albert.todo.controller.TagSteps.태그_생성_요청;
+import static me.albert.todo.controller.steps.AccountSteps.getAccessToken;
+import static me.albert.todo.controller.steps.TagSteps.태그_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
