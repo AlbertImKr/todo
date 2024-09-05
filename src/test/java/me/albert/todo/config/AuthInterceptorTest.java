@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("AuthInterceptor 테스트")
 public class AuthInterceptorTest {
 
     private JwtTokenProvider jwtTokenProvider;

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 
+@DisplayName("CurrentUsernameArgumentResolver 테스트")
 public class CurrentUsernameArgumentResolverTest {
 
     private CurrentUsernameArgumentResolver resolver;
