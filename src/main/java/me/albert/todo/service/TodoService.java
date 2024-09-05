@@ -1,5 +1,6 @@
 package me.albert.todo.service;
 
+import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
@@ -44,4 +45,14 @@ public interface TodoService {
      * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
      */
     TodoResponse get(Long id, String username);
+
+    /**
+     * 할 일의 상태를 수정합니다.
+     *
+     * @param id       할 일 ID
+     * @param status   변경할 상태
+     * @param username 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     */
+    void updateStatus(Long id, TodoStatus status, String username);
 }

@@ -43,4 +43,21 @@ class TodoTest {
                 () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
         );
     }
+
+    @DisplayName("할일 수정 시 상태가 변경되면 상태 변경일이 업데이트된다.")
+    @Test
+    void update_todo_status() {
+        // given
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+
+        // when
+        todo.updateStatus(status, updatedAt);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(todo.getStatus()).isEqualTo(status),
+                () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
+        );
+    }
 }
