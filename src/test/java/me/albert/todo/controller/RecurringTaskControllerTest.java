@@ -6,6 +6,7 @@ import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_�
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_생성_요청;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_수정_요청;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_아이디;
+import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_조회_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,6 +69,51 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(204);
+    }
+
+    @DisplayName("반복 작업 조회 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void get_recurring_tasks() {
+        // given
+        var recurringTaskId = 반복_작업_아이디(todoId, accessToken);
+
+        // when
+        var response = 반복_작업_조회_요청(recurringTaskId, todoId, accessToken);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("반복 작업 조회 실패 테스트")
+    @Nested
+    class GetRecurringTaskFailTest {
+
+        @DisplayName("반복 작업이 없으면 404 상태 코드를 반환한다.")
+        @Test
+        void get_recurring_task_fail() {
+            // given
+            var recurringTaskId = 0L;
+
+            // when
+            var response = 반복_작업_조회_요청(recurringTaskId, todoId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("반복 작업이 다른 사용자의 것이면 404 상태 코드를 반환한다.")
+        @Test
+        void get_recurring_task_with_different_user() {
+            // given
+            var recurringTaskId = 반복_작업_아이디(todoId, accessToken);
+            var otherAccessToken = getOtherAccessToken();
+
+            // when
+            var response = 반복_작업_조회_요청(recurringTaskId, todoId, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
     }
 
     @DisplayName("반복 작업 수정 실패 테스트")

@@ -6,8 +6,10 @@ import me.albert.todo.controller.dto.request.RecurringTaskCreateRequest;
 import me.albert.todo.controller.dto.request.RecurringTaskUpdateRequest;
 import me.albert.todo.service.RecurringTaskService;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.RecurringTaskResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,5 +51,14 @@ public class RecurringTaskController {
             @CurrentUsername String username
     ) {
         recurringTaskService.deleteRecurringTask(recurringTaskId, todoId, username);
+    }
+
+    @GetMapping("/todos/{todoId}/recurring-tasks/{recurringTaskId}")
+    public RecurringTaskResponse getRecurringTask(
+            @PathVariable Long todoId,
+            @PathVariable Long recurringTaskId,
+            @CurrentUsername String username
+    ) {
+        return recurringTaskService.getRecurringTask(recurringTaskId, todoId, username);
     }
 }
