@@ -4,8 +4,10 @@ import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccoun
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_후_아이디_가져온다;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -111,6 +113,89 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(assignResponse.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹에 할 일을 할당 해제 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void unassign_todos() {
+        // given
+        var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
+
+        var firstTodoId = 할일_이이디_생성_요청(accessToken);
+        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+        그룹_할일_할당_요청(groupId, todoIds, accessToken);
+
+        var unassignTodoIds = new HashMap<>();
+        unassignTodoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+
+        // when
+        var unassignResponse = 그룹_할일_할당_해제_요청(groupId, unassignTodoIds, accessToken);
+
+        // then
+        assertThat(unassignResponse.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 할일 할당 해제 실패")
+    @Nested
+    class UnassignTodoFail {
+
+        long groupId;
+
+        @BeforeEach
+        void create_group() {
+            groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
+        }
+
+        @DisplayName("할 일 ID가 없으면 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_without_todo_id() {
+            // given
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", List.of());
+
+            // when
+            var response = 그룹_할일_할당_해제_요청(groupId, todoIds, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("할 일 ID가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_with_null_todo_id() {
+            // given
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", null);
+
+            // when
+            var response = 그룹_할일_할당_해제_요청(groupId, todoIds, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("그룹 소유주가 아닌 사용자가 할 일을 할당 해제하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_with_other_user() {
+            // given
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
+            var firstTodoId = 할일_이이디_생성_요청(accessToken);
+            var secondTodoId = 할일_이이디_생성_요청(accessToken);
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+            그룹_할일_할당_요청(groupId, todoIds, accessToken);
+
+            var unassignTodoIds = new HashMap<>();
+            unassignTodoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+
+            // when
+            var response = 그룹_할일_할당_해제_요청(groupId, unassignTodoIds, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
     }
 
     @Nested

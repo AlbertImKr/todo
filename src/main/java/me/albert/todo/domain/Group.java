@@ -75,4 +75,11 @@ public class Group {
     public boolean contains(Todo todo) {
         return todos.contains(todo);
     }
+
+    public void unassignTodos(Account account, List<Todo> todos) {
+        if (!isOwner(account)) {
+            throw new BusinessException("할 일을 해제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+        todos.forEach(this.todos::remove);
+    }
 }

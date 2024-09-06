@@ -59,4 +59,14 @@ public class GroupServiceImpl implements GroupService {
         List<Todo> todos = todoService.findAllByIdInAndOwner(todoIds, username);
         group.assignTodos(account, todos);
     }
+
+    @Transactional
+    @Override
+    public void unassignTodos(Long groupId, List<Long> todoIds, String username) {
+        Account account = accountService.findByUsername(username);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
+        List<Todo> todos = todoService.findAllByIdInAndOwner(todoIds, username);
+        group.unassignTodos(account, todos);
+    }
 }

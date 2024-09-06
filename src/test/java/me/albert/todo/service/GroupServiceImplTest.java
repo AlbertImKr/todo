@@ -126,4 +126,37 @@ class GroupServiceImplTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(GroupServiceImpl.GROUP_NOT_FOUND);
     }
+
+    @DisplayName("그룹에서 할 일을 해제하면 예외가 발생하지 않아야 한다.")
+    @Test
+    void unassign_todos_if_success() {
+        // given
+        Long groupId = 1L;
+        var todoIds = List.of(1L, 2L);
+        String username = "test";
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        var mockGroup = mock(Group.class);
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(mockGroup));
+        var mockTodo = mock(Todo.class);
+        when(todoService.findAllByIdInAndOwner(todoIds, username)).thenReturn(List.of(mockTodo));
+
+        // when, then
+        assertThatCode(() -> groupService.unassignTodos(groupId, todoIds, username)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("그룹에서 할 일을 해제할 때 그룹이 존재하지 않으면 예외가 발생해야 한다.")
+    @Test
+    void unassign_todos_if_group_not_found() {
+        // given
+        Long groupId = 1L;
+        var todoIds = List.of(1L, 2L);
+        String username = "test";
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        when(groupRepository.findById(groupId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> groupService.unassignTodos(groupId, todoIds, username))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(GroupServiceImpl.GROUP_NOT_FOUND);
+    }
 }
