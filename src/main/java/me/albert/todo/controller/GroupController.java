@@ -5,12 +5,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
+import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,5 +54,14 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.assignTodos(id, request.todoIds(), username);
+    }
+
+    @DeleteMapping("/groups/{id}/todos")
+    public void unassignTodo(
+            @PathVariable Long id,
+            @Valid @RequestBody UnassignTodoToGroupRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.unassignTodos(id, request.todoIds(), username);
     }
 }

@@ -49,4 +49,24 @@ public class GroupSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 그룹_할일_할당_해제_요청(
+            Long id, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/" + id + "/todos")
+                .then().log().all()
+                .extract();
+    }
+
+    public static long 그룹_생성_요청_후_아이디_가져온다(String accessToken) {
+        var body = new HashMap<>();
+        body.put("name", "그룹 이름");
+        body.put("description", "그룹 설명");
+        return 그룹_생성_요청(body, accessToken).jsonPath().getLong("id");
+    }
 }

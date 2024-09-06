@@ -101,4 +101,30 @@ class GroupTest {
         // then
         assertThat(group.contains(todo)).isTrue();
     }
+
+    @DisplayName("할 일을 해제할 권한이 없으면 예외가 발생한다")
+    @Test
+    void unassign_todos_if_not_group_owner() {
+        // given
+        var todo = new Todo();
+        var otherAccount = new Account();
+
+        // when, then
+        assertThatThrownBy(() -> group.unassignTodos(otherAccount, List.of(todo)))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("할 일을 해제할 권한이 있으면 할 일이 해제된다")
+    @Test
+    void unassign_todos_if_group_owner() {
+        // given
+        var todo = new Todo();
+        group.assignTodos(account, List.of(todo));
+
+        // when
+        group.unassignTodos(account, List.of(todo));
+
+        // then
+        assertThat(group.contains(todo)).isFalse();
+    }
 }
