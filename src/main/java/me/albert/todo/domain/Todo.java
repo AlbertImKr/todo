@@ -95,6 +95,10 @@ public class Todo {
         this.assignees.add(assignee);
     }
 
+    public void unassignUser(Account assignee) {
+        this.assignees.remove(assignee);
+    }
+
     public boolean containsAssignee(Account assignee) {
         return this.assignees.contains(assignee);
     }

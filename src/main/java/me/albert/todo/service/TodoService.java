@@ -77,4 +77,13 @@ public interface TodoService {
      */
     void assignUser(Long todoId, String username, String currentUsername);
 
+    /**
+     * 할 일에 사용자를 해제합니다.
+     *
+     * @param todoId          할 일 ID
+     * @param username        사용자 이름
+     * @param currentUsername 현재 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     */
+    void unassignUser(Long todoId, String username, String currentUsername);
 }

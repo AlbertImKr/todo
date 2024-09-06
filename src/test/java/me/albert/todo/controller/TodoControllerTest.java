@@ -5,6 +5,7 @@ import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUN
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_삭제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_상태_변경_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
@@ -157,6 +158,110 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("할 일에 사용자 해제 성공 시 200 OK 반환")
+    @Test
+    void unassign_user_to_todo_if_success() {
+        // given
+        var todoId = 할일_이이디_생성_요청(accessToken);
+        var assignUserBody = new HashMap<>();
+        assignUserBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
+        할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
+
+        // when
+        var target = 할일_사용자_할당_해제_요청(todoId, assignUserBody, accessToken);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @Nested
+    @DisplayName("할 일에 사용자 해제 실패")
+    class UnassignUserToTodoFail {
+
+        long todoId;
+
+        @BeforeEach
+        void setTodo() {
+            todoId = 할일_이이디_생성_요청(accessToken);
+        }
+
+        @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void todo_not_found() {
+            // when
+            var notExistTodoId = 100L;
+            var unassignUserBody = new HashMap<>();
+            unassignUserBody.put("username", "newUser");
+            var target = 할일_사용자_할당_해제_요청(notExistTodoId, unassignUserBody, accessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+            );
+        }
+
+        @DisplayName("다른 사용자의 할 일에 사용자를 해제하려고 하면 할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void unassign_user_to_other_user_todo() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+            var unassignUserBody = new HashMap<>();
+            unassignUserBody.put("username", "newUser");
+
+            // when
+            var target = 할일_사용자_할당_해제_요청(todoId, unassignUserBody, otherUserAccessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+            );
+        }
+
+        @DisplayName("사용자 이름이 없으면 400 Bad Request 반환")
+        @Test
+        void username_is_empty() {
+            // given
+            var unassignUserBody = new HashMap<>();
+            unassignUserBody.put("username", "");
+
+            // when
+            var target = 할일_사용자_할당_해제_요청(todoId, unassignUserBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("사용자 이름에 영문과 숫자 이외의 문자가 있으면 400 Bad Request 반환")
+        @Test
+        void username_has_special_character() {
+            // given
+            var unassignUserBody = new HashMap<>();
+            unassignUserBody.put("username", "newUser!");
+
+            // when
+            var target = 할일_사용자_할당_해제_요청(todoId, unassignUserBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("사용자 이름이 존재하지 않으면 404 Bad Request 반환")
+        @Test
+        void username_not_exist() {
+            // given
+            var unassignUserBody = new HashMap<>();
+            unassignUserBody.put("username", "notExistUser");
+
+            // when
+            var target = 할일_사용자_할당_해제_요청(todoId, unassignUserBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(404);
+        }
     }
 
     @Nested

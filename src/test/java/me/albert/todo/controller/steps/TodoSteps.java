@@ -85,4 +85,17 @@ public class TodoSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 할일_사용자_할당_해제_요청(
+            Long id, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/todos/" + id + "/users")
+                .then().log().all()
+                .extract();
+    }
 }

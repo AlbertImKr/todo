@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignUserRequest;
+import me.albert.todo.controller.dto.request.UnassignUserRequest;
 import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoStatusUpdateRequest;
@@ -63,5 +64,14 @@ public class TodoController {
             @CurrentUsername String currentUsername
     ) {
         todoService.assignUser(id, request.username(), currentUsername);
+    }
+
+    @DeleteMapping("/todos/{id}/users")
+    public void unassignUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UnassignUserRequest request,
+            @CurrentUsername String currentUsername
+    ) {
+        todoService.unassignUser(id, request.username(), currentUsername);
     }
 }
