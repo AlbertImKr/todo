@@ -103,4 +103,14 @@ public class TodoServiceImpl implements TodoService {
         Account assignee = accountService.findByUsername(username);
         todo.assignUser(assignee);
     }
+
+    @Transactional
+    @Override
+    public void unassignUser(Long todoId, String username, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findByIdAndOwner(todoId, owner)
+                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Account assignee = accountService.findByUsername(username);
+        todo.unassignUser(assignee);
+    }
 }

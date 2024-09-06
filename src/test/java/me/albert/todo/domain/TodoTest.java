@@ -113,4 +113,18 @@ class TodoTest {
         // then
         assertThat(todo1).isEqualTo(todo2);
     }
+
+    @DisplayName("할일에서 사용자를 해제한다.")
+    @Test
+    void unassign_user() {
+        // given
+        var assignee = new Account();
+        todo.assignUser(assignee);
+
+        // when
+        todo.unassignUser(assignee);
+
+        // then
+        assertThat(todo.getAssignees()).isEmpty();
+    }
 }
