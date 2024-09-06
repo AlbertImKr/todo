@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Todo;
@@ -275,5 +276,28 @@ class TodoServiceImplTest {
         assertThatThrownBy(() -> todoService.unassignUser(1L, "username", "currentUsername"))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+    }
+
+    @DisplayName("할 일 아이디 목록으로 사용자가 소유한 할 일 목록을 조회한다.")
+    @Test
+    void find_all_by_ids_and_owner() {
+        // given
+        var todo1 = new Todo(
+                "title1", "description1", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING
+        );
+        var todo2 = new Todo(
+                "title2", "description2", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING
+        );
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findAllByIdInAndOwner(List.of(1L, 2L), account)).thenReturn(List.of(todo1, todo2));
+
+        // when
+        var response = todoService.findAllByIdInAndOwner(List.of(1L, 2L), "username");
+
+        // then
+        assertThat(response).containsExactly(todo1, todo2);
     }
 }

@@ -1,5 +1,6 @@
 package me.albert.todo.service;
 
+import java.util.List;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
@@ -86,4 +87,13 @@ public interface TodoService {
      * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
      */
     void unassignUser(Long todoId, String username, String currentUsername);
+
+    /**
+     * ID 목록으로 할 일을 조회합니다.
+     *
+     * @param todoIds  할 일 ID 목록
+     * @param username 사용자 이름
+     * @return 할 일 목록
+     */
+    List<Todo> findAllByIdInAndOwner(List<Long> todoIds, String username);
 }

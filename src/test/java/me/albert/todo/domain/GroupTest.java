@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import me.albert.todo.exception.BusinessException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -75,5 +76,29 @@ class GroupTest {
         // then
         assertThat(group.getName()).isEqualTo(name);
         assertThat(group.getDescription()).isEqualTo(description);
+    }
+
+    @DisplayName("할 일을 할당할 권한이 없으면 예외가 발생한다")
+    @Test
+    void assign_todos_if_not_group_owner() {
+        // given
+        var todo = new Todo();
+
+        // when, then
+        assertThatThrownBy(() -> group.assignTodos(mock(Account.class), List.of(todo)))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("할 일을 할당할 권한이 있으면 할 일이 할당된다")
+    @Test
+    void assign_todos_if_group_owner() {
+        // given
+        var todo = new Todo();
+
+        // when
+        group.assignTodos(account, List.of(todo));
+
+        // then
+        assertThat(group.contains(todo)).isTrue();
     }
 }

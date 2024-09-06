@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.service.GroupService;
 import me.albert.todo.service.dto.response.GroupResponse;
@@ -42,5 +43,14 @@ public class GroupController {
     @GetMapping("/groups")
     public List<GroupResponse> list(@CurrentUsername String username, @PageableDefault(size = 20) Pageable pageable) {
         return groupService.list(username, pageable);
+    }
+
+    @PutMapping("/groups/{id}/todos")
+    public void assignTodo(
+            @PathVariable Long id,
+            @Valid @RequestBody AssignTodoToGroupRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.assignTodos(id, request.todoIds(), username);
     }
 }

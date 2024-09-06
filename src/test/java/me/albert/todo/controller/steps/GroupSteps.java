@@ -38,4 +38,15 @@ public class GroupSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 그룹_할일_할당_요청(Long id, HashMap<Object, Object> body, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/" + id + "/todos")
+                .then().log().all()
+                .extract();
+    }
 }
