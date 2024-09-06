@@ -1,0 +1,31 @@
+package me.albert.todo.controller.docs;
+
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.snippet.Attributes.key;
+
+import me.albert.todo.utils.ValidationMessages;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.restdocs.restassured.RestDocumentationFilter;
+
+public class TodoDocument {
+
+    public static @NotNull RestDocumentationFilter createTodoDocumentation() {
+        return document(
+                "todos/create",
+                requestFields(
+                        fieldWithPath("title").description("할 일 제목")
+                                .attributes(key("constraints").value(ValidationMessages.TODO_TITLE_MESSAGE)),
+                        fieldWithPath("description").description("할 일 설명")
+                                .attributes(key("constraints").value(ValidationMessages.TODO_DESCRIPTION_MESSAGE)),
+                        fieldWithPath("dueDate").description("할 일 마감일")
+                                .attributes(key("constraints").value(ValidationMessages.TODO_DUE_DATE_FUTURE))
+                ),
+                responseFields(
+                        fieldWithPath("id").description("할 일 ID")
+                )
+        );
+    }
+}
