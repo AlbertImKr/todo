@@ -69,4 +69,13 @@ public class GroupSteps {
         body.put("description", "그룹 설명");
         return 그룹_생성_요청(body, accessToken).jsonPath().getLong("id");
     }
+
+    public static ExtractableResponse<Response> 그룹_할일_목록_조회_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/" + id + "/todos")
+                .then().log().all()
+                .extract();
+    }
 }
