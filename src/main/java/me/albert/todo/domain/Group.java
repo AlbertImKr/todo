@@ -34,6 +34,7 @@ public class Group {
     private LocalDateTime createdAt;
     @Getter
     private LocalDateTime updatedAt;
+    @Getter
     @ManyToMany
     @JoinTable(name = "group_todo",
             joinColumns = @JoinColumn(name = "group_id"),

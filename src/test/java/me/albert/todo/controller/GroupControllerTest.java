@@ -6,6 +6,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_�
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_후_아이디_가져온다;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
@@ -135,6 +136,52 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(unassignResponse.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 할일 목록 조회 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void listGroupTodos() {
+        // given
+        var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
+
+        var firstTodoId = 할일_이이디_생성_요청(accessToken);
+        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+        그룹_할일_할당_요청(groupId, todoIds, accessToken);
+
+        // when
+        var response = 그룹_할일_목록_조회_요청(groupId, accessToken);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(response.jsonPath().getList("id").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("title").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("content").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("createdAt").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("updatedAt").size()).isEqualTo(2)
+        );
+    }
+
+    @DisplayName("그룹에 포함된 할 일을 다시 할당해도 할 일이 중복되지 않는다.")
+    @Test
+    void assign_todo_to_group_without_duplicate() {
+        // given
+        var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
+
+        var firstTodoId = 할일_이이디_생성_요청(accessToken);
+        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+        그룹_할일_할당_요청(groupId, todoIds, accessToken);
+        그룹_할일_할당_요청(groupId, todoIds, accessToken);
+
+        // when
+        var todos = 그룹_할일_목록_조회_요청(groupId, accessToken).jsonPath().getList("id");
+
+        // then
+        assertThat(todos.size()).isEqualTo(2);
     }
 
     @DisplayName("그룹 할일 할당 해제 실패")

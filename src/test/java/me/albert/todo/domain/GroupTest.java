@@ -127,4 +127,20 @@ class GroupTest {
         // then
         assertThat(group.contains(todo)).isFalse();
     }
+
+    @DisplayName("할 일 목록을 데이터를 조회한다")
+    @Test
+    void get_todo_list() {
+        // given
+        var now = LocalDateTime.now();
+        var todo = new Todo(
+                "todo", "description", now, account, now, now, TodoStatus.PENDING);
+        group.assignTodos(account, List.of(todo));
+
+        // when
+        var todoList = group.getTodos();
+
+        // then
+        assertThat(todoList).hasSize(1);
+    }
 }

@@ -9,6 +9,7 @@ import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.TodoResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -63,5 +64,10 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.unassignTodos(id, request.todoIds(), username);
+    }
+
+    @GetMapping("/groups/{id}/todos")
+    public List<TodoResponse> listTodos(@PathVariable Long id, @CurrentUsername String username) {
+        return groupService.listTodos(id, username);
     }
 }

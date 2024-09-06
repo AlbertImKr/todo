@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Group;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.GroupRepository;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.TodoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,5 +71,15 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
         List<Todo> todos = todoService.findAllByIdInAndOwner(todoIds, username);
         group.unassignTodos(account, todos);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<TodoResponse> listTodos(Long id, String username) {
+        Group group = groupRepository.findByIdAndOwnerUsername(id, username)
+                .orElseThrow(() -> new BusinessException(GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        return group.getTodos().stream()
+                .map(TodoResponse::from)
+                .toList();
     }
 }
