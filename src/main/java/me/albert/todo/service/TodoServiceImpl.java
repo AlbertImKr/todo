@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Todo;
@@ -112,5 +113,12 @@ public class TodoServiceImpl implements TodoService {
                 .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         Account assignee = accountService.findByUsername(username);
         todo.unassignUser(assignee);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Todo> findAllByIdInAndOwner(List<Long> todoIds, String username) {
+        Account owner = accountService.findByUsername(username);
+        return todoRepository.findAllByIdInAndOwner(todoIds, owner);
     }
 }

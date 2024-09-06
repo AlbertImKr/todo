@@ -1,5 +1,6 @@
 package me.albert.todo.repository;
 
+import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Todo;
@@ -10,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     Optional<Todo> findByIdAndOwner(Long id, Account owner);
+
+    List<Todo> findAllByIdInAndOwner(List<Long> todoIds, Account owner);
 }

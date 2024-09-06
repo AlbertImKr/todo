@@ -37,4 +37,14 @@ public interface GroupService {
      * @param pageable 페이지 정보
      */
     List<GroupResponse> list(String username, Pageable pageable);
+
+    /**
+     * 그룹에 할일을 할당합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoIds  할일 ID 목록
+     * @param username 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
+     */
+    void assignTodos(Long groupId, List<Long> todoIds, String username);
 }
