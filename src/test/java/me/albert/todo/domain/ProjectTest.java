@@ -46,4 +46,28 @@ class ProjectTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(ErrorMessages.PROJECT_UPDATE_NOT_ALLOWED);
     }
+
+    @DisplayName("프로젝트 소유자이면 true를 반환한다")
+    @Test
+    void is_owner() {
+        // when
+        var result = project.isOwner(account);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("프로젝트 소유자가 아니면 false를 반환한다")
+    @Test
+    void is_not_owner() {
+        // given
+        var otherAccount = new Account(2L);
+
+        // when
+        var result = project.isOwner(otherAccount);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
 }

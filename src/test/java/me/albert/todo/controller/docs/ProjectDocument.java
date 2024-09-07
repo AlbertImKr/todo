@@ -34,4 +34,10 @@ public class ProjectDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter deleteProjectDocumentation() {
+        return document(
+                "projects/delete"
+        );
+    }
 }

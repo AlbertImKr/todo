@@ -102,4 +102,38 @@ public class ProjectSteps {
                 .then().log().all()
                 .extract();
     }
+
+
+    /**
+     * 프로젝트 삭제 요청
+     *
+     * @param id          프로젝트 ID
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 프로젝트_삭제_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/projects/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 프로젝트 삭제 요청
+     *
+     * @param id          프로젝트 ID
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 프로젝트_삭제_요청(Long id, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/projects/" + id)
+                .then().log().all()
+                .extract();
+    }
 }

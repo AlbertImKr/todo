@@ -7,6 +7,7 @@ import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
 import me.albert.todo.service.ProjectService;
 import me.albert.todo.service.dto.response.IdResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -49,5 +50,20 @@ public class ProjectController {
             @CurrentUsername String username
     ) {
         projectService.updateProject(projectId, request.name(), username);
+    }
+
+    /**
+     * 프로젝트 삭제 API
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  현재 사용자의 이름
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/projects/{projectId}")
+    public void deleteProject(
+            @PathVariable Long projectId,
+            @CurrentUsername String username
+    ) {
+        projectService.deleteProject(projectId, username);
     }
 }

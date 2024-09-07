@@ -1,9 +1,11 @@
 package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.ProjectDocument.createProjectDocumentation;
+import static me.albert.todo.controller.docs.ProjectDocument.deleteProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.updateProjectDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
+import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_삭제_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_수정_요청;
@@ -64,6 +66,22 @@ class ProjectControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(updateResponse.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("프로젝트를 삭제한다")
+    @Test
+    void delete_project() {
+        // docs
+        spec.filter(deleteProjectDocumentation());
+
+        // given
+        var projectId = 프로젝트_생성_및_ID_반환(accessToken);
+
+        // when
+        var deleteResponse = 프로젝트_삭제_요청(projectId, accessToken, spec);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(204);
     }
 
     @DisplayName("프로젝트 생성 실패 테스트")
@@ -180,6 +198,44 @@ class ProjectControllerTest extends TodoAcceptanceTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(403);
+        }
+    }
+
+    @DisplayName("프로젝트 삭제 실패 테스트")
+    @Nested
+    class DeleteProjectFail {
+
+        long projectId;
+
+        @BeforeEach
+        void setUp() {
+            projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        }
+
+        @DisplayName("다른 사용자의 프로젝트를 삭제하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void delete_other_user_project() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+
+            // when
+            var response = 프로젝트_삭제_요청(projectId, otherUserAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+
+        @DisplayName("존재하지 않는 프로젝트를 삭제하려고 하면 404 상태 코드를 반환한다.")
+        @Test
+        void delete_not_exist_project() {
+            // given
+            var notExistProjectId = 100L;
+
+            // when
+            var response = 프로젝트_삭제_요청(notExistProjectId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
         }
     }
 }

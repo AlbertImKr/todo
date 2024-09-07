@@ -34,4 +34,16 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
         project.update(name, account);
     }
+
+    @Transactional
+    @Override
+    public void deleteProject(Long projectId, String username) {
+        var account = accountService.findByUsername(username);
+        var project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!project.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.PROJECT_DELETE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        projectRepository.delete(project);
+    }
 }

@@ -101,4 +101,52 @@ class ProjectServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
     }
+
+    @DisplayName("프로젝트를 삭제한다")
+    @Test
+    void delete_project() {
+        // given
+        var projectId = 1L;
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", account);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+
+        // when
+        projectService.deleteProject(projectId, username);
+    }
+
+    @DisplayName("프로젝트를 삭제할 때 권한이 없으면 예외가 발생한다")
+    @Test
+    void delete_project_without_permission() {
+        // given
+        var projectId = 1L;
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", new Account(2L));
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+
+        // when & then
+        assertThatThrownBy(() -> projectService.deleteProject(projectId, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_DELETE_NOT_ALLOWED);
+    }
+
+    @DisplayName("프로젝트를 삭제할 때 프로젝트가 없으면 예외가 발생한다")
+    @Test
+    void delete_project_without_project() {
+        // given
+        var projectId = 1L;
+        var username = "user";
+        var account = new Account(1L);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> projectService.deleteProject(projectId, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
+    }
 }

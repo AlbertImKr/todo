@@ -22,4 +22,14 @@ public interface ProjectService {
      * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
      */
     void updateProject(Long projectId, String name, String username);
+
+    /**
+     * 프로젝트를 삭제합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 삭제할 수 없는 경우
+     */
+    void deleteProject(Long projectId, String username);
 }
