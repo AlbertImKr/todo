@@ -1,13 +1,18 @@
 package me.albert.todo.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.ProjectCreateRequest;
 import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
 import me.albert.todo.service.ProjectService;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -65,5 +70,16 @@ public class ProjectController {
             @CurrentUsername String username
     ) {
         projectService.deleteProject(projectId, username);
+    }
+
+    /**
+     * 프로젝트 목록 조회 API
+     *
+     * @param username 현재 사용자의 이름
+     * @return 프로젝트 목록
+     */
+    @GetMapping("/projects")
+    public List<ProjectResponse> getProjects(@CurrentUsername String username, @PageableDefault Pageable pageable) {
+        return projectService.getProjects(username, pageable);
     }
 }

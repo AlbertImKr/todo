@@ -1,6 +1,9 @@
 package me.albert.todo.service;
 
+import java.util.List;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectResponse;
+import org.springframework.data.domain.Pageable;
 
 public interface ProjectService {
 
@@ -32,4 +35,13 @@ public interface ProjectService {
      * @throws me.albert.todo.exception.BusinessException 프로젝트를 삭제할 수 없는 경우
      */
     void deleteProject(Long projectId, String username);
+
+    /**
+     * 사용자의 개인 프로젝트 목록을 조회합니다.
+     *
+     * @param username 사용자 이름
+     * @param pageable 페이지 정보
+     * @return 프로젝트 목록
+     */
+    List<ProjectResponse> getProjects(String username, Pageable pageable);
 }

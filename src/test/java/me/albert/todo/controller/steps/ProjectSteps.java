@@ -136,4 +136,35 @@ public class ProjectSteps {
                 .then().log().all()
                 .extract();
     }
+
+    /**
+     * 프로젝트 목록 조회 요청
+     *
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 프로젝트_목록_조회_요청(String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/projects")
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 프로젝트 목록 조회 요청
+     *
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 프로젝트_목록_조회_요청(String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/projects")
+                .then().log().all()
+                .extract();
+    }
 }

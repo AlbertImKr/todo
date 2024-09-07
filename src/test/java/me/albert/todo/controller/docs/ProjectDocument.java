@@ -40,4 +40,14 @@ public class ProjectDocument {
                 "projects/delete"
         );
     }
+
+    public static @NotNull RestDocumentationFilter listProjectDocumentation() {
+        return document(
+                "projects/list",
+                responseFields(
+                        fieldWithPath("[].id").description("프로젝트 ID"),
+                        fieldWithPath("[].name").description("프로젝트 이름")
+                )
+        );
+    }
 }

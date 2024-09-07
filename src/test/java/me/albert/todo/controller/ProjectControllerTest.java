@@ -2,9 +2,11 @@ package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.ProjectDocument.createProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.deleteProjectDocumentation;
+import static me.albert.todo.controller.docs.ProjectDocument.listProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.updateProjectDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
+import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_목록_조회_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_삭제_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_요청;
@@ -82,6 +84,26 @@ class ProjectControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(204);
+    }
+
+    @DisplayName("프로젝트 목록을 조회한다")
+    @Test
+    void get_projects() {
+        // docs
+        spec.filter(listProjectDocumentation());
+
+        // given
+        프로젝트_생성_및_ID_반환(accessToken);
+        프로젝트_생성_및_ID_반환(accessToken);
+
+        // when
+        var deleteResponse = 프로젝트_목록_조회_요청(accessToken, spec);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(deleteResponse.statusCode()).isEqualTo(200),
+                () -> assertThat(deleteResponse.jsonPath().getList("id").size()).isEqualTo(2)
+        );
     }
 
     @DisplayName("프로젝트 생성 실패 테스트")

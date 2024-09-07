@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Project;
@@ -17,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @DisplayName("프로젝트 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -148,5 +152,40 @@ class ProjectServiceImplTest {
         assertThatThrownBy(() -> projectService.deleteProject(projectId, username))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
+    }
+
+    @DisplayName("사용자의 프로젝트 목록을 조회한다")
+    @Test
+    void get_projects() {
+        // given
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", account);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findByOwnerAndGroupNull(account, Pageable.unpaged()))
+                .thenReturn(new PageImpl<>(List.of(project)));
+
+        // when
+        var target = projectService.getProjects(username, Pageable.unpaged());
+
+        // then
+        assertThat(target).hasSize(1);
+    }
+
+    @DisplayName("사용자의 프로젝트 목록을 조회할 때 프로젝트가 없으면 빈 목록을 반환한다")
+    @Test
+    void get_projects_without_project() {
+        // given
+        var username = "user";
+        var account = new Account(1L);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findByOwnerAndGroupNull(account, Pageable.unpaged()))
+                .thenReturn(Page.empty());
+
+        // when
+        var target = projectService.getProjects(username, Pageable.unpaged());
+
+        // then
+        assertThat(target).isEmpty();
     }
 }

@@ -1,11 +1,14 @@
 package me.albert.todo.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Project;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.ProjectRepository;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectResponse;
 import me.albert.todo.utils.ErrorMessages;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,5 +48,15 @@ public class ProjectServiceImpl implements ProjectService {
             throw new BusinessException(ErrorMessages.PROJECT_DELETE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         projectRepository.delete(project);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ProjectResponse> getProjects(String username, Pageable pageable) {
+        var account = accountService.findByUsername(username);
+        return projectRepository.findByOwnerAndGroupNull(account, pageable)
+                .stream()
+                .map(ProjectResponse::from)
+                .toList();
     }
 }

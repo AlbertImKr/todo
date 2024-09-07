@@ -112,3 +112,17 @@ include::{snippets}/projects/delete/http-request.adoc[]
 ==== 응답
 
 include::{snippets}/projects/delete/http-response.adoc[]
+
+=== 프로젝트 목록 API
+
+==== 요청
+
+include::{snippets}/projects/list/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/projects/list/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/projects/list/response-fields.adoc[]
