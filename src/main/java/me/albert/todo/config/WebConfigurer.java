@@ -19,7 +19,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AuthInterceptor(jwtTokenProvider))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/users", "/users/login");
+                .excludePathPatterns("/users", "/users/login", "/docs/**");
     }
 
     @Override
