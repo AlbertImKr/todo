@@ -1,5 +1,7 @@
 package me.albert.todo.controller.docs;
 
+import static me.albert.todo.TodoAcceptanceTest.prettyPrintRequest;
+import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -17,6 +19,8 @@ public class TodoDocument {
     public static @NotNull RestDocumentationFilter createTodoDocumentation() {
         return document(
                 "todos/create",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 requestFields(
                         fieldWithPath("title").description("할 일 제목")
                                 .attributes(key("constraints").value(ValidationMessages.TODO_TITLE_MESSAGE)),
@@ -34,6 +38,8 @@ public class TodoDocument {
     public static @NotNull RestDocumentationFilter updateTodoDocumentation() {
         return document(
                 "todos/update",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 requestFields(
                         fieldWithPath("title").description("할 일 제목")
                                 .attributes(key("constraints").value(ValidationMessages.TODO_TITLE_MESSAGE)),
@@ -53,7 +59,9 @@ public class TodoDocument {
 
     public static @NotNull RestDocumentationFilter deleteTodoDocumentation() {
         return document(
-                "todos/delete"
+                "todos/delete",
+                prettyPrintRequest(),
+                prettyPrintResponse()
         );
     }
 }

@@ -1,5 +1,7 @@
 package me.albert.todo.controller.docs;
 
+import static me.albert.todo.TodoAcceptanceTest.prettyPrintRequest;
+import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -15,6 +17,8 @@ public class AccountDocument {
     public static @NotNull RestDocumentationFilter registerAccountDocumentation() {
         return document(
                 "account/register",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 requestFields(
                         fieldWithPath("username").description("유저 이름").attributes(
                                 key("constraints").value(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)),
@@ -29,6 +33,8 @@ public class AccountDocument {
     public static @NotNull RestDocumentationFilter loginAccountDocumentation() {
         return document(
                 "account/login",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 requestFields(
                         fieldWithPath("username").description("유저 이름").attributes(
                                 key("constraints").value(ValidationMessages.ACCOUNT_USERNAME_MESSAGE))
