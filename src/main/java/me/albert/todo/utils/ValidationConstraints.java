@@ -11,6 +11,8 @@ public class ValidationConstraints {
     public static final int TODO_TITLE_MAX_LENGTH = 100;
     public static final int TODO_DESCRIPTION_MAX_LENGTH = 1000;
 
+    // pro
+    public static final int PRO_NAME_MAX_LENGTH = 20;
 
     private ValidationConstraints() {
         throw new AssertionError("Cannot instantiate utility class");

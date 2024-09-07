@@ -13,6 +13,11 @@ public class ErrorMessages {
     public static final String TODO_UPDATE_NOT_ALLOWED = "할 일을 수정할 권한이 없습니다.";
     public static final String TODO_DELETE_NOT_ALLOWED = "할 일을 삭제할 권한이 없습니다.";
 
+    // Project
+    public static final String PROJECT_NOT_FOUND = "프로젝트를 찾을 수 없습니다.";
+    public static final String PROJECT_UPDATE_NOT_ALLOWED = "프로젝트를 수정할 권한이 없습니다.";
+    public static final String PROJECT_DELETE_NOT_ALLOWED = "프로젝트를 삭제할 권한이 없습니다.";
+
     private ErrorMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }

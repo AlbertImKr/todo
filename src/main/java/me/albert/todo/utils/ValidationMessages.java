@@ -19,6 +19,10 @@ public class ValidationMessages {
     public static final String TODO_DUE_DATE_FUTURE = "과거 시간은 입력할 수 없습니다.";
     public static final String TODO_STATUS_NOT_NULL = "할 일 상태는 필수 입력값입니다.";
 
+    // Project
+    public static final String PRO_NAME_NOT_NULL = "프로젝트 이름은 필수 입력값입니다.";
+    public static final String PRO_NAME_MESSAGE = "프로젝트 이름은 20자 이하로 입력해야 합니다.";
+
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }
