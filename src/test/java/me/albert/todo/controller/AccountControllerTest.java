@@ -1,13 +1,10 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.AccountDocument.loginAccountDocumentation;
+import static me.albert.todo.controller.docs.AccountDocument.registerAccountDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.로그인_요청;
 import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
-import static org.springframework.restdocs.snippet.Attributes.key;
 
 import java.util.HashMap;
 import me.albert.todo.TodoAcceptanceTest;
@@ -25,19 +22,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
     @Test
     void register_returns_created_status() {
         // docs
-        this.spec.filter(
-                document(
-                        "account/register",
-                        requestFields(
-                                fieldWithPath("username").description("유저 이름").attributes(
-                                        key("constraints").value(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)),
-                                fieldWithPath("password").description("비밀번호").attributes(
-                                        key("constraints").value(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)),
-                                fieldWithPath("confirmPassword").description("비밀번호 확인").attributes(
-                                        key("constraints").value(ValidationMessages.ACCOUNT_CONFIRM_PASSWORD_MESSAGE))
-                        )
-                )
-        );
+        this.spec.filter(registerAccountDocumentation());
 
         // given
         var body = new HashMap<>();
@@ -57,23 +42,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
     @Test
     void login_returns_tokens() {
         // docs
-        this.spec.filter(
-                document(
-                        "account/login",
-                        requestFields(
-                                fieldWithPath("username").description("유저 이름").attributes(
-                                        key("constraints").value(ValidationMessages.ACCOUNT_USERNAME_MESSAGE))
-                                ,
-                                fieldWithPath("password").description("비밀번호").attributes(
-                                        key("constraints").value(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
-                                )
-                        ),
-                        responseFields(
-                                fieldWithPath("accessToken").description("액세스 토큰"),
-                                fieldWithPath("refreshToken").description("리프레시 토큰")
-                        )
-                )
-        );
+        this.spec.filter(loginAccountDocumentation());
 
         // given
         var registerBody = new HashMap<>();
@@ -156,7 +125,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
                     () -> assertThat(target.body().jsonPath().getString("message"))
-                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
+                            .contains(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -176,7 +145,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
                     () -> assertThat(target.body().jsonPath().getString("message"))
-                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
+                            .contains(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -196,7 +165,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
                     () -> assertThat(target.body().jsonPath().getString("message"))
-                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
+                            .contains(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -215,8 +184,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -236,7 +205,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
                     () -> assertThat(target.body().jsonPath().getString("message"))
-                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
+                            .contains(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 

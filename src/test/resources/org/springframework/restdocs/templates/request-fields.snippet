@@ -5,7 +5,7 @@
 {{#fields}}
 |{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
 |{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
-|{{#tableCellContent}}{{optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{#optional}}선택{{/optional}}{{^optional}}필수{{/optional}}{{/tableCellContent}}
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
 |{{#tableCellContent}}{{constraints}}{{/tableCellContent}}
 

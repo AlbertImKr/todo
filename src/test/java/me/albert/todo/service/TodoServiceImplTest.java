@@ -16,6 +16,7 @@ import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.TodoRepository;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
+import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +39,7 @@ class TodoServiceImplTest {
 
     @DisplayName("할 일 생성 성공 시 할 일의 ID를 반환한다.")
     @Test
-    void createTodo() {
+    void create_todo() {
         // given
         var request = new TodoCreateRequest("title", "description", LocalDateTime.now().plusDays(1));
         var todo = mock(Todo.class);
@@ -65,10 +66,11 @@ class TodoServiceImplTest {
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+        var todoId = 1L;
+        when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.of(todo));
 
         // when
-        todoService.update(request, 1L, "username");
+        todoService.update(request, todoId, "username");
     }
 
     @DisplayName("할 일 수정 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
@@ -79,12 +81,13 @@ class TodoServiceImplTest {
                 "title", "description", LocalDateTime.now().plusDays(1), TodoStatus.COMPLETED);
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+        var todoId = 1L;
+        when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> todoService.update(request, 1L, "username"))
+        assertThatThrownBy(() -> todoService.update(request, todoId, "username"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일 삭제 성공 시 예외가 발생하지 않는다.")
@@ -114,7 +117,7 @@ class TodoServiceImplTest {
         // when, then
         assertThatThrownBy(() -> todoService.delete(1L, "username"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일 조회 성공 시 할 일 정보를 반환한다.")
@@ -148,7 +151,7 @@ class TodoServiceImplTest {
         // when, then
         assertThatThrownBy(() -> todoService.get(1L, "username"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일 상태 변경 성공 시 예외가 발생하지 않는다.")
@@ -178,7 +181,7 @@ class TodoServiceImplTest {
         // when, then
         assertThatThrownBy(() -> todoService.updateStatus(1L, TodoStatus.COMPLETED, "username"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일 ID로 조회 성공 시 할 일 정보를 반환한다.")
@@ -213,7 +216,7 @@ class TodoServiceImplTest {
         // when, then
         assertThatThrownBy(() -> todoService.getTodoByIdAndUsername(1L, username))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일에 사용자를 할당 성공 시 예외가 발생하지 않는다.")
@@ -244,7 +247,7 @@ class TodoServiceImplTest {
         // when, then
         assertThatThrownBy(() -> todoService.assignUser(1L, "username", "currentUsername"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일에 사용자를 해제 성공 시 예외가 발생하지 않는다.")
@@ -275,7 +278,7 @@ class TodoServiceImplTest {
         // when, then
         assertThatThrownBy(() -> todoService.unassignUser(1L, "username", "currentUsername"))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(TodoServiceImpl.TODO_NOT_FOUND);
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
     }
 
     @DisplayName("할 일 아이디 목록으로 사용자가 소유한 할 일 목록을 조회한다.")

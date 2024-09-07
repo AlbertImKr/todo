@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Table(name = "account")
 @Entity
@@ -24,6 +25,10 @@ public class Account {
     public Account() {
     }
 
+    public Account(Long id) {
+        this.id = id;
+    }
+
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
@@ -31,5 +36,21 @@ public class Account {
 
     public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Account account)) {
+            return false;
+        }
+        return Objects.equals(id, account.id);
     }
 }

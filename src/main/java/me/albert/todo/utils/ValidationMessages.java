@@ -17,6 +17,7 @@ public class ValidationMessages {
     public static final String TODO_DESCRIPTION_MESSAGE = "할 일 설명은 1000자를 넘을 수 없습니다.";
     public static final String TODO_DUE_DATE_NOT_NULL = "마감일은 필수 입력값입니다.";
     public static final String TODO_DUE_DATE_FUTURE = "과거 시간은 입력할 수 없습니다.";
+    public static final String TODO_STATUS_NOT_NULL = "할 일 상태는 필수 입력값입니다.";
 
     public ValidationMessages() {
     }

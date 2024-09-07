@@ -1,6 +1,7 @@
 package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
@@ -19,13 +20,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import me.albert.todo.TodoAcceptanceTest;
+import me.albert.todo.utils.ValidationMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("할 일 관련 기능")
+@DisplayName("할 일 관련 인수 테스트")
 class TodoControllerTest extends TodoAcceptanceTest {
 
     String accessToken;
@@ -63,6 +65,9 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @DisplayName("할 일 수정 성공 시 200 OK 반환")
     @Test
     void update_todo_if_success() {
+        // docs
+        spec.filter(updateTodoDocumentation());
+
         // given
         var todoId = 할일_이이디_생성_요청(accessToken);
         var dueDate = LocalDateTime.now().plusDays(1).format(
@@ -75,7 +80,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         body.put("status", "IN_PROGRESS");
 
         // when
-        var target = 할일_수정_요청(body, todoId, accessToken);
+        var target = 할일_수정_요청(body, todoId, accessToken, spec);
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
@@ -526,12 +531,17 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("title", "");
             body.put("description", "할 일 설명");
             body.put("dueDate", dueDate);
+            body.put("status", "IN_PROGRESS");
 
             // when
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_TITLE_MESSAGE)
+            );
         }
 
         @DisplayName("할 일 설명이 없으면 400 Bad Request 반환")
@@ -546,12 +556,17 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("title", "할 일 제목");
             body.put("description", "");
             body.put("dueDate", dueDate);
+            body.put("status", "IN_PROGRESS");
 
             // when
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_DESCRIPTION_NOT_NULL)
+            );
         }
 
         @DisplayName("마감일이 현재 시간보다 이전이면 400 Bad Request 반환")
@@ -566,12 +581,17 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("title", "할 일 제목");
             body.put("description", "할 일 설명");
             body.put("dueDate", dueDate);
+            body.put("status", "IN_PROGRESS");
 
             // when
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_DUE_DATE_FUTURE)
+            );
         }
 
         @DisplayName("마감일이 없으면 400 Bad Request 반환")
@@ -582,12 +602,18 @@ class TodoControllerTest extends TodoAcceptanceTest {
             var body = new HashMap<>();
             body.put("title", "할 일 제목");
             body.put("description", "할 일 설명");
+            body.put("dueDate", "");
+            body.put("status", "IN_PROGRESS");
 
             // when
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_DUE_DATE_NOT_NULL)
+            );
         }
 
         @DisplayName("마감일 형식이 잘못되면 400 Bad Request 반환")
@@ -620,12 +646,17 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("title", tooLongTitle);
             body.put("description", "할 일 설명");
             body.put("dueDate", dueDate);
+            body.put("status", "IN_PROGRESS");
 
             // when
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_TITLE_MESSAGE)
+            );
         }
 
         @DisplayName("할 일 설명이 1000자를 초과하면 400 Bad Request 반환")
@@ -646,7 +677,11 @@ class TodoControllerTest extends TodoAcceptanceTest {
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_DESCRIPTION_MESSAGE)
+            );
         }
 
         @DisplayName("할 일 제목과 설명이 모두 유효성 검사를 통과하지 못하면 400 Bad Request 반환")
@@ -663,12 +698,17 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("title", tooLongTitle);
             body.put("description", tooLongDescription);
             body.put("dueDate", dueDate);
+            body.put("status", "IN_PROGRESS");
 
             // when
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_TITLE_MESSAGE)
+            );
         }
 
         @DisplayName("할 일 상태가 없으면 400 Bad Request 반환")
@@ -688,7 +728,11 @@ class TodoControllerTest extends TodoAcceptanceTest {
             var target = 할일_수정_요청(body, todoId, accessToken);
 
             // then
-            assertThat(target.statusCode()).isEqualTo(400);
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(400),
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .contains(ValidationMessages.TODO_STATUS_NOT_NULL)
+            );
         }
 
         @DisplayName("할 일 상태가 잘못되면 400 Bad Request 반환")
