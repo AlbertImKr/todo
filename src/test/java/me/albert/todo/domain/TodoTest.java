@@ -3,6 +3,8 @@ package me.albert.todo.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import me.albert.todo.exception.BusinessException;
+import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,11 +14,13 @@ import org.junit.jupiter.api.Test;
 class TodoTest {
 
     Todo todo;
+    Account account;
 
     @BeforeEach
     void setUp() {
+        account = new Account(1L);
         todo = new Todo(
-                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
                 LocalDateTime.now(), TodoStatus.PENDING
         );
     }
@@ -32,7 +36,7 @@ class TodoTest {
         var updatedAt = LocalDateTime.now();
 
         // when
-        todo.update(title, description, dueDate, updatedAt, status);
+        todo.update(title, description, dueDate, updatedAt, status, account);
 
         // then
         Assertions.assertAll(
@@ -42,6 +46,26 @@ class TodoTest {
                 () -> assertThat(todo.getStatus()).isEqualTo(status),
                 () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
         );
+    }
+
+    @DisplayName("할일 수정 시 권한이 없으면 예외가 발생한다.")
+    @Test
+    void update_todo_without_permission() {
+        // given
+        var title = "updated title";
+        var description = "updated description";
+        var dueDate = LocalDateTime.now();
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var anotherAccount = new Account(2L);
+
+        // when
+        var exception = Assertions.assertThrows(BusinessException.class, () -> {
+            todo.update(title, description, dueDate, updatedAt, status, anotherAccount);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorMessages.TODO_UPDATE_NOT_ALLOWED);
     }
 
     @DisplayName("할일 수정 시 상태가 변경되면 상태 변경일이 업데이트된다.")
@@ -92,8 +116,8 @@ class TodoTest {
     @Test
     void assign_multiple_users() {
         // given
-        var assignee1 = new Account();
-        var assignee2 = new Account();
+        var assignee1 = new Account(1L);
+        var assignee2 = new Account(2L);
 
         // when
         todo.assignUser(assignee1);

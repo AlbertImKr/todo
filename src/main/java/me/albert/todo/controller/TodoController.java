@@ -39,6 +39,13 @@ public class TodoController {
         return todoService.create(request, username);
     }
 
+    /**
+     * 할 일을 수정 API 입니다.
+     *
+     * @param request  수정할 할 일 정보
+     * @param id       수정할 할 일 ID
+     * @param username 사용자 이름
+     */
     @PutMapping("/todos/{id}")
     public void update(
             @Valid @RequestBody TodoUpdateRequest request, @PathVariable Long id, @CurrentUsername String username

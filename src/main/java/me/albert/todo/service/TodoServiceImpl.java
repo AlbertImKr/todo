@@ -12,6 +12,7 @@ import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import me.albert.todo.utils.ErrorMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,18 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TodoServiceImpl implements TodoService {
 
-    public static final String TODO_NOT_FOUND = "할 일을 찾을 수 없습니다.";
-
     private final TodoRepository todoRepository;
     private final AccountService accountService;
 
-    /**
-     * 할 일을 생성합니다.할일의 상태는 PENDING으로 설정됩니다.
-     *
-     * @param request  생성할 할 일 정보
-     * @param username 사용자 이름
-     * @return 생성된 할 일의 ID
-     */
     @Transactional
     @Override
     public IdResponse create(TodoCreateRequest request, String username) {
@@ -55,14 +47,16 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public void update(TodoUpdateRequest request, Long id, String username) {
         Account owner = accountService.findByUsername(username);
-        Todo todo = todoRepository.findByIdAndOwner(id, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Todo todo = todoRepository.findByIdAndGroupNull(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        LocalDateTime updatedAt = LocalDateTime.now();
         todo.update(
                 request.title(),
                 request.description(),
                 request.dueDate(),
-                LocalDateTime.now(),
-                request.status()
+                updatedAt,
+                request.status(),
+                owner
         );
     }
 
@@ -71,7 +65,7 @@ public class TodoServiceImpl implements TodoService {
     public void delete(Long id, String username) {
         Account owner = accountService.findByUsername(username);
         Todo todo = todoRepository.findByIdAndOwner(id, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         todoRepository.delete(todo);
     }
 
@@ -80,7 +74,7 @@ public class TodoServiceImpl implements TodoService {
     public TodoResponse get(Long id, String username) {
         Account owner = accountService.findByUsername(username);
         Todo todo = todoRepository.findByIdAndOwner(id, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         return TodoResponse.from(todo);
     }
 
@@ -89,7 +83,7 @@ public class TodoServiceImpl implements TodoService {
     public void updateStatus(Long id, TodoStatus status, String username) {
         Account owner = accountService.findByUsername(username);
         Todo todo = todoRepository.findByIdAndOwner(id, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         LocalDateTime updatedAt = LocalDateTime.now();
         todo.updateStatus(status, updatedAt);
     }
@@ -99,7 +93,7 @@ public class TodoServiceImpl implements TodoService {
     public Todo getTodoByIdAndUsername(Long todoId, String username) {
         Account owner = accountService.findByUsername(username);
         return todoRepository.findByIdAndOwner(todoId, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -107,7 +101,7 @@ public class TodoServiceImpl implements TodoService {
     public void assignUser(Long todoId, String username, String currentUsername) {
         Account owner = accountService.findByUsername(currentUsername);
         Todo todo = todoRepository.findByIdAndOwner(todoId, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         Account assignee = accountService.findByUsername(username);
         todo.assignUser(assignee);
     }
@@ -117,7 +111,7 @@ public class TodoServiceImpl implements TodoService {
     public void unassignUser(Long todoId, String username, String currentUsername) {
         Account owner = accountService.findByUsername(currentUsername);
         Todo todo = todoRepository.findByIdAndOwner(todoId, owner)
-                .orElseThrow(() -> new BusinessException(TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         Account assignee = accountService.findByUsername(username);
         todo.unassignUser(assignee);
     }

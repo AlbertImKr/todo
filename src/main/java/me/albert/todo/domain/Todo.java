@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import me.albert.todo.exception.BusinessException;
+import me.albert.todo.utils.ErrorMessages;
+import org.springframework.http.HttpStatus;
 
 @Table(name = "todo")
 @Entity
@@ -74,8 +77,12 @@ public class Todo {
             String description,
             LocalDateTime dueDate,
             LocalDateTime updatedAt,
-            TodoStatus status
+            TodoStatus status,
+            Account owner
     ) {
+        if (!this.owner.equals(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;

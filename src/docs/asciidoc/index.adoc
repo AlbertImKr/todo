@@ -43,3 +43,17 @@ include::{snippets}/todos/create/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/todos/create/response-fields.adoc[]
+
+=== 할일 수정 API
+
+==== 요청
+
+include::{snippets}/todos/update/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/todos/update/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/update/http-response.adoc[]
