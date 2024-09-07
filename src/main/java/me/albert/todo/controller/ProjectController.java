@@ -9,6 +9,7 @@ import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
 import me.albert.todo.controller.dto.request.UnAssignTodoToProjectRequest;
 import me.albert.todo.service.ProjectService;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectDetailResponse;
 import me.albert.todo.service.dto.response.ProjectResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -115,5 +116,17 @@ public class ProjectController {
             @CurrentUsername String username
     ) {
         projectService.unassignTodoFromProject(projectId, request.todoIds(), username);
+    }
+
+    /**
+     * 프로젝트 조회 API
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  현재 사용자의 이름
+     * @return 프로젝트 정보
+     */
+    @GetMapping("/projects/{projectId}")
+    public ProjectDetailResponse getProject(@PathVariable Long projectId, @CurrentUsername String username) {
+        return projectService.getProject(projectId, username);
     }
 }

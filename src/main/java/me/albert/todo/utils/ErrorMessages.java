@@ -18,6 +18,8 @@ public class ErrorMessages {
     public static final String PROJECT_UPDATE_NOT_ALLOWED = "프로젝트를 수정할 권한이 없습니다.";
     public static final String PROJECT_DELETE_NOT_ALLOWED = "프로젝트를 삭제할 권한이 없습니다.";
     public static final String PROJECT_ASSIGN_NOT_ALLOWED = "할 일을 프로젝트에 할당할 권한이 없습니다.";
+    public static final String PROJECT_UNASSIGN_NOT_ALLOWED = "할 일을 프로젝트에서 해제할 권한이 없습니다.";
+    public static final String PROJECT_GET_NOT_ALLOWED = "프로젝트 목록을 조회할 권한이 없습니다.";
 
     private ErrorMessages() {
         throw new AssertionError("Cannot instantiate utility class");

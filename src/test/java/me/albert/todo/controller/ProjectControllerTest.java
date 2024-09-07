@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import static me.albert.todo.controller.docs.ProjectDocument.assignTodoToProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.createProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.deleteProjectDocumentation;
+import static me.albert.todo.controller.docs.ProjectDocument.getProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.listProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.unassignTodoFromProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.updateProjectDocumentation;
@@ -13,6 +14,7 @@ import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_삭제_�
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_수정_요청;
+import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_조회_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_할일_할당_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_할일_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
@@ -36,6 +38,30 @@ class ProjectControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUp() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("프로젝트를 조회한다")
+    @Test
+    void get_project() {
+        // docs
+        spec.filter(getProjectDocumentation());
+
+        // given
+        var projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        var todoId1 = 할일_생성_및_ID_반환(accessToken);
+        var todoId2 = 할일_생성_및_ID_반환(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", new Long[]{todoId1, todoId2});
+        프로젝트_할일_할당_요청(projectId, todoIds, accessToken);
+
+        // when
+        var response = 프로젝트_조회_요청(projectId, accessToken, spec);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(response.jsonPath().getLong("id")).isEqualTo(projectId)
+        );
     }
 
     @DisplayName("프로젝트에서 할 일을 해제한다")

@@ -7,6 +7,8 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 
 import jakarta.validation.constraints.NotNull;
 import me.albert.todo.utils.ValidationMessages;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.restassured.RestDocumentationFilter;
 import org.springframework.restdocs.snippet.Attributes;
 
@@ -15,6 +17,8 @@ public class ProjectDocument {
     public static @NotNull RestDocumentationFilter createProjectDocumentation() {
         return document(
                 "projects/create",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
                                 .attributes(
@@ -29,6 +33,8 @@ public class ProjectDocument {
     public static @NotNull RestDocumentationFilter updateProjectDocumentation() {
         return document(
                 "projects/update",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
                                 .attributes(
@@ -39,13 +45,17 @@ public class ProjectDocument {
 
     public static @NotNull RestDocumentationFilter deleteProjectDocumentation() {
         return document(
-                "projects/delete"
+                "projects/delete",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint())
         );
     }
 
     public static @NotNull RestDocumentationFilter listProjectDocumentation() {
         return document(
                 "projects/list",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                 responseFields(
                         fieldWithPath("[].id").description("프로젝트 ID"),
                         fieldWithPath("[].name").description("프로젝트 이름")
@@ -53,9 +63,31 @@ public class ProjectDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter getProjectDocumentation() {
+        return document(
+                "projects/get",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                responseFields(
+                        fieldWithPath("id").description("프로젝트 ID"),
+                        fieldWithPath("name").description("프로젝트 이름"),
+                        fieldWithPath("todos").description("프로젝트 할 일 목록"),
+                        fieldWithPath("todos[].id").description("할 일 ID"),
+                        fieldWithPath("todos[].title").description("할 일 제목"),
+                        fieldWithPath("todos[].description").description("할 일 설명"),
+                        fieldWithPath("todos[].dueDate").description("할 일 마감일"),
+                        fieldWithPath("todos[].status").description("할 일 상태"),
+                        fieldWithPath("todos[].createdAt").description("할 일 생성일"),
+                        fieldWithPath("todos[].updatedAt").description("할 일 수정일")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter assignTodoToProjectDocumentation() {
         return document(
                 "projects/assign-todo",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                 requestFields(
                         fieldWithPath("todoIds").description("할 일 ID 목록")
                                 .attributes(Attributes.key("constraints")
@@ -67,6 +99,8 @@ public class ProjectDocument {
     public static @NotNull RestDocumentationFilter unassignTodoFromProjectDocumentation() {
         return document(
                 "projects/unassign-todo",
+                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                 requestFields(
                         fieldWithPath("todoIds").description("할 일 ID 목록")
                                 .attributes(Attributes.key("constraints")
