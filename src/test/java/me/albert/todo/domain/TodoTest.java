@@ -131,11 +131,22 @@ class TodoTest {
     @Test
     void equals_todo() {
         // given
-        var todo1 = new Todo();
-        var todo2 = new Todo();
+        var todo1 = new Todo(1L);
+        var todo2 = new Todo(1L);
 
         // then
         assertThat(todo1).isEqualTo(todo2);
+    }
+
+    @DisplayName("할일의 ID가 다르면 다른 할일로 판단한다.")
+    @Test
+    void not_equals_todo() {
+        // given
+        var todo1 = new Todo(1L);
+        var todo2 = new Todo(2L);
+
+        // then
+        assertThat(todo1).isNotEqualTo(todo2);
     }
 
     @DisplayName("할일에서 사용자를 해제한다.")
@@ -150,5 +161,34 @@ class TodoTest {
 
         // then
         assertThat(todo.getAssignees()).isEmpty();
+    }
+
+    @DisplayName("할일의 소유자이면 true를 반환한다.")
+    @Test
+    void is_owner() {
+        // given
+        var owner = new Account(1L);
+        todo = new Todo(
+                "title", "description", LocalDateTime.now(), owner, LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING
+        );
+
+        // then
+        assertThat(todo.isOwner(owner)).isTrue();
+    }
+
+    @DisplayName("할일의 소유자가 아니면 false를 반환한다.")
+    @Test
+    void is_not_owner() {
+        // given
+        var owner = new Account(1L);
+        var anotherAccount = new Account(2L);
+        todo = new Todo(
+                "title", "description", LocalDateTime.now(), owner, LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING
+        );
+
+        // then
+        assertThat(todo.isOwner(anotherAccount)).isFalse();
     }
 }

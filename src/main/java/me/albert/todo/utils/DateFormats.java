@@ -6,5 +6,6 @@ public class DateFormats {
     public static final String TIME_ZONE = "Asia/Seoul";
 
     private DateFormats() {
+        throw new AssertionError("Cannot instantiate utility class");
     }
 }

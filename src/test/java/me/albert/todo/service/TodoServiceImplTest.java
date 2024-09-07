@@ -94,30 +94,50 @@ class TodoServiceImplTest {
     @Test
     void delete_todo_if_success() {
         // given
+        var todoId = 1L;
+        var account = new Account(1L);
         var todo = new Todo(
-                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
                 LocalDateTime.now(), null
         );
-        var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+        when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.of(todo));
 
         // when
-        todoService.delete(1L, "username");
+        todoService.delete(todoId, "username");
     }
 
     @DisplayName("할 일 삭제 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
     @Test
     void delete_todo_if_not_found() {
         // given
-        var account = new Account();
-        when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+        var todoId = 1L;
+        when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> todoService.delete(1L, "username"))
+        assertThatThrownBy(() -> todoService.delete(todoId, "username"))
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
+    @DisplayName("할 일 삭제 시 권한이 없는 경우 예외가 발생한다.")
+    @Test
+    void delete_todo_if_not_allowed() {
+        // given
+        var todoId = 1L;
+        var account = new Account(1L);
+        var otherAccount = new Account(2L);
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), otherAccount, LocalDateTime.now(),
+                LocalDateTime.now(), null
+        );
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.of(todo));
+
+        // when, then
+        assertThatThrownBy(() -> todoService.delete(todoId, "username"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_DELETE_NOT_ALLOWED);
     }
 
     @DisplayName("할 일 조회 성공 시 할 일 정보를 반환한다.")

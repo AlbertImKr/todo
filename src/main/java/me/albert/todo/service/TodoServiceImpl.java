@@ -63,9 +63,12 @@ public class TodoServiceImpl implements TodoService {
     @Transactional
     @Override
     public void delete(Long id, String username) {
-        Account owner = accountService.findByUsername(username);
-        Todo todo = todoRepository.findByIdAndOwner(id, owner)
+        Todo todo = todoRepository.findByIdAndGroupNull(id)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Account owner = accountService.findByUsername(username);
+        if (!todo.isOwner(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_DELETE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
         todoRepository.delete(todo);
     }
 

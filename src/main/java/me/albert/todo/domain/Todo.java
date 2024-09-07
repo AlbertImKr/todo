@@ -59,6 +59,10 @@ public class Todo {
     public Todo() {
     }
 
+    public Todo(Long id) {
+        this.id = id;
+    }
+
     public Todo(
             String title, String description, LocalDateTime localDateTime, Account account, LocalDateTime createdAt,
             LocalDateTime updatedAt, TodoStatus status
@@ -80,7 +84,7 @@ public class Todo {
             TodoStatus status,
             Account owner
     ) {
-        if (!this.owner.equals(owner)) {
+        if (!isOwner(owner)) {
             throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         this.title = title;
@@ -108,6 +112,10 @@ public class Todo {
 
     public boolean containsAssignee(Account assignee) {
         return this.assignees.contains(assignee);
+    }
+
+    public boolean isOwner(Account owner) {
+        return this.owner.equals(owner);
     }
 
     @Override
