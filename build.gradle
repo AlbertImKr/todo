@@ -18,6 +18,10 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    asciidoctorExt
+}
+
 ext {
     set('snippetsDir', file("build/generated-snippets"))
 }
@@ -47,10 +51,15 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
     // Docs
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
     // Database
     runtimeOnly 'com.mysql:mysql-connector-j'
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 tasks.named('test') {
@@ -58,7 +67,16 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
+asciidoctor {
     inputs.dir snippetsDir
+    outputDir file("src/main/resources/static/docs")
+    configurations 'asciidoctorExt'
     dependsOn test
+}
+
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'static/docs'
+    }
 }

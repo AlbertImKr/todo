@@ -25,6 +25,13 @@ public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
     private final AccountService accountService;
 
+    /**
+     * 할 일을 생성합니다.할일의 상태는 PENDING으로 설정됩니다.
+     *
+     * @param request  생성할 할 일 정보
+     * @param username 사용자 이름
+     * @return 생성된 할 일의 ID
+     */
     @Transactional
     @Override
     public IdResponse create(TodoCreateRequest request, String username) {

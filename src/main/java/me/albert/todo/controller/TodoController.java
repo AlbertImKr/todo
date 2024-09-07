@@ -26,6 +26,13 @@ public class TodoController {
 
     private final TodoService todoService;
 
+    /**
+     * 할 일을 생성 API 입니다. 할일의 상태는 PENDING으로 설정됩니다.
+     *
+     * @param request  생성할 할 일 정보
+     * @param username 사용자 이름
+     * @return 생성된 할 일의 ID
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/todos")
     public IdResponse create(@Valid @RequestBody TodoCreateRequest request, @CurrentUsername String username) {

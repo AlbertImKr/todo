@@ -1,0 +1,45 @@
+= TODO Application API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[Account]]
+== Account API
+
+=== 계정 생성 API
+
+==== 요청
+
+include::{snippets}/account/register/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/account/register/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/account/register/http-response.adoc[]
+
+[[Todo]]
+== Todo API
+
+=== 할일 생성 API
+
+==== 요청
+
+include::{snippets}/todos/create/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/todos/create/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/create/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/todos/create/response-fields.adoc[]

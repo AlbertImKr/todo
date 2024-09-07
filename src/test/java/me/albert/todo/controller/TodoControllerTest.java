@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
@@ -37,6 +38,9 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @DisplayName("할 일 생성 성공 시 201 Created 반환")
     @Test
     void create_todo_if_success() {
+        // docs
+        spec.filter(createTodoDocumentation());
+
         // given
         var dueDate = LocalDateTime.now().plusDays(1).format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -47,7 +51,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         body.put("dueDate", dueDate);
 
         // when
-        var target = 할일_생성_요청(body, accessToken);
+        var target = 할일_생성_요청(body, accessToken, spec);
 
         // then
         Assertions.assertAll(
@@ -369,7 +373,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", dueDate);
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -388,7 +392,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", dueDate);
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -407,7 +411,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", dueDate);
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -422,7 +426,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("description", "할 일 설명");
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -438,7 +442,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", "2021-01-01");
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -458,7 +462,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", dueDate);
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -478,7 +482,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", dueDate);
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);
@@ -499,7 +503,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             body.put("dueDate", dueDate);
 
             // when
-            var target = 할일_생성_요청(body, accessToken);
+            var target = 할일_생성_요청(body, accessToken, spec);
 
             // then
             assertThat(target.statusCode()).isEqualTo(400);

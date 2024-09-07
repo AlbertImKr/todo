@@ -1,21 +1,28 @@
 package me.albert.todo.service.dto.request;
 
+import static me.albert.todo.utils.ValidationMessages.TODO_DESCRIPTION_NOT_NULL;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import me.albert.todo.utils.DateFormats;
+import me.albert.todo.utils.ValidationConstraints;
+import me.albert.todo.utils.ValidationMessages;
 
 public record TodoCreateRequest(
-        @Size(min = 1, max = 100, message = "할 일 제목은 1자 이상 100자 이하로 입력해야 합니다.")
+        @NotNull(message = ValidationMessages.TODO_TITLE_NOT_NULL)
+        @Size(min = ValidationConstraints.TODO_TITLE_MIN_LENGTH, max = ValidationConstraints.TODO_TITLE_MAX_LENGTH,
+                message = ValidationMessages.TODO_TITLE_MESSAGE)
         String title,
-        @NotBlank
-        @Size(max = 1000, message = "할 일 설명은 1000자를 넘을 수 없습니다.")
+        @NotBlank(message = TODO_DESCRIPTION_NOT_NULL)
+        @Size(max = ValidationConstraints.TODO_DESCRIPTION_MAX_LENGTH, message = ValidationMessages.TODO_DESCRIPTION_MESSAGE)
         String description,
-        @NotNull(message = "마감일은 필수 입력값입니다.")
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-        @Future(message = "과거 시간은 입력할 수 없습니다.")
+        @NotNull(message = ValidationMessages.TODO_DUE_DATE_NOT_NULL)
+        @Future(message = ValidationMessages.TODO_DUE_DATE_FUTURE)
+        @JsonFormat(pattern = DateFormats.DATE_TIME_FORMAT, timezone = DateFormats.TIME_ZONE)
         LocalDateTime dueDate
 ) {
 

@@ -2,16 +2,29 @@ package me.albert.todo.controller.steps;
 
 import static io.restassured.RestAssured.given;
 
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class TodoSteps {
 
-    public static ExtractableResponse<Response> 할일_생성_요청(HashMap<Object, Object> body, String accessToken) {
-        return given().log().all()
+    /**
+     * 할 일 생성 요청
+     *
+     * @param body        요청 바디 맵(할 일 제목, 설명, 마감일)
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답 ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 할일_생성_요청(
+            HashMap<Object, Object> body, String accessToken,
+            RequestSpecification spec
+    ) {
+        return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
                 .contentType("application/json")
@@ -29,7 +42,7 @@ public class TodoSteps {
         body.put("title", "할 일 제목");
         body.put("description", "할 일 설명");
         body.put("dueDate", dueDate);
-        return 할일_생성_요청(body, accessToken).jsonPath().getLong("id");
+        return 할일_생성_요청(body, accessToken, new RequestSpecBuilder().build()).jsonPath().getLong("id");
     }
 
 

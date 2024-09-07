@@ -3,9 +3,16 @@ package me.albert.todo.controller;
 import static me.albert.todo.controller.steps.AccountSteps.로그인_요청;
 import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.snippet.Attributes.key;
 
 import java.util.HashMap;
 import me.albert.todo.TodoAcceptanceTest;
+import me.albert.todo.utils.ErrorMessages;
+import me.albert.todo.utils.ValidationMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,7 +23,22 @@ class AccountControllerTest extends TodoAcceptanceTest {
 
     @DisplayName("회원가입 성공 시 201 상태 코드를 반환한다")
     @Test
-    void registerReturnsCreatedStatus() {
+    void register_returns_created_status() {
+        // docs
+        this.spec.filter(
+                document(
+                        "account/register",
+                        requestFields(
+                                fieldWithPath("username").description("유저 이름").attributes(
+                                        key("constraints").value(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)),
+                                fieldWithPath("password").description("비밀번호").attributes(
+                                        key("constraints").value(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)),
+                                fieldWithPath("confirmPassword").description("비밀번호 확인").attributes(
+                                        key("constraints").value(ValidationMessages.ACCOUNT_CONFIRM_PASSWORD_MESSAGE))
+                        )
+                )
+        );
+
         // given
         var body = new HashMap<>();
         body.put("username", "newUser");
@@ -24,7 +46,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
         body.put("confirmPassword", "Password1!");
 
         // when
-        var target = 화원_가입_요청(body);
+        var target = 화원_가입_요청(body, this.spec);
 
         // then
         assertThat(target.statusCode()).isEqualTo(201);
@@ -34,6 +56,25 @@ class AccountControllerTest extends TodoAcceptanceTest {
     @DisplayName("로그인 성공 시 토큰을 반환한다")
     @Test
     void login_returns_tokens() {
+        // docs
+        this.spec.filter(
+                document(
+                        "account/login",
+                        requestFields(
+                                fieldWithPath("username").description("유저 이름").attributes(
+                                        key("constraints").value(ValidationMessages.ACCOUNT_USERNAME_MESSAGE))
+                                ,
+                                fieldWithPath("password").description("비밀번호").attributes(
+                                        key("constraints").value(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
+                                )
+                        ),
+                        responseFields(
+                                fieldWithPath("accessToken").description("액세스 토큰"),
+                                fieldWithPath("refreshToken").description("리프레시 토큰")
+                        )
+                )
+        );
+
         // given
         var registerBody = new HashMap<>();
         registerBody.put("username", "newUser");
@@ -46,7 +87,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
         loginBody.put("password", "Password1!");
 
         // when
-        var target = 로그인_요청(loginBody);
+        var target = 로그인_요청(loginBody, this.spec);
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
@@ -73,7 +114,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo("비밀번호가 일치하지 않습니다.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ErrorMessages.PASSWORD_NOT_MATCHED)
             );
         }
 
@@ -93,7 +135,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo("이미 존재하는 유저 이름입니다.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ErrorMessages.USERNAME_IS_EXISTED)
             );
         }
 
@@ -112,8 +155,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -132,8 +175,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -152,8 +195,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -173,7 +216,7 @@ class AccountControllerTest extends TodoAcceptanceTest {
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
                     () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상 20자 이하로 입력해주세요.")
+                            ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -192,8 +235,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함한 8자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)
             );
         }
 
@@ -212,8 +255,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "유저 이름은 영문과 숫자만 포함한 5자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)
             );
         }
 
@@ -232,8 +275,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "유저 이름은 영문과 숫자만 포함한 5자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)
             );
         }
 
@@ -252,8 +295,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "유저 이름은 영문과 숫자만 포함한 5자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)
             );
         }
 
@@ -272,8 +315,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(400),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "유저 이름은 영문과 숫자만 포함한 5자 이상 20자 이하로 입력해주세요.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ValidationMessages.ACCOUNT_USERNAME_MESSAGE)
             );
         }
     }
@@ -321,8 +364,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(401),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "유저 이름 또는 비밀번호가 일치하지 않습니다.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ErrorMessages.USERNAME_OR_PASSWORD_NOT_MATCHED)
             );
         }
 
@@ -346,8 +389,8 @@ class AccountControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(401),
-                    () -> assertThat(target.body().jsonPath().getString("message")).isEqualTo(
-                            "유저 이름 또는 비밀번호가 일치하지 않습니다.")
+                    () -> assertThat(target.body().jsonPath().getString("message"))
+                            .isEqualTo(ErrorMessages.USERNAME_OR_PASSWORD_NOT_MATCHED)
             );
         }
     }
