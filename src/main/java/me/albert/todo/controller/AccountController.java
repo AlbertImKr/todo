@@ -21,6 +21,12 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    /**
+     * 회원가입
+     *
+     * @param request 회원가입 요청
+     * @throws BusinessException 비번이 일치하지 않을 경우
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/users")
     public void register(@Valid @RequestBody UserRegisterRequest request) {
@@ -30,6 +36,12 @@ public class AccountController {
         accountService.register(request.username(), request.password());
     }
 
+    /**
+     * 로그인
+     *
+     * @param request 로그인 요청
+     * @return 토큰
+     */
     @PostMapping("/users/login")
     public TokensResponse login(@Valid @RequestBody UserLoginRequest request) {
         return accountService.login(request.username(), request.password());

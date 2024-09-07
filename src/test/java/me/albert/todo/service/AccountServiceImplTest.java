@@ -84,7 +84,7 @@ class AccountServiceImplTest {
         // when, then
         assertThatThrownBy(() -> accountService.login(username, password))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(AccountServiceImpl.USERNAME_OR_PASSWORD_NOT_MATCHED);
+                .hasMessage(ErrorMessages.USERNAME_OR_PASSWORD_NOT_MATCHED);
     }
 
     @DisplayName("유저를 로그인 시 비밀번호가 일치하지 않으면 예외가 발생해야 한다.")
@@ -99,7 +99,7 @@ class AccountServiceImplTest {
         // when, then
         assertThatThrownBy(() -> accountService.login(username, password))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(AccountServiceImpl.USERNAME_OR_PASSWORD_NOT_MATCHED);
+                .hasMessage(ErrorMessages.USERNAME_OR_PASSWORD_NOT_MATCHED);
     }
 
     @DisplayName("유저 이름으로 사용자를 조회하면 사용자 정보를 반환해야 한다.")
@@ -127,6 +127,6 @@ class AccountServiceImplTest {
         // when, then
         assertThatThrownBy(() -> accountService.findByUsername(username))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(AccountServiceImpl.USERNAME_NOT_EXISTED);
+                .hasMessage(ErrorMessages.USERNAME_NOT_EXISTED);
     }
 }

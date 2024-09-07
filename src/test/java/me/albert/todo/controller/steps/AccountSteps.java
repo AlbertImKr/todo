@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import java.util.HashMap;
 
 public class AccountSteps {
@@ -12,6 +13,12 @@ public class AccountSteps {
     public static String FIXTURE_FIRST_ACCOUNT_USERNAME = "newUser";
     public static String FIXTURE_SECOND_ACCOUNT_USERNAME = "otherNewUser";
 
+    /**
+     * 화원 가입 요청
+     *
+     * @param body 요청 바디
+     * @return ExtractableResponse
+     */
     public static ExtractableResponse<Response> 화원_가입_요청(HashMap<Object, Object> body) {
         return given().log().all()
                 .contentType(ContentType.JSON)
@@ -22,8 +29,48 @@ public class AccountSteps {
                 .extract();
     }
 
+    /**
+     * 화원 가입 요청
+     *
+     * @param body 요청 바디
+     * @param spec RequestSpecification
+     * @return ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 화원_가입_요청(HashMap<Object, Object> body, RequestSpecification spec) {
+        return given(spec).log().all()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post("/users")
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 로그인 요청
+     *
+     * @param body 요청 바디
+     * @return ExtractableResponse
+     */
     public static ExtractableResponse<Response> 로그인_요청(HashMap<Object, Object> body) {
         return given().log().all()
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post("/users/login")
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 로그인 요청
+     *
+     * @param body 요청 바디
+     * @param spec RequestSpecification
+     * @return ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 로그인_요청(HashMap<Object, Object> body, RequestSpecification spec) {
+        return given(spec).log().all()
                 .contentType(ContentType.JSON)
                 .body(body)
                 .when()

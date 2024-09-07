@@ -6,8 +6,25 @@
 :toclevels: 2
 :sectlinks:
 
-[[Todos]]
-== TODO API
+[[Account]]
+== Account API
+
+=== 계정 생성 API
+
+==== 요청
+
+include::{snippets}/account/register/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/account/register/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/account/register/http-response.adoc[]
+
+[[Todo]]
+== Todo API
 
 === 할일 생성 API
 
