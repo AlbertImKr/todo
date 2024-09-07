@@ -47,4 +47,59 @@ public class ProjectSteps {
                 .then().log().all()
                 .extract();
     }
+
+    /**
+     * 프로젝트를 생성하고 ID 반환
+     *
+     * @param accessToken 액세스 토큰
+     * @return 프로젝트 ID
+     */
+    public static Long 프로젝트_생성_및_ID_반환(String accessToken) {
+        var body = new HashMap<>();
+        body.put("name", "프로젝트");
+        return 프로젝트_생성_요청(body, accessToken).jsonPath().getLong("id");
+    }
+
+    /**
+     * 프로젝트 수정 요청
+     *
+     * @param body        프로젝트 수정 요청 바디
+     * @param id          프로젝트 ID
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 프로젝트_수정_요청(
+            HashMap<Object, Object> body, Long id, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType("application/json")
+                .body(body)
+                .when()
+                .put("/projects/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 프로젝트 수정 요청
+     *
+     * @param body        프로젝트 수정 요청 바디
+     * @param id          프로젝트 ID
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 프로젝트_수정_요청(
+            HashMap<Object, Object> body, Long id, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .contentType("application/json")
+                .body(body)
+                .when()
+                .put("/projects/" + id)
+                .then().log().all()
+                .extract();
+    }
 }

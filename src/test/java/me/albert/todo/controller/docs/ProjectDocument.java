@@ -24,4 +24,14 @@ public class ProjectDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter updateProjectDocumentation() {
+        return document(
+                "projects/update",
+                requestFields(
+                        fieldWithPath("name").description("프로젝트 이름")
+                                .attributes(Attributes.key("constraints").value(ValidationMessages.PRO_NAME_MESSAGE))
+                )
+        );
+    }
 }

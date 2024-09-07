@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
+import me.albert.todo.exception.BusinessException;
+import me.albert.todo.utils.ErrorMessages;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.http.HttpStatus;
 
 @Table(name = "project")
 @Entity
@@ -22,6 +25,7 @@ public class Project {
     @Id
     @GeneratedValue
     private Long id;
+    @Getter
     private String name;
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "project")
@@ -46,6 +50,22 @@ public class Project {
     public Project(String name, Account account) {
         this.name = name;
         this.owner = account;
+    }
+
+    public Project(long id, Account account) {
+        this.id = id;
+        this.owner = account;
+    }
+
+    public void update(String name, Account account) {
+        if (!isOwner(account)) {
+            throw new BusinessException(ErrorMessages.PROJECT_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        this.name = name;
+    }
+
+    public boolean isOwner(Account account) {
+        return owner.equals(account);
     }
 
     @Override

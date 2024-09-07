@@ -68,6 +68,9 @@ include::{snippets}/todos/delete/http-request.adoc[]
 
 include::{snippets}/todos/delete/http-response.adoc[]
 
+[[Project]]
+== Project API
+
 === 프로젝트 생성 API
 
 ==== 요청
@@ -85,3 +88,17 @@ include::{snippets}/projects/create/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/projects/create/response-fields.adoc[]
+
+=== 프로젝트 수정 API
+
+==== 요청
+
+include::{snippets}/projects/update/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/projects/update/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/projects/update/http-response.adoc[]
