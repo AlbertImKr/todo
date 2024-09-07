@@ -11,14 +11,11 @@ import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_삭제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_상태_변경_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_수정_요청;
-import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -74,7 +71,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         spec.filter(updateTodoDocumentation());
 
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
         var dueDate = LocalDateTime.now().plusDays(1).format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         );
@@ -98,10 +95,10 @@ class TodoControllerTest extends TodoAcceptanceTest {
         spec.filter(deleteTodoDocumentation());
 
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
 
         // when
-        var target = 할일_삭제_요청(todoId, accessToken,spec);
+        var target = 할일_삭제_요청(todoId, accessToken, spec);
 
         // then
         assertThat(target.statusCode()).isEqualTo(204);
@@ -111,7 +108,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @Test
     void get_todo_if_success() {
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
 
         // when
         var target = 할일_조회_요청(todoId, accessToken);
@@ -133,7 +130,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @Test
     void update_todo_status_if_success() {
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
         var body = new HashMap<>();
         body.put("status", "COMPLETED");
 
@@ -148,7 +145,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @Test
     void assign_user_to_todo_if_success() {
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
         var assignUserBody = new HashMap<>();
         assignUserBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
 
@@ -163,7 +160,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @Test
     void assign_multiple_users_to_todo_if_success() {
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
         var assignUserBody = new HashMap<>();
         assignUserBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
         getFixtureSecondAccountAccessToken();
@@ -181,7 +178,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @Test
     void unassign_user_to_todo_if_success() {
         // given
-        var todoId = 할일_이이디_생성_요청(accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
         var assignUserBody = new HashMap<>();
         assignUserBody.put("username", FIXTURE_FIRST_ACCOUNT_USERNAME);
         할일_사용자_할당_요청(todoId, assignUserBody, accessToken);
@@ -201,7 +198,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         @BeforeEach
         void setTodo() {
-            todoId = 할일_이이디_생성_요청(accessToken);
+            todoId = 할일_생성_및_ID_반환(accessToken);
         }
 
         @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
@@ -289,7 +286,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         @BeforeEach
         void setTodo() {
-            todoId = 할일_이이디_생성_요청(accessToken);
+            todoId = 할일_생성_및_ID_반환(accessToken);
         }
 
         @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
@@ -531,7 +528,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void title_is_empty() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var dueDate = LocalDateTime.now().plusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             );
@@ -556,7 +553,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void description_is_empty() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var dueDate = LocalDateTime.now().plusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             );
@@ -581,7 +578,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void due_date_is_past() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var dueDate = LocalDateTime.now().minusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             );
@@ -606,7 +603,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void due_date_is_empty() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var body = new HashMap<>();
             body.put("title", "할 일 제목");
             body.put("description", "할 일 설명");
@@ -628,7 +625,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void due_date_is_invalid() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var body = new HashMap<>();
             body.put("title", "할 일 제목");
             body.put("description", "할 일 설명");
@@ -645,7 +642,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void title_is_too_long() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var tooLongTitle = "a".repeat(101);
             var dueDate = LocalDateTime.now().plusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -671,7 +668,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void description_is_too_long() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var tooLongDescription = "a".repeat(1001);
             var dueDate = LocalDateTime.now().plusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -696,7 +693,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void title_and_description_are_invalid() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var tooLongTitle = "a".repeat(101);
             var tooLongDescription = "a".repeat(1001);
             var dueDate = LocalDateTime.now().plusDays(1).format(
@@ -723,7 +720,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void status_is_empty() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var dueDate = LocalDateTime.now().plusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             );
@@ -747,7 +744,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
         @Test
         void status_is_invalid() {
             // given
-            var todoId = 할일_이이디_생성_요청(accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
             var dueDate = LocalDateTime.now().plusDays(1).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
             );
@@ -773,7 +770,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         @BeforeEach
         void setTodo() {
-            todoId = 할일_이이디_생성_요청(accessToken);
+            todoId = 할일_생성_및_ID_반환(accessToken);
         }
 
         @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
@@ -815,7 +812,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         @BeforeEach
         void setTodo() {
-            todoId = 할일_이이디_생성_요청(accessToken);
+            todoId = 할일_생성_및_ID_반환(accessToken);
         }
 
         @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
@@ -867,7 +864,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         @BeforeEach
         void setTodo() {
-            todoId = 할일_이이디_생성_요청(accessToken);
+            todoId = 할일_생성_및_ID_반환(accessToken);
         }
 
         @DisplayName("할 일 상태가 없으면 400 Bad Request 반환")

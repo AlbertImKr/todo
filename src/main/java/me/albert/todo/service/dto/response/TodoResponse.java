@@ -2,6 +2,8 @@ package me.albert.todo.service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import me.albert.todo.domain.Todo;
 
 public record TodoResponse(
@@ -27,5 +29,11 @@ public record TodoResponse(
                 todo.getUpdatedAt(),
                 todo.getStatus().name()
         );
+    }
+
+    public static List<TodoResponse> from(List<Todo> todos) {
+        return todos.stream()
+                .map(TodoResponse::from)
+                .collect(Collectors.toList());
     }
 }

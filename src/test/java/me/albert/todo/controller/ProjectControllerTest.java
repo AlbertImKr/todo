@@ -1,8 +1,11 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.ProjectDocument.assignTodoToProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.createProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.deleteProjectDocumentation;
+import static me.albert.todo.controller.docs.ProjectDocument.getProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.listProjectDocumentation;
+import static me.albert.todo.controller.docs.ProjectDocument.unassignTodoFromProjectDocumentation;
 import static me.albert.todo.controller.docs.ProjectDocument.updateProjectDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
@@ -11,9 +14,14 @@ import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_삭제_�
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_요청;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_수정_요청;
+import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_조회_요청;
+import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_할일_할당_요청;
+import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_할일_할당_해제_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
+import java.util.List;
 import me.albert.todo.TodoAcceptanceTest;
 import me.albert.todo.utils.ValidationMessages;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +38,73 @@ class ProjectControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUp() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("프로젝트를 조회한다")
+    @Test
+    void get_project() {
+        // docs
+        spec.filter(getProjectDocumentation());
+
+        // given
+        var projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        var todoId1 = 할일_생성_및_ID_반환(accessToken);
+        var todoId2 = 할일_생성_및_ID_반환(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", new Long[]{todoId1, todoId2});
+        프로젝트_할일_할당_요청(projectId, todoIds, accessToken);
+
+        // when
+        var response = 프로젝트_조회_요청(projectId, accessToken, spec);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(200),
+                () -> assertThat(response.jsonPath().getLong("id")).isEqualTo(projectId)
+        );
+    }
+
+    @DisplayName("프로젝트에서 할 일을 해제한다")
+    @Test
+    void unassign_todo_from_project() {
+        // docs
+        spec.filter(unassignTodoFromProjectDocumentation());
+
+        // given
+        var projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        var todoId1 = 할일_생성_및_ID_반환(accessToken);
+        var todoId2 = 할일_생성_및_ID_반환(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", new Long[]{todoId1, todoId2});
+        프로젝트_할일_할당_요청(projectId, todoIds, accessToken);
+        var body = new HashMap<>();
+        body.put("todoIds", List.of(todoId1));
+
+        // when
+        var response = 프로젝트_할일_할당_해제_요청(projectId, body, accessToken, spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("프로젝트에 할 일을 할당한다")
+    @Test
+    void assign_todo_to_project() {
+        // docs
+        spec.filter(assignTodoToProjectDocumentation());
+
+        // given
+        var projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        var todoId1 = 할일_생성_및_ID_반환(accessToken);
+        var todoId2 = 할일_생성_및_ID_반환(accessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", new Long[]{todoId1, todoId2});
+
+        // when
+        var response = 프로젝트_할일_할당_요청(projectId, todoIds, accessToken, spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("프로젝트를 생성한다")
@@ -106,6 +181,119 @@ class ProjectControllerTest extends TodoAcceptanceTest {
         );
     }
 
+    @DisplayName("프로젝트 할 일 할당 해제 실패 테스트")
+    @Nested
+    class UnassignTodoFromProjectFail {
+
+        long projectId;
+
+        @BeforeEach
+        void setUp() {
+            projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        }
+
+        @DisplayName("할 일 ID가 없으면 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_without_todo_id() {
+            // given
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", new Long[]{});
+
+            // when
+            var response = 프로젝트_할일_할당_해제_요청(projectId, todoIds, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("할 일 ID가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_with_null_todo_id() {
+            // given
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", null);
+
+            // when
+            var response = 프로젝트_할일_할당_해제_요청(projectId, todoIds, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("다른 사용자의 프로젝트에서 할 일을 할당 해제하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_from_other_user_project() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", new Long[]{todoId});
+            프로젝트_할일_할당_요청(projectId, todoIds, accessToken);
+
+            // when
+            var response = 프로젝트_할일_할당_해제_요청(projectId, todoIds, otherUserAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+    }
+
+    @DisplayName("프로젝트 할 일 할당 실패 테스트")
+    @Nested
+    class AssignTodoToProjectFail {
+
+        long projectId;
+
+        @BeforeEach
+        void setUp() {
+            projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        }
+
+        @DisplayName("할 일 ID가 없으면 400 상태 코드를 반환한다.")
+        @Test
+        void assign_todo_without_todo_id() {
+            // given
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", new Long[]{});
+
+            // when
+            var response = 프로젝트_할일_할당_요청(projectId, todoIds, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("할 일 ID가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void assign_todo_with_null_todo_id() {
+            // given
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", null);
+
+            // when
+            var response = 프로젝트_할일_할당_요청(projectId, todoIds, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("다른 사용자의 프로젝트에 할 일을 할당하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void assign_todo_to_other_user_project() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", new Long[]{todoId});
+
+            // when
+            var response = 프로젝트_할일_할당_요청(projectId, todoIds, otherUserAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+    }
+
     @DisplayName("프로젝트 생성 실패 테스트")
     @Nested
     class CreateProjectFail {
@@ -123,7 +311,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_NOT_NULL)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_NOT_NULL)
             );
         }
 
@@ -140,7 +328,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_MESSAGE)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_MESSAGE)
             );
         }
     }
@@ -169,7 +357,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_NOT_NULL)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_NOT_NULL)
             );
         }
 
@@ -186,7 +374,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_MESSAGE)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_MESSAGE)
             );
         }
 
@@ -203,7 +391,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_NOT_NULL)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_NOT_NULL)
             );
         }
 

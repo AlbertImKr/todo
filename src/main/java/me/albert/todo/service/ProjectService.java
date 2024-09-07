@@ -2,6 +2,7 @@ package me.albert.todo.service;
 
 import java.util.List;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectDetailResponse;
 import me.albert.todo.service.dto.response.ProjectResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -44,4 +45,36 @@ public interface ProjectService {
      * @return 프로젝트 목록
      */
     List<ProjectResponse> getProjects(String username, Pageable pageable);
+
+    /**
+     * 할 일을 프로젝트에 할당합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param longs     할 일 ID 목록
+     * @param username  사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 푸로잭트의 소유자가 아닌 경우
+     */
+    void assignTodoToProject(Long projectId, List<Long> longs, String username);
+
+    /**
+     * 할 일을 프로젝트에서 해제합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param longs     할 일 ID 목록
+     * @param username  사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 프로젝트의 소유자가 아닌 경우
+     */
+    void unassignTodoFromProject(Long projectId, List<Long> longs, String username);
+
+    /**
+     * 프로젝트를 조회합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @return 프로젝트 정보
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     */
+    ProjectDetailResponse getProject(Long projectId, String username);
 }

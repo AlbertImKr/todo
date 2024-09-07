@@ -40,7 +40,7 @@ public class TodoSteps {
      * @param accessToken 액세스 토큰
      * @return 응답 ExtractableResponse
      */
-    public static Long 할일_이이디_생성_요청(String accessToken) {
+    public static Long 할일_생성_및_ID_반환(String accessToken) {
         var dueDate = LocalDateTime.now().plusDays(1).format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         );

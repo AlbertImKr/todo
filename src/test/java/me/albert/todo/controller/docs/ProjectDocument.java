@@ -1,5 +1,7 @@
 package me.albert.todo.controller.docs;
 
+import static me.albert.todo.TodoAcceptanceTest.prettyPrintRequest;
+import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -15,9 +17,12 @@ public class ProjectDocument {
     public static @NotNull RestDocumentationFilter createProjectDocumentation() {
         return document(
                 "projects/create",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
-                                .attributes(Attributes.key("constraints").value(ValidationMessages.PRO_NAME_MESSAGE))
+                                .attributes(
+                                        Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
                 ),
                 responseFields(
                         fieldWithPath("id").description("프로젝트 ID")
@@ -28,25 +33,78 @@ public class ProjectDocument {
     public static @NotNull RestDocumentationFilter updateProjectDocumentation() {
         return document(
                 "projects/update",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
-                                .attributes(Attributes.key("constraints").value(ValidationMessages.PRO_NAME_MESSAGE))
+                                .attributes(
+                                        Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
                 )
         );
     }
 
     public static @NotNull RestDocumentationFilter deleteProjectDocumentation() {
         return document(
-                "projects/delete"
+                "projects/delete",
+                prettyPrintRequest(),
+                prettyPrintResponse()
         );
     }
 
     public static @NotNull RestDocumentationFilter listProjectDocumentation() {
         return document(
                 "projects/list",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
                 responseFields(
                         fieldWithPath("[].id").description("프로젝트 ID"),
                         fieldWithPath("[].name").description("프로젝트 이름")
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter getProjectDocumentation() {
+        return document(
+                "projects/get",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                responseFields(
+                        fieldWithPath("id").description("프로젝트 ID"),
+                        fieldWithPath("name").description("프로젝트 이름"),
+                        fieldWithPath("todos").description("프로젝트 할 일 목록"),
+                        fieldWithPath("todos[].id").description("할 일 ID"),
+                        fieldWithPath("todos[].title").description("할 일 제목"),
+                        fieldWithPath("todos[].description").description("할 일 설명"),
+                        fieldWithPath("todos[].dueDate").description("할 일 마감일"),
+                        fieldWithPath("todos[].status").description("할 일 상태"),
+                        fieldWithPath("todos[].createdAt").description("할 일 생성일"),
+                        fieldWithPath("todos[].updatedAt").description("할 일 수정일")
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter assignTodoToProjectDocumentation() {
+        return document(
+                "projects/assign-todo",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록")
+                                .attributes(Attributes.key("constraints")
+                                                    .value(ValidationMessages.PROJECT_ASSIGN_TODO_NOT_NULL))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter unassignTodoFromProjectDocumentation() {
+        return document(
+                "projects/unassign-todo",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록")
+                                .attributes(Attributes.key("constraints")
+                                                    .value(ValidationMessages.PROJECT_ASSIGN_TODO_NOT_NULL))
                 )
         );
     }

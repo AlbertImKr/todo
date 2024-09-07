@@ -6,6 +6,7 @@ import me.albert.todo.domain.Project;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.ProjectRepository;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectDetailResponse;
 import me.albert.todo.service.dto.response.ProjectResponse;
 import me.albert.todo.utils.ErrorMessages;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
     private final AccountService accountService;
+    private final TodoService todoService;
 
     @Transactional
     @Override
@@ -58,5 +60,44 @@ public class ProjectServiceImpl implements ProjectService {
                 .stream()
                 .map(ProjectResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public void assignTodoToProject(Long projectId, List<Long> todoIds, String username) {
+        var account = accountService.findByUsername(username);
+        var project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!project.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.PROJECT_ASSIGN_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        var todos = todoService.findAllByIdInAndOwner(todoIds, username);
+        project.assignTodos(todos);
+    }
+
+    @Transactional
+    @Override
+    public void unassignTodoFromProject(Long projectId, List<Long> todoIds, String username) {
+        var account = accountService.findByUsername(username);
+        var project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!project.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.PROJECT_UNASSIGN_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        var todos = todoService.findAllByIdInAndOwner(todoIds, username);
+        project.unassignTodos(todos);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public ProjectDetailResponse getProject(Long projectId, String username) {
+        var account = accountService.findByUsername(username);
+        var project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!project.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.PROJECT_GET_NOT_ALLOWED, HttpStatus.NOT_FOUND);
+        }
+        return ProjectDetailResponse.from(project);
     }
 }

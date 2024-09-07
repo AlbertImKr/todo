@@ -3,10 +3,13 @@ package me.albert.todo.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.albert.todo.controller.dto.request.AssignTodoToProjectRequest;
 import me.albert.todo.controller.dto.request.ProjectCreateRequest;
 import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
+import me.albert.todo.controller.dto.request.UnAssignTodoToProjectRequest;
 import me.albert.todo.service.ProjectService;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.ProjectDetailResponse;
 import me.albert.todo.service.dto.response.ProjectResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -81,5 +84,49 @@ public class ProjectController {
     @GetMapping("/projects")
     public List<ProjectResponse> getProjects(@CurrentUsername String username, @PageableDefault Pageable pageable) {
         return projectService.getProjects(username, pageable);
+    }
+
+    /**
+     * 프로젝트에 할 일 할당 API
+     *
+     * @param projectId 프로젝트 ID
+     * @param request   할 일 할당 요청
+     * @param username  현재 사용자의 이름
+     */
+    @PutMapping("/projects/{projectId}/todos")
+    public void assignTodoToProject(
+            @PathVariable Long projectId,
+            @Valid @RequestBody AssignTodoToProjectRequest request,
+            @CurrentUsername String username
+    ) {
+        projectService.assignTodoToProject(projectId, request.todoIds(), username);
+    }
+
+    /**
+     * 프로젝트에서 할 일 할당 해제 API
+     *
+     * @param projectId 프로젝트 ID
+     * @param request   할 일 할당 해제 요청
+     * @param username  현재 사용자의 이름
+     */
+    @DeleteMapping("/projects/{projectId}/todos")
+    public void unassignTodoFromProject(
+            @PathVariable Long projectId,
+            @Valid @RequestBody UnAssignTodoToProjectRequest request,
+            @CurrentUsername String username
+    ) {
+        projectService.unassignTodoFromProject(projectId, request.todoIds(), username);
+    }
+
+    /**
+     * 프로젝트 조회 API
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  현재 사용자의 이름
+     * @return 프로젝트 정보
+     */
+    @GetMapping("/projects/{projectId}")
+    public ProjectDetailResponse getProject(@PathVariable Long projectId, @CurrentUsername String username) {
+        return projectService.getProject(projectId, username);
     }
 }
