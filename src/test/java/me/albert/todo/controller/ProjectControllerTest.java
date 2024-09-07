@@ -123,7 +123,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_NOT_NULL)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_NOT_NULL)
             );
         }
 
@@ -140,7 +140,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_MESSAGE)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_MESSAGE)
             );
         }
     }
@@ -169,7 +169,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_NOT_NULL)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_NOT_NULL)
             );
         }
 
@@ -186,7 +186,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_MESSAGE)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_MESSAGE)
             );
         }
 
@@ -203,7 +203,7 @@ class ProjectControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(response.statusCode()).isEqualTo(400),
-                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PRO_NAME_NOT_NULL)
+                    () -> assertThat(response.body().asString()).contains(ValidationMessages.PROJECT_NAME_NOT_NULL)
             );
         }
 

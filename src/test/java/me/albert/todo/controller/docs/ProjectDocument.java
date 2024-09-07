@@ -17,7 +17,7 @@ public class ProjectDocument {
                 "projects/create",
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
-                                .attributes(Attributes.key("constraints").value(ValidationMessages.PRO_NAME_MESSAGE))
+                                .attributes(Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
                 ),
                 responseFields(
                         fieldWithPath("id").description("프로젝트 ID")
@@ -30,7 +30,7 @@ public class ProjectDocument {
                 "projects/update",
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
-                                .attributes(Attributes.key("constraints").value(ValidationMessages.PRO_NAME_MESSAGE))
+                                .attributes(Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
                 )
         );
     }

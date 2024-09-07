@@ -6,8 +6,8 @@ import me.albert.todo.utils.ValidationConstraints;
 import me.albert.todo.utils.ValidationMessages;
 
 public record ProjectCreateRequest(
-        @NotBlank(message = ValidationMessages.PRO_NAME_NOT_NULL)
-        @Size(max = ValidationConstraints.PRO_NAME_MAX_LENGTH, message = ValidationMessages.PRO_NAME_MESSAGE)
+        @NotBlank(message = ValidationMessages.PROJECT_NAME_NOT_NULL)
+        @Size(max = ValidationConstraints.PRO_NAME_MAX_LENGTH, message = ValidationMessages.PROJECT_NAME_MESSAGE)
         String name
 ) {
 
