@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Project;
+import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.ProjectRepository;
 import me.albert.todo.utils.ErrorMessages;
@@ -34,6 +35,65 @@ class ProjectServiceImplTest {
 
     @Mock
     private AccountService accountService;
+
+    @Mock
+    private TodoService todoService;
+
+
+    @DisplayName("할 일을 프로젝트에 할당한다")
+    @Test
+    void assign_todo_to_project() {
+        // given
+        var projectId = 1L;
+        var todos = List.of(new Todo(1L), new Todo(2L));
+        var todoIds = List.of(1L, 2L);
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", account);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(todoService.findAllByIdInAndOwner(todoIds, username)).thenReturn(todos);
+
+        // when
+        projectService.assignTodoToProject(projectId, todoIds, username);
+
+        // then
+        assertThat(project.getTodos()).containsAll(todos);
+    }
+
+    @DisplayName("할 일을 프로젝트에 할당할 때 프로젝트가 없으면 예외가 발생한다")
+    @Test
+    void assign_todo_to_project_without_project() {
+        // given
+        var projectId = 1L;
+        var todoIds = List.of(1L, 2L);
+        var username = "user";
+        when(accountService.findByUsername(username)).thenReturn(new Account(1L));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> projectService.assignTodoToProject(projectId, todoIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
+    }
+
+    @DisplayName("할 일을 프로젝트에 할당할 때 권한이 없으면 예외가 발생한다")
+    @Test
+    void assign_todo_to_project_without_permission() {
+        // given
+        var projectId = 1L;
+        var todoIds = List.of(1L, 2L);
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", new Account(2L));
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+
+        // when & then
+        assertThatThrownBy(() -> projectService.assignTodoToProject(projectId, todoIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_ASSIGN_NOT_ALLOWED);
+    }
 
     @DisplayName("프로젝트를 생성한다")
     @Test

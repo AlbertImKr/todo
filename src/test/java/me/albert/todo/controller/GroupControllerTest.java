@@ -9,7 +9,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_해제_요청;
-import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -104,8 +104,8 @@ class GroupControllerTest extends TodoAcceptanceTest {
         var response = 그룹_생성_요청(body, accessToken);
         var groupId = response.jsonPath().getLong("id");
 
-        var firstTodoId = 할일_이이디_생성_요청(accessToken);
-        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+        var secondTodoId = 할일_생성_및_ID_반환(accessToken);
         var todoIds = new HashMap<>();
         todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
 
@@ -122,8 +122,8 @@ class GroupControllerTest extends TodoAcceptanceTest {
         // given
         var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
 
-        var firstTodoId = 할일_이이디_생성_요청(accessToken);
-        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+        var secondTodoId = 할일_생성_및_ID_반환(accessToken);
         var todoIds = new HashMap<>();
         todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
         그룹_할일_할당_요청(groupId, todoIds, accessToken);
@@ -144,8 +144,8 @@ class GroupControllerTest extends TodoAcceptanceTest {
         // given
         var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
 
-        var firstTodoId = 할일_이이디_생성_요청(accessToken);
-        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+        var secondTodoId = 할일_생성_및_ID_반환(accessToken);
         var todoIds = new HashMap<>();
         todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
         그룹_할일_할당_요청(groupId, todoIds, accessToken);
@@ -170,8 +170,8 @@ class GroupControllerTest extends TodoAcceptanceTest {
         // given
         var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
 
-        var firstTodoId = 할일_이이디_생성_요청(accessToken);
-        var secondTodoId = 할일_이이디_생성_요청(accessToken);
+        var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+        var secondTodoId = 할일_생성_및_ID_반환(accessToken);
         var todoIds = new HashMap<>();
         todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
         그룹_할일_할당_요청(groupId, todoIds, accessToken);
@@ -228,8 +228,8 @@ class GroupControllerTest extends TodoAcceptanceTest {
         void unassign_todo_with_other_user() {
             // given
             var otherAccessToken = getFixtureSecondAccountAccessToken();
-            var firstTodoId = 할일_이이디_생성_요청(accessToken);
-            var secondTodoId = 할일_이이디_생성_요청(accessToken);
+            var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+            var secondTodoId = 할일_생성_및_ID_반환(accessToken);
             var todoIds = new HashMap<>();
             todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
             그룹_할일_할당_요청(groupId, todoIds, accessToken);
@@ -296,8 +296,8 @@ class GroupControllerTest extends TodoAcceptanceTest {
             // given
             var otherAccessToken = getFixtureSecondAccountAccessToken();
             var body = new HashMap<>();
-            var firstTodoId = 할일_이이디_생성_요청(accessToken);
-            var secondTodoId = 할일_이이디_생성_요청(accessToken);
+            var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+            var secondTodoId = 할일_생성_및_ID_반환(accessToken);
             var todoIds = new HashMap<>();
             todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
 

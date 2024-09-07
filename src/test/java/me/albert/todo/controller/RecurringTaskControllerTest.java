@@ -7,7 +7,7 @@ import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_�
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_수정_요청;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_아이디;
 import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_조회_요청;
-import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ class RecurringTaskControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
-        todoId = 할일_이이디_생성_요청(accessToken);
+        todoId = 할일_생성_및_ID_반환(accessToken);
     }
 
     @DisplayName("반복 작업 생성 성공 시 201 상태 코드를 반환한다.")

@@ -56,6 +56,7 @@ public class Todo {
             inverseJoinColumns = @JoinColumn(name = "assignee_id")
     )
     private List<Account> assignees = new ArrayList<>();
+    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
@@ -136,5 +137,9 @@ public class Todo {
             return false;
         }
         return Objects.equals(getId(), todo.getId());
+    }
+
+    public void assignToProject(Project project) {
+        this.project = project;
     }
 }

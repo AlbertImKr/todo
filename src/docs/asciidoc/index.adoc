@@ -126,3 +126,17 @@ include::{snippets}/projects/list/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/projects/list/response-fields.adoc[]
+
+=== 프로젝트에 할일을 할당 API
+
+==== 요청
+
+include::{snippets}/projects/assign-todo/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/projects/assign-todo/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/projects/assign-todo/http-response.adoc[]

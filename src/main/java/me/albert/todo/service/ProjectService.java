@@ -44,4 +44,13 @@ public interface ProjectService {
      * @return 프로젝트 목록
      */
     List<ProjectResponse> getProjects(String username, Pageable pageable);
+
+    /**
+     * 할 일을 프로젝트에 할당합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param longs     할 일 ID 목록
+     * @param username  사용자 이름
+     */
+    void assignTodoToProject(Long projectId, List<Long> longs, String username);
 }

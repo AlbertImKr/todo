@@ -27,6 +27,7 @@ public class Project {
     private Long id;
     @Getter
     private String name;
+    @Getter
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "project")
     private List<Todo> todos = new ArrayList<>();
@@ -66,6 +67,18 @@ public class Project {
 
     public boolean isOwner(Account account) {
         return owner.equals(account);
+    }
+
+    public void assignTodos(List<Todo> todos) {
+        todos.forEach(
+                todo -> {
+                    if (this.todos.contains(todo)) {
+                        return;
+                    }
+                    this.todos.add(todo);
+                    todo.assignToProject(this);
+                }
+        );
     }
 
     @Override

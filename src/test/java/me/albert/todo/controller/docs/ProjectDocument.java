@@ -17,7 +17,8 @@ public class ProjectDocument {
                 "projects/create",
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
-                                .attributes(Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
+                                .attributes(
+                                        Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
                 ),
                 responseFields(
                         fieldWithPath("id").description("프로젝트 ID")
@@ -30,7 +31,8 @@ public class ProjectDocument {
                 "projects/update",
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
-                                .attributes(Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
+                                .attributes(
+                                        Attributes.key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
                 )
         );
     }
@@ -47,6 +49,17 @@ public class ProjectDocument {
                 responseFields(
                         fieldWithPath("[].id").description("프로젝트 ID"),
                         fieldWithPath("[].name").description("프로젝트 이름")
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter assignTodoToProjectDocumentation() {
+        return document(
+                "projects/assign-todo",
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록")
+                                .attributes(Attributes.key("constraints")
+                                                    .value(ValidationMessages.PROJECT_ASSIGN_TODO_NOT_NULL))
                 )
         );
     }

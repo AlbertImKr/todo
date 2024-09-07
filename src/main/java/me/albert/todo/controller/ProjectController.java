@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.albert.todo.controller.dto.request.AssignTodoToProjectRequest;
 import me.albert.todo.controller.dto.request.ProjectCreateRequest;
 import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
 import me.albert.todo.service.ProjectService;
@@ -81,5 +82,21 @@ public class ProjectController {
     @GetMapping("/projects")
     public List<ProjectResponse> getProjects(@CurrentUsername String username, @PageableDefault Pageable pageable) {
         return projectService.getProjects(username, pageable);
+    }
+
+    /**
+     * 프로젝트에 할 일 할당 API
+     *
+     * @param projectId 프로젝트 ID
+     * @param request   할 일 할당 요청
+     * @param username  현재 사용자의 이름
+     */
+    @PutMapping("/projects/{projectId}/todos")
+    public void assignTodoToProject(
+            @PathVariable Long projectId,
+            @Valid @RequestBody AssignTodoToProjectRequest request,
+            @CurrentUsername String username
+    ) {
+        projectService.assignTodoToProject(projectId, request.todoIds(), username);
     }
 }

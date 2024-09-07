@@ -3,6 +3,7 @@ package me.albert.todo.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,33 @@ class ProjectTest {
     void setUp() {
         account = new Account(1L);
         project = new Project(1L, account);
+    }
+
+    @DisplayName("프로젝트에 할 일들을 할당한다")
+    @Test
+    void assign_todos() {
+        // given
+        var todo = new Todo();
+
+        // when
+        project.assignTodos(List.of(todo));
+
+        // then
+        assertThat(project.getTodos()).contains(todo);
+    }
+
+    @DisplayName("프로젝트를 할당 받은 할 일은 다시 할당하지 않는다")
+    @Test
+    void assign_todos_twice() {
+        // given
+        var todo = new Todo();
+        project.assignTodos(List.of(todo));
+
+        // when
+        project.assignTodos(List.of(todo));
+
+        // then
+        assertThat(project.getTodos()).size().isEqualTo(1);
     }
 
     @DisplayName("프로젝트를 수정한다")

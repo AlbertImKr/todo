@@ -25,6 +25,19 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할일에 프로젝트를 할당한다.")
+    @Test
+    void assign_project() {
+        // given
+        var project = new Project(1L);
+
+        // when
+        todo.assignToProject(project);
+
+        // then
+        assertThat(todo.getProject()).isEqualTo(project);
+    }
+
     @DisplayName("할일 수정이 정상적으로 이루어진다.")
     @Test
     void update_todo() {
