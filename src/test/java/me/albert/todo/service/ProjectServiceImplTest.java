@@ -39,6 +39,62 @@ class ProjectServiceImplTest {
     @Mock
     private TodoService todoService;
 
+    @DisplayName("할 일을 프로젝트에서 해제한다")
+    @Test
+    void unassign_todo_from_project() {
+        // given
+        var projectId = 1L;
+        var todoIds = List.of(1L);
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", account);
+        var todo1 = new Todo(1L);
+        var todo2 = new Todo(2L);
+        project.assignTodos(List.of(todo1, todo2));
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(todoService.findAllByIdInAndOwner(todoIds, username)).thenReturn(List.of(todo1));
+
+        // when
+        projectService.unassignTodoFromProject(projectId, todoIds, username);
+
+        // then
+        assertThat(project.getTodos()).containsExactly(todo2);
+    }
+
+    @DisplayName("할 일을 프로젝트에서 해제할 때 프로젝트가 없으면 예외가 발생한다")
+    @Test
+    void unassign_todo_from_project_without_project() {
+        // given
+        var projectId = 1L;
+        var todoIds = List.of(1L);
+        var username = "user";
+        when(accountService.findByUsername(username)).thenReturn(new Account(1L));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> projectService.unassignTodoFromProject(projectId, todoIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
+    }
+
+    @DisplayName("할 일을 프로젝트에서 해제할 때 권한이 없으면 예외가 발생한다")
+    @Test
+    void unassign_todo_from_project_without_permission() {
+        // given
+        var projectId = 1L;
+        var todoIds = List.of(1L);
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", new Account(2L));
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+
+        // when & then
+        assertThatThrownBy(() -> projectService.unassignTodoFromProject(projectId, todoIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_ASSIGN_NOT_ALLOWED);
+    }
 
     @DisplayName("할 일을 프로젝트에 할당한다")
     @Test

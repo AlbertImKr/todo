@@ -142,4 +142,8 @@ public class Todo {
     public void assignToProject(Project project) {
         this.project = project;
     }
+
+    public void unassignFromProject() {
+        this.project = null;
+    }
 }

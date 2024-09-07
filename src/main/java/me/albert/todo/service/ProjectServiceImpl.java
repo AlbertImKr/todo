@@ -73,4 +73,17 @@ public class ProjectServiceImpl implements ProjectService {
         var todos = todoService.findAllByIdInAndOwner(todoIds, username);
         project.assignTodos(todos);
     }
+
+    @Transactional
+    @Override
+    public void unassignTodoFromProject(Long projectId, List<Long> todoIds, String username) {
+        var account = accountService.findByUsername(username);
+        var project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!project.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.PROJECT_ASSIGN_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        var todos = todoService.findAllByIdInAndOwner(todoIds, username);
+        project.unassignTodos(todos);
+    }
 }

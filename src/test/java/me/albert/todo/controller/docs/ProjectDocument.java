@@ -63,4 +63,15 @@ public class ProjectDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter unassignTodoFromProjectDocumentation() {
+        return document(
+                "projects/unassign-todo",
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록")
+                                .attributes(Attributes.key("constraints")
+                                                    .value(ValidationMessages.PROJECT_ASSIGN_TODO_NOT_NULL))
+                )
+        );
+    }
 }

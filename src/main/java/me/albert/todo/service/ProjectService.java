@@ -51,6 +51,19 @@ public interface ProjectService {
      * @param projectId 프로젝트 ID
      * @param longs     할 일 ID 목록
      * @param username  사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 푸로잭트의 소유자가 아닌 경우
      */
     void assignTodoToProject(Long projectId, List<Long> longs, String username);
+
+    /**
+     * 할 일을 프로젝트에서 해제합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param longs     할 일 ID 목록
+     * @param username  사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 프로젝트의 소유자가 아닌 경우
+     */
+    void unassignTodoFromProject(Long projectId, List<Long> longs, String username);
 }

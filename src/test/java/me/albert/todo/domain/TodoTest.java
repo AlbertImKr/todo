@@ -25,6 +25,20 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할일에 프로젝트 할당을 해제한다.")
+    @Test
+    void unassign_project() {
+        // given
+        var project = new Project(1L);
+        todo.assignToProject(project);
+
+        // when
+        todo.unassignFromProject();
+
+        // then
+        assertThat(todo.getProject()).isNull();
+    }
+
     @DisplayName("할일에 프로젝트를 할당한다.")
     @Test
     void assign_project() {

@@ -81,6 +81,18 @@ public class Project {
         );
     }
 
+    public void unassignTodos(List<Todo> todos) {
+        todos.forEach(
+                todo -> {
+                    if (!this.todos.contains(todo)) {
+                        return;
+                    }
+                    this.todos.remove(todo);
+                    todo.unassignFromProject();
+                }
+        );
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(id);

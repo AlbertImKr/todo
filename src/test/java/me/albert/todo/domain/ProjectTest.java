@@ -22,6 +22,21 @@ class ProjectTest {
         project = new Project(1L, account);
     }
 
+    @DisplayName("프로젝트에 할당한 할 일을 해제한다")
+    @Test
+    void unassign_todos() {
+        // given
+        var todo1 = new Todo(1L);
+        var todo2 = new Todo(2L);
+        project.assignTodos(List.of(todo1, todo2));
+
+        // when
+        project.unassignTodos(List.of(todo1));
+
+        // then
+        assertThat(project.getTodos()).containsExactly(todo2);
+    }
+
     @DisplayName("프로젝트에 할 일들을 할당한다")
     @Test
     void assign_todos() {

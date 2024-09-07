@@ -140,3 +140,17 @@ include::{snippets}/projects/assign-todo/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/projects/assign-todo/http-response.adoc[]
+
+=== 프로젝트에 할일을 해제 API
+
+==== 요청
+
+include::{snippets}/projects/unassign-todo/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/projects/unassign-todo/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/projects/unassign-todo/http-response.adoc[]
