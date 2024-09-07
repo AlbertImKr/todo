@@ -26,5 +26,3 @@ include::{snippets}/todos/create/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/todos/create/response-fields.adoc[]
-
-==== 에러 응답

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import me.albert.todo.domain.Account;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.AccountRepository;
+import me.albert.todo.utils.ErrorMessages;
 import me.albert.todo.utils.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class AccountServiceImplTest {
         // when, then
         assertThatThrownBy(() -> accountService.register(username, password))
                 .isInstanceOf(BusinessException.class)
-                .hasMessage(AccountServiceImpl.USERNAME_IS_EXISTED);
+                .hasMessage(ErrorMessages.USERNAME_IS_EXISTED);
     }
 
     @DisplayName("유저를 로그인 성공하면 TokenResponse를 반환해야 한다.")
