@@ -11,7 +11,9 @@ public class ErrorMessages {
     // To-do
     public static final String TODO_NOT_FOUND = "할 일을 찾을 수 없습니다.";
     public static final String TODO_UPDATE_NOT_ALLOWED = "할 일을 수정할 권한이 없습니다.";
+    public static final String TODO_DELETE_NOT_ALLOWED = "할 일을 삭제할 권한이 없습니다.";
 
-    public ErrorMessages() {
+    private ErrorMessages() {
+        throw new AssertionError("Cannot instantiate utility class");
     }
 }

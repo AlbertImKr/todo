@@ -1,6 +1,7 @@
 package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
@@ -15,11 +16,15 @@ import static me.albert.todo.controller.steps.TodoSteps.할일_수정_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_이이디_생성_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import me.albert.todo.TodoAcceptanceTest;
+import me.albert.todo.utils.ErrorMessages;
 import me.albert.todo.utils.ValidationMessages;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,11 +94,14 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @DisplayName("할 일 삭제 성공 시 204 No Content 반환")
     @Test
     void delete_todo_if_success() {
+        // docs
+        spec.filter(deleteTodoDocumentation());
+
         // given
         var todoId = 할일_이이디_생성_요청(accessToken);
 
         // when
-        var target = 할일_삭제_요청(todoId, accessToken);
+        var target = 할일_삭제_요청(todoId, accessToken,spec);
 
         // then
         assertThat(target.statusCode()).isEqualTo(204);
@@ -778,7 +786,7 @@ class TodoControllerTest extends TodoAcceptanceTest {
             // then
             Assertions.assertAll(
                     () -> assertThat(target.statusCode()).isEqualTo(404),
-                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+                    () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_NOT_FOUND)
             );
         }
 
@@ -793,8 +801,8 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
             // then
             Assertions.assertAll(
-                    () -> assertThat(target.statusCode()).isEqualTo(404),
-                    () -> assertThat(target.body().asString()).contains("할 일을 찾을 수 없습니다.")
+                    () -> assertThat(target.statusCode()).isEqualTo(403),
+                    () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_DELETE_NOT_ALLOWED)
             );
         }
     }

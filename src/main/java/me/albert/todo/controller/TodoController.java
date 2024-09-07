@@ -53,6 +53,12 @@ public class TodoController {
         todoService.update(request, id, username);
     }
 
+    /**
+     * 할 일을 삭제 API 입니다. 응답 코드는 204(No Content) 입니다.
+     *
+     * @param id       삭제할 할 일 ID
+     * @param username 사용자 이름
+     */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/todos/{id}")
     public void delete(@PathVariable Long id, @CurrentUsername String username) {

@@ -34,6 +34,12 @@ public class TodoSteps {
                 .extract();
     }
 
+    /**
+     * 할 일 생성하고 해당 할 일 ID 반환
+     *
+     * @param accessToken 액세스 토큰
+     * @return 응답 ExtractableResponse
+     */
     public static Long 할일_이이디_생성_요청(String accessToken) {
         var dueDate = LocalDateTime.now().plusDays(1).format(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
@@ -86,8 +92,32 @@ public class TodoSteps {
                 .extract();
     }
 
+    /**
+     * 할 일 삭제 요청
+     *
+     * @param id          할 일 ID
+     * @param accessToken 액세스 토큰
+     * @return 응답 ExtractableResponse
+     */
     public static ExtractableResponse<Response> 할일_삭제_요청(Long id, String accessToken) {
         return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/todos/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 할 일 삭제 요청
+     *
+     * @param id          할 일 ID
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답 ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 할일_삭제_요청(Long id, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
                 .delete("/todos/" + id)

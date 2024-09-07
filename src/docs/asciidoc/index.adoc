@@ -57,3 +57,13 @@ include::{snippets}/todos/update/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/todos/update/http-response.adoc[]
+
+== 할일 삭제 API
+
+=== 요청
+
+include::{snippets}/todos/delete/http-request.adoc[]
+
+=== 응답
+
+include::{snippets}/todos/delete/http-response.adoc[]
