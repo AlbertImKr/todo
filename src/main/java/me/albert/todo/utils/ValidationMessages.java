@@ -30,6 +30,9 @@ public class ValidationMessages {
     public static final String TAG_ID_NOT_NULL = "태그 ID는 필수 입력값입니다.";
     public static final String TAG_ID_POSITIVE = "태그 ID는 0보다 커야 합니다.";
 
+    // Recurring task
+    public static final String RECURRING_TASK_RECURRENCE_PATTERN_MESSAGE = "반복 주기는 필수입니다.ISO8601 기간 형식으로 입력해주세요.";
+
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }

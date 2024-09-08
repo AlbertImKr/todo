@@ -96,6 +96,43 @@ include::{snippets}/todos/unassign-tag/http-request.adoc[]
 
 include::{snippets}/todos/unassign-tag/http-response.adoc[]
 
+[[Recurring_Task]]
+== 반복 설정 API
+
+=== 반복 설정 업데이트 API
+
+==== API 경로
+
+include::{snippets}/recurring-task/update/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/recurring-task/update/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/recurring-task/update/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/recurring-task/update/http-response.adoc[]
+
+=== 반복 설정 삭제 API
+
+==== API 경로
+
+include::{snippets}/recurring-task/delete/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/recurring-task/delete/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/recurring-task/delete/http-response.adoc[]
+
+[[Todo_List]]
+
 [[Project]]
 == Project API
 
