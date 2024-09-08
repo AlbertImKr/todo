@@ -47,4 +47,41 @@ public class TagSteps {
                 .then().log().all()
                 .extract();
     }
+
+    /**
+     * 태그 이름으로 태그 조회 요청
+     *
+     * @param query       쿼리
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 태그_이름으로_태그_조회_요청(HashMap<String, Object> query, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .queryParams(query)
+                .when()
+                .get("/tags")
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 태그 이름으로 태그 조회 요청
+     *
+     * @param query       쿼리
+     * @param accessToken 엑세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 태그_이름으로_태그_조회_요청(
+            HashMap<String, Object> query, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .queryParams(query)
+                .when()
+                .get("/tags")
+                .then().log().all()
+                .extract();
+    }
 }

@@ -12,4 +12,13 @@ public interface TagService {
      * @throws me.albert.todo.exception.BusinessException 이미 존재하는 태그인 경우
      */
     IdResponse createTag(String name);
+
+    /**
+     * 태그 이름으로 태그를 조회한다.
+     *
+     * @param name 태그 이름
+     * @return 태그 ID
+     * @throws me.albert.todo.exception.BusinessException 존재하지 않는 태그인 경우
+     */
+    IdResponse getTagByName(String name);
 }

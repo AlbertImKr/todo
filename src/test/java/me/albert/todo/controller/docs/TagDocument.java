@@ -5,6 +5,8 @@ import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import me.albert.todo.utils.ValidationMessages;
@@ -24,6 +26,20 @@ public class TagDocument {
                 ),
                 responseFields(
                         fieldWithPath("id").description("생성된 태그의 ID")
+                )
+        );
+    }
+
+    public static RestDocumentationFilter searchTagDocumentation() {
+        return document(
+                "tags/search",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                queryParameters(
+                        parameterWithName("name").description("태그 이름")
+                ),
+                responseFields(
+                        fieldWithPath("id").description("태그 ID")
                 )
         );
     }

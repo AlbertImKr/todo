@@ -188,3 +188,21 @@ include::{snippets}/tags/create/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/tags/create/response-fields.adoc[]
+
+=== 태그 이름을 태그 조회 API
+
+==== 요청
+
+include::{snippets}/tags/search/http-request.adoc[]
+
+==== 요청 쿼리 파라미터 상세
+
+include::{snippets}/tags/search/query-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/tags/search/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/tags/search/response-fields.adoc[]

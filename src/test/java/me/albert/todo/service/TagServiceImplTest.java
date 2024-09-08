@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import me.albert.todo.domain.Tag;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.TagRepository;
+import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,35 @@ class TagServiceImplTest {
 
     @Mock
     private TagRepository tagRepository;
+
+    @DisplayName("태그 이름으로 태그를 조회한다.")
+    @Test
+    void get_tag_by_name() {
+        // given
+        var name = "tag";
+        var tag = mock(Tag.class);
+        when(tagRepository.findByName(name)).thenReturn(java.util.Optional.of(tag));
+
+        // when
+        tagService.getTagByName(name);
+
+        // then
+        verify(tagRepository).findByName(name);
+    }
+
+    @DisplayName("태그 이름으로 조회했을 때 태그가 존재하지 않으면 예외가 발생한다.")
+    @Test
+    void get_tag_by_name_not_found() {
+        // given
+        var name = "tag";
+        when(tagRepository.findByName(name)).thenReturn(java.util.Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> tagService.getTagByName(name))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("message", ErrorMessages.TAG_NOT_FOUND)
+                .hasFieldOrPropertyWithValue("httpStatusCode", HttpStatus.NOT_FOUND);
+    }
 
     @DisplayName("태그를 생성한다.")
     @Test
@@ -55,7 +85,7 @@ class TagServiceImplTest {
         // when, then
         assertThatThrownBy(() -> tagService.createTag(name))
                 .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("message", TagServiceImpl.TAG_ALREADY_EXISTS)
+                .hasFieldOrPropertyWithValue("message", ErrorMessages.TAG_ALREADY_EXISTS)
                 .hasFieldOrPropertyWithValue("httpStatusCode", HttpStatus.BAD_REQUEST);
     }
 
@@ -70,7 +100,7 @@ class TagServiceImplTest {
         // when, then
         assertThatThrownBy(() -> tagService.createTag(name))
                 .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("message", TagServiceImpl.TAG_ALREADY_EXISTS)
+                .hasFieldOrPropertyWithValue("message", ErrorMessages.TAG_ALREADY_EXISTS)
                 .hasFieldOrPropertyWithValue("httpStatusCode", HttpStatus.BAD_REQUEST);
     }
 }
