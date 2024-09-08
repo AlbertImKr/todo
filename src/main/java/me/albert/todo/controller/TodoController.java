@@ -203,6 +203,14 @@ public class TodoController {
         return todoService.list(username, pageable);
     }
 
+    /**
+     * 태그로 할 일 목록을 조회하는 API
+     *
+     * @param username 사용자 이름
+     * @param query    태그 이름
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
     @GetMapping(value = "/todos", params = "tag")
     public Page<TodoResponse> list(
             @CurrentUsername String username, @ModelAttribute SearchByTagQuery query, @PageableDefault Pageable pageable
@@ -210,6 +218,14 @@ public class TodoController {
         return todoService.listByTag(query.tag(), username, pageable);
     }
 
+    /**
+     * 프로젝트에 할당된 할 일 목록을 조회하는 API
+     *
+     * @param username 사용자 이름
+     * @param query    프로젝트 ID
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
     @GetMapping(value = "/todos", params = "projectId")
     public Page<TodoResponse> listByProject(
             @CurrentUsername String username, @ModelAttribute SearchByProjectQuery query,
