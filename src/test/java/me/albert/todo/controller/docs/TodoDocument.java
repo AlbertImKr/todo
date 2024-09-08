@@ -23,6 +23,7 @@ public class TodoDocument {
                 "todos/create",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(),
                 requestFields(
                         fieldWithPath("title").description("할 일 제목")
                                 .attributes(key("constraints").value(ValidationMessages.TODO_TITLE_MESSAGE)),
@@ -42,6 +43,9 @@ public class TodoDocument {
                 "todos/update",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
                 requestFields(
                         fieldWithPath("title").description("할 일 제목")
                                 .attributes(key("constraints").value(ValidationMessages.TODO_TITLE_MESSAGE)),
@@ -63,7 +67,10 @@ public class TodoDocument {
         return document(
                 "todos/delete",
                 prettyPrintRequest(),
-                prettyPrintResponse()
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                )
         );
     }
 
@@ -72,6 +79,9 @@ public class TodoDocument {
                 "todos/assign-tag",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
                 requestFields(
                         fieldWithPath("tagId").description("태그 ID")
                                 .attributes(key("constraints").value(ValidationMessages.TAG_ID_POSITIVE))

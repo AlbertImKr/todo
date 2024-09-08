@@ -6,6 +6,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
@@ -20,6 +21,7 @@ public class TagDocument {
                 "tags/create",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(),
                 requestFields(
                         fieldWithPath("name").description("태그 이름").attributes(
                                 Attributes.key("constraints").value(ValidationMessages.TAG_NAME_MESSAGE))
@@ -35,6 +37,7 @@ public class TagDocument {
                 "tags/search",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(),
                 queryParameters(
                         parameterWithName("name").description("태그 이름")
                 ),

@@ -71,7 +71,7 @@ public class ProjectSteps {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .get("/projects/" + id)
+                .get("/projects/{projectId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -88,7 +88,7 @@ public class ProjectSteps {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .get("/projects/" + id)
+                .get("/projects/{projectId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -109,7 +109,7 @@ public class ProjectSteps {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .put("/projects/" + id)
+                .put("/projects/{projectId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -131,7 +131,7 @@ public class ProjectSteps {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .put("/projects/" + id)
+                .put("/projects/{projectId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -148,7 +148,7 @@ public class ProjectSteps {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .delete("/projects/" + id)
+                .delete("/projects/{projectId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -165,7 +165,7 @@ public class ProjectSteps {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .delete("/projects/" + id)
+                .delete("/projects/{projectId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -217,7 +217,7 @@ public class ProjectSteps {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .put("/projects/" + id + "/todos")
+                .put("/projects/{projectId}/todos", id)
                 .then().log().all()
                 .extract();
     }
@@ -239,7 +239,7 @@ public class ProjectSteps {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .put("/projects/" + id + "/todos")
+                .put("/projects/{projectId}/todos", id)
                 .then().log().all()
                 .extract();
     }
@@ -260,7 +260,7 @@ public class ProjectSteps {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .delete("/projects/" + id + "/todos")
+                .delete("/projects/{projectId}/todos", id)
                 .then().log().all()
                 .extract();
     }
@@ -282,7 +282,7 @@ public class ProjectSteps {
                 .contentType("application/json")
                 .body(body)
                 .when()
-                .delete("/projects/" + id + "/todos")
+                .delete("/projects/{projectId}/todos", id)
                 .then().log().all()
                 .extract();
     }

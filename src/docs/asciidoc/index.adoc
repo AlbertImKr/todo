@@ -11,6 +11,10 @@
 
 === 계정 생성 API
 
+==== URL 경로
+
+include::{snippets}/account/register/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/account/register/http-request.adoc[]
@@ -23,10 +27,32 @@ include::{snippets}/account/register/request-fields.adoc[]
 
 include::{snippets}/account/register/http-response.adoc[]
 
+=== 로그인 API
+
+==== URL 경로
+
+include::{snippets}/account/login/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/account/login/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/account/login/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/account/login/http-response.adoc[]
+
 [[Todo]]
 == Todo API
 
 === 할일 생성 API
+
+==== URL 경로
+
+include::{snippets}/todos/create/path-parameters.adoc[]
 
 ==== 요청
 
@@ -46,6 +72,10 @@ include::{snippets}/todos/create/response-fields.adoc[]
 
 === 할일 수정 API
 
+==== URL 경로
+
+include::{snippets}/todos/update/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/todos/update/http-request.adoc[]
@@ -60,6 +90,10 @@ include::{snippets}/todos/update/http-response.adoc[]
 
 === 할일 삭제 API
 
+==== URL 경로
+
+include::{snippets}/todos/delete/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/todos/delete/http-request.adoc[]
@@ -69,6 +103,10 @@ include::{snippets}/todos/delete/http-request.adoc[]
 include::{snippets}/todos/delete/http-response.adoc[]
 
 === 할일에 태그 추가 API
+
+==== URL 경로
+
+include::{snippets}/todos/assign-tag/path-parameters.adoc[]
 
 ==== 요청
 
@@ -138,6 +176,10 @@ include::{snippets}/recurring-task/delete/http-response.adoc[]
 
 === 프로젝트 상세 조회 API
 
+==== URL 경로
+
+include::{snippets}/projects/get/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/projects/get/http-request.adoc[]
@@ -152,6 +194,10 @@ include::{snippets}/projects/get/response-fields.adoc[]
 
 === 프로젝트 목록 조회 API
 
+==== URL 경로
+
+include::{snippets}/projects/list/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/projects/list/http-request.adoc[]
@@ -165,6 +211,10 @@ include::{snippets}/projects/list/http-response.adoc[]
 include::{snippets}/projects/list/response-fields.adoc[]
 
 === 프로젝트 생성 API
+
+==== URL 경로
+
+include::{snippets}/projects/create/path-parameters.adoc[]
 
 ==== 요청
 
@@ -184,6 +234,10 @@ include::{snippets}/projects/create/response-fields.adoc[]
 
 === 프로젝트 수정 API
 
+==== URL 경로
+
+include::{snippets}/projects/update/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/projects/update/http-request.adoc[]
@@ -198,6 +252,10 @@ include::{snippets}/projects/update/http-response.adoc[]
 
 === 프로젝트 삭제 API
 
+==== URL 경로
+
+include::{snippets}/projects/delete/path-parameters.adoc[]
+
 ==== 요청
 
 include::{snippets}/projects/delete/http-request.adoc[]
@@ -207,6 +265,10 @@ include::{snippets}/projects/delete/http-request.adoc[]
 include::{snippets}/projects/delete/http-response.adoc[]
 
 === 프로젝트에 할일을 할당 API
+
+==== URL 경로
+
+include::{snippets}/projects/assign-todo/path-parameters.adoc[]
 
 ==== 요청
 
@@ -221,6 +283,10 @@ include::{snippets}/projects/assign-todo/request-fields.adoc[]
 include::{snippets}/projects/assign-todo/http-response.adoc[]
 
 === 프로젝트에 할일을 해제 API
+
+==== URL 경로
+
+include::{snippets}/projects/unassign-todo/path-parameters.adoc[]
 
 ==== 요청
 
@@ -237,6 +303,10 @@ include::{snippets}/projects/unassign-todo/http-response.adoc[]
 == Tag API
 
 === 태그 생성 API
+
+==== URL 경로
+
+include::{snippets}/tags/create/path-parameters.adoc[]
 
 ==== 요청
 
@@ -255,6 +325,10 @@ include::{snippets}/tags/create/http-response.adoc[]
 include::{snippets}/tags/create/response-fields.adoc[]
 
 === 태그 이름을 태그 조회 API
+
+==== URL 경로
+
+include::{snippets}/tags/search/path-parameters.adoc[]
 
 ==== 요청
 

@@ -5,6 +5,8 @@ import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +21,7 @@ public class ProjectDocument {
                 "projects/create",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(),
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
                                 .attributes(
@@ -35,6 +38,9 @@ public class ProjectDocument {
                 "projects/update",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
                 requestFields(
                         fieldWithPath("name").description("프로젝트 이름")
                                 .attributes(
@@ -47,7 +53,10 @@ public class ProjectDocument {
         return document(
                 "projects/delete",
                 prettyPrintRequest(),
-                prettyPrintResponse()
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("projectId").description("프로젝트 ID")
+                )
         );
     }
 
@@ -56,6 +65,7 @@ public class ProjectDocument {
                 "projects/list",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(),
                 responseFields(
                         fieldWithPath("[].id").description("프로젝트 ID"),
                         fieldWithPath("[].name").description("프로젝트 이름")
@@ -68,6 +78,9 @@ public class ProjectDocument {
                 "projects/get",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
                 responseFields(
                         fieldWithPath("id").description("프로젝트 ID"),
                         fieldWithPath("name").description("프로젝트 이름"),
@@ -88,6 +101,9 @@ public class ProjectDocument {
                 "projects/assign-todo",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
                 requestFields(
                         fieldWithPath("todoIds").description("할 일 ID 목록")
                                 .attributes(Attributes.key("constraints")
@@ -101,6 +117,9 @@ public class ProjectDocument {
                 "projects/unassign-todo",
                 prettyPrintRequest(),
                 prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
                 requestFields(
                         fieldWithPath("todoIds").description("할 일 ID 목록")
                                 .attributes(Attributes.key("constraints")
