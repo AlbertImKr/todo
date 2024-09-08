@@ -71,6 +71,13 @@ public class TodoController {
         return todoService.get(id, username);
     }
 
+    /**
+     * 할 일의 상태를 업데이트하는 API
+     *
+     * @param id       할 일 ID
+     * @param request  상태 변경 요청
+     * @param username 사용자 이름
+     */
     @PutMapping("/todos/{id}/status")
     public void updateStatus(
             @PathVariable Long id, @Valid @RequestBody TodoStatusUpdateRequest request, @CurrentUsername String username

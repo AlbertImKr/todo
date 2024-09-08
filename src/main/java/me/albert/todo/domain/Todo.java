@@ -49,6 +49,8 @@ public class Todo {
     private Account owner;
     @ManyToOne
     private Group group;
+    @Enumerated(EnumType.STRING)
+    private TodoPriority priority;
     @Getter
     @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RecurringTask recurringTask;
@@ -75,7 +77,7 @@ public class Todo {
 
     public Todo(
             String title, String description, LocalDateTime localDateTime, Account account, LocalDateTime createdAt,
-            LocalDateTime updatedAt, TodoStatus status
+            LocalDateTime updatedAt, TodoStatus status, TodoPriority priority
     ) {
         this.title = title;
         this.description = description;
@@ -84,6 +86,7 @@ public class Todo {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.status = status;
+        this.priority = priority;
     }
 
     public void update(
@@ -104,7 +107,10 @@ public class Todo {
         this.status = status;
     }
 
-    public void updateStatus(TodoStatus status, LocalDateTime updatedAt) {
+    public void updateStatus(TodoStatus status, LocalDateTime updatedAt, Account owner) {
+        if (!isOwner(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
         this.status = status;
         this.updatedAt = updatedAt;
     }

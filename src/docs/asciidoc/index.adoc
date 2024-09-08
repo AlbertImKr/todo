@@ -134,6 +134,24 @@ include::{snippets}/todos/unassign-tag/http-request.adoc[]
 
 include::{snippets}/todos/unassign-tag/http-response.adoc[]
 
+=== 할일 상태 업데이트 API
+
+==== URL 경로
+
+include::{snippets}/todos/update-status/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/update-status/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/todos/update-status/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/update-status/http-response.adoc[]
+
 [[Recurring_Task]]
 == 반복 설정 API
 
@@ -170,7 +188,6 @@ include::{snippets}/recurring-task/delete/http-request.adoc[]
 include::{snippets}/recurring-task/delete/http-response.adoc[]
 
 [[Todo_List]]
-
 [[Project]]
 == Project API
 

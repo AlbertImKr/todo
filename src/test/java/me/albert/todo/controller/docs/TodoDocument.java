@@ -100,4 +100,23 @@ public class TodoDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter updateTodoStatusDocumentation() {
+        return document(
+                "todos/update-status",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("status").description("할 일 상태")
+                                .attributes(key("constraints").value(Arrays.stream(TodoStatus.values())
+                                                                             .map(Enum::name)
+                                                                             .reduce((a, b) -> a + ", " + b)
+                                                                             .orElse(""))
+                                )
+                )
+        );
+    }
 }

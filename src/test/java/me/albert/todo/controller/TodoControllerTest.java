@@ -5,6 +5,7 @@ import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentatio
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.unassignTagFromTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.updateTodoStatusDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
@@ -173,13 +174,16 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @DisplayName("할 일 상태 변경 성공 시 200 OK 반환")
     @Test
     void update_todo_status_if_success() {
+        // docs
+        spec.filter(updateTodoStatusDocumentation());
+
         // given
         var todoId = 할일_생성_및_ID_반환(accessToken);
         var body = new HashMap<>();
         body.put("status", "COMPLETED");
 
         // when
-        var target = 할일_상태_변경_요청(todoId, body, accessToken);
+        var target = 할일_상태_변경_요청(todoId, body, accessToken, spec);
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
