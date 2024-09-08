@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import static me.albert.todo.controller.docs.TodoDocument.assignTagToTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.deleteTodoNotificationDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.unassignTagFromTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoNotificationDocumentation;
@@ -21,6 +22,7 @@ import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_수정_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_알림_설정_변경_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_알림_설정_삭제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_우선순위_변경_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_조회_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_태그_할당_요청;
@@ -48,6 +50,25 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("할 일의 알림 설정을 삭제 성공 시 204 No Content 반환")
+    @Test
+    void delete_todo_notification_if_success() {
+        // docs
+        spec.filter(deleteTodoNotificationDocumentation());
+
+        // given
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        var body = new HashMap<>();
+        body.put("notifyAt", List.of("PT10M", "PT1H"));
+        할일_알림_설정_변경_요청(todoId, body, accessToken);
+
+        // when
+        var target = 할일_알림_설정_삭제_요청(todoId, accessToken, spec);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(204);
     }
 
     @DisplayName("할 일의 알림 설정을 변경 성공 시 200 OK 반환")
@@ -277,6 +298,48 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("할 일의 알림 설정을 삭제 실패")
+    @Nested
+    class DeleteTodoNotificationFail {
+
+        long todoId;
+
+        @BeforeEach
+        void setTodo() {
+            todoId = 할일_생성_및_ID_반환(accessToken);
+        }
+
+        @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void todo_not_found() {
+            // when
+            var notExistTodoId = 100L;
+            var target = 할일_알림_설정_삭제_요청(notExistTodoId, accessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_NOT_FOUND)
+            );
+        }
+
+        @DisplayName("알림 설정을 삭제할 권한이 없으면 403 Forbidden 반환")
+        @Test
+        void no_permission() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+            var body = new HashMap<>();
+            body.put("notifyAt", List.of("PT10M", "PT1H"));
+            할일_알림_설정_변경_요청(todoId, body, accessToken);
+
+            // when
+            var target = 할일_알림_설정_삭제_요청(todoId, otherUserAccessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(403);
+        }
     }
 
     @DisplayName("할 일의 알일 설정 변경 실패")

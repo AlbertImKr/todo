@@ -138,6 +138,41 @@ public class TodoSteps {
     }
 
     /**
+     * 할 일 알림 설정 삭제 요청
+     *
+     * @param id          할 일 ID
+     * @param accessToken 액세스 토큰
+     * @return 응답 ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 할일_알림_설정_삭제_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/todos/{todoId}/notification-settings", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 할 일 알림 설정 삭제 요청
+     *
+     * @param id          할 일 ID
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답 ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 할일_알림_설정_삭제_요청(
+            Long id, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/todos/{todoId}/notification-settings", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 할 일 수정 요청
      *
      * @param body        요청 바디 맵(할 일 제목, 설명, 마감일, 상태)

@@ -188,6 +188,20 @@ include::{snippets}/todos/update-notification/request-fields.adoc[]
 
 include::{snippets}/todos/update-notification/http-response.adoc[]
 
+=== 할일 알림 해제 API
+
+==== URL 경로
+
+include::{snippets}/todos/delete-notification/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/delete-notification/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/delete-notification/http-response.adoc[]
+
 [[Recurring_Task]]
 == 반복 설정 API
 

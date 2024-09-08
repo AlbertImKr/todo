@@ -172,4 +172,13 @@ public class TodoServiceImpl implements TodoService {
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         todo.updateNotificationSettings(durations, owner);
     }
+
+    @Transactional
+    @Override
+    public void deleteNotificationSettings(Long id, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        todo.deleteNotificationSettings(owner);
+    }
 }

@@ -168,4 +168,19 @@ public class TodoController {
     ) {
         todoService.updateNotificationSettings(id, request.notifyAt(), currentUsername);
     }
+
+    /**
+     * 할 일의 알림 설정을 삭제하는 API
+     *
+     * @param id              할 일 ID
+     * @param currentUsername 사용자 이름
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/todos/{id}/notification-settings")
+    public void deleteNotificationSettings(
+            @PathVariable Long id,
+            @CurrentUsername String currentUsername
+    ) {
+        todoService.deleteNotificationSettings(id, currentUsername);
+    }
 }

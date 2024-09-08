@@ -155,4 +155,15 @@ public class TodoDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter deleteTodoNotificationDocumentation() {
+        return document(
+                "todos/delete-notification",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                )
+        );
+    }
 }

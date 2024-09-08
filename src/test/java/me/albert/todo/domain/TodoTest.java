@@ -27,6 +27,20 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할 일의 알림을 삭제 한다")
+    @Test
+    void delete_notifications() {
+        // given
+        var duration = Duration.ofHours(1);
+        todo.updateNotificationSettings(List.of(duration), account);
+
+        // when
+        todo.deleteNotificationSettings(account);
+
+        // then
+        assertThat(todo.getNotificationSettings()).isEmpty();
+    }
+
     @DisplayName("할 일의 알림을 업데이트 한다.")
     @Test
     void update_notifications() {
@@ -51,6 +65,27 @@ class TodoTest {
                 () -> assertThat(secondNotification.getNotifyAt()).isEqualTo(secondNotifyAt)
         );
     }
+
+    @DisplayName("할 일의 알림을 업데이트할 때 기존 알림이 삭제된다.")
+    @Test
+    void update_notifications_delete_old_notifications() {
+        // given
+        var dueDate = todo.getDueDate();
+        var duration = Duration.ofHours(1);
+        todo.updateNotificationSettings(List.of(duration), account);
+        var newDuration = Duration.ofHours(2);
+
+        // when
+        todo.updateNotificationSettings(List.of(newDuration), account);
+
+        // then
+        var notification = todo.getNotificationSettings().get(0);
+        Assertions.assertAll(
+                () -> assertThat(todo.getNotificationSettings()).hasSize(1),
+                () -> assertThat(notification.getNotifyAt()).isEqualTo(dueDate.minus(newDuration))
+        );
+    }
+
 
     @DisplayName("할 일의 우선 순위를 변경한다.")
     @Test

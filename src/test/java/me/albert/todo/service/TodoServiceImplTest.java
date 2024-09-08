@@ -44,6 +44,38 @@ class TodoServiceImplTest {
     @Mock
     private TagService tagService;
 
+    @DisplayName("할 일의 알림 설정을 삭제한다")
+    @Test
+    void delete_notifications() {
+        // given
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.deleteNotificationSettings(1L, "username");
+
+        // then
+        assertThat(todo.getNotificationSettings()).isEmpty();
+    }
+
+    @DisplayName("할 일의 알림 설정을 삭제할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void delete_notifications_if_todo_not_found() {
+        // given
+        when(accountService.findByUsername("username")).thenReturn(new Account());
+        when(todoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.deleteNotificationSettings(1L, "username"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
     @DisplayName("할 일에 알림 설정을 업데이트한다.")
     @Test
     void update_notifications() {

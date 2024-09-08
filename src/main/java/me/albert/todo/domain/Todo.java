@@ -188,6 +188,13 @@ public class Todo {
         }
     }
 
+    public void deleteNotificationSettings(Account owner) {
+        if (!isOwner(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        this.notificationSettings.clear();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
