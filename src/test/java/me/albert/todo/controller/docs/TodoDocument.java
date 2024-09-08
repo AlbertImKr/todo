@@ -247,4 +247,29 @@ public class TodoDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter getTodoDetailDocumentation() {
+        return document(
+                "todos/detail",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                responseFields(
+                        fieldWithPath("id").description("할 일 ID"),
+                        fieldWithPath("title").description("할 일 제목"),
+                        fieldWithPath("description").description("할 일 설명"),
+                        fieldWithPath("dueDate").description("할 일 마감일"),
+                        fieldWithPath("createdAt").description("생성일"),
+                        fieldWithPath("updatedAt").description("수정일"),
+                        fieldWithPath("status").description("할 일 상태"),
+                        fieldWithPath("priority").description("할 일 우선순위"),
+                        fieldWithPath("project").description("프로젝트"),
+                        fieldWithPath("recurringTask").description("반복 작업"),
+                        fieldWithPath("notificationSettings").description("알림 설정"),
+                        fieldWithPath("tags").description("태그")
+                )
+        );
+    }
 }

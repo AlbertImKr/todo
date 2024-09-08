@@ -8,6 +8,7 @@ import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.TodoDetailResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +51,7 @@ public interface TodoService {
      * @return 할 일 정보
      * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
      */
-    TodoResponse get(Long id, String username);
+    TodoDetailResponse get(Long id, String username);
 
     /**
      * 할 일의 상태를 수정합니다.

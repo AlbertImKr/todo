@@ -264,12 +264,30 @@ include::{snippets}/todos/list-by-project/http-response.adoc[]
 
 include::{snippets}/todos/list-by-project/response-fields.adoc[]
 
+=== 할일 디테일 조회 API
+
+==== URL 경로
+
+include::{snippets}/todos/detail/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/detail/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/detail/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/todos/detail/response-fields.adoc[]
+
 [[Recurring_Task]]
 == 반복 설정 API
 
 === 반복 설정 업데이트 API
 
-==== API 경로
+==== URL 경로
 
 include::{snippets}/recurring-task/update/path-parameters.adoc[]
 
@@ -287,7 +305,7 @@ include::{snippets}/recurring-task/update/http-response.adoc[]
 
 === 반복 설정 삭제 API
 
-==== API 경로
+==== URL 경로
 
 include::{snippets}/recurring-task/delete/path-parameters.adoc[]
 
