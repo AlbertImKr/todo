@@ -12,8 +12,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,9 @@ public class Todo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NotificationSetting> notificationSettings = new ArrayList<>();
 
     public Todo() {
     }
@@ -171,6 +176,23 @@ public class Todo {
             throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         this.priority = priority;
+    }
+
+    public void updateNotificationSettings(List<Duration> durations, Account owner) {
+        if (!isOwner(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        this.notificationSettings.clear();
+        for (Duration duration : durations) {
+            this.notificationSettings.add(new NotificationSetting(dueDate.minus(duration)));
+        }
+    }
+
+    public void deleteNotificationSettings(Account owner) {
+        if (!isOwner(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        this.notificationSettings.clear();
     }
 
     @Override

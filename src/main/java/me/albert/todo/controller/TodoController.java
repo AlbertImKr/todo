@@ -5,10 +5,11 @@ import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTagRequest;
 import me.albert.todo.controller.dto.request.AssignUserRequest;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
+import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
+import me.albert.todo.controller.dto.request.TodoUpdateNotificationRequest;
 import me.albert.todo.controller.dto.request.UnassignUserRequest;
 import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
-import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -150,5 +151,36 @@ public class TodoController {
             @CurrentUsername String currentUsername
     ) {
         todoService.updatePriority(id, request.priority(), currentUsername);
+    }
+
+    /**
+     * 할 일의 알림 설정을 업데이트 하는 API
+     *
+     * @param id              할 일 ID
+     * @param request         알림 설정 변경 요청
+     * @param currentUsername 사용자 이름
+     */
+    @PutMapping("/todos/{id}/notification-settings")
+    public void updateNotificationSettings(
+            @PathVariable Long id,
+            @Valid @RequestBody TodoUpdateNotificationRequest request,
+            @CurrentUsername String currentUsername
+    ) {
+        todoService.updateNotificationSettings(id, request.notifyAt(), currentUsername);
+    }
+
+    /**
+     * 할 일의 알림 설정을 삭제하는 API
+     *
+     * @param id              할 일 ID
+     * @param currentUsername 사용자 이름
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/todos/{id}/notification-settings")
+    public void deleteNotificationSettings(
+            @PathVariable Long id,
+            @CurrentUsername String currentUsername
+    ) {
+        todoService.deleteNotificationSettings(id, currentUsername);
     }
 }

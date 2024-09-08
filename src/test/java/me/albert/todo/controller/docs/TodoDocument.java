@@ -139,4 +139,31 @@ public class TodoDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter updateTodoNotificationDocumentation() {
+        return document(
+                "todos/update-notification",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("notifyAt").description("알림 설정")
+                                .attributes(key("constraints").value(
+                                        ValidationMessages.NOTIFICATIONS_SETTING_NOT_NUll_MESSAGE))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter deleteTodoNotificationDocumentation() {
+        return document(
+                "todos/delete-notification",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                )
+        );
+    }
 }

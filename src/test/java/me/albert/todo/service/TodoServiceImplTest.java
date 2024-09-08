@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import me.albert.todo.repository.TodoRepository;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.utils.ErrorMessages;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +43,87 @@ class TodoServiceImplTest {
 
     @Mock
     private TagService tagService;
+
+    @DisplayName("할 일의 알림 설정을 삭제한다")
+    @Test
+    void delete_notifications() {
+        // given
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+        var account = new Account();
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.deleteNotificationSettings(1L, "username");
+
+        // then
+        assertThat(todo.getNotificationSettings()).isEmpty();
+    }
+
+    @DisplayName("할 일의 알림 설정을 삭제할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void delete_notifications_if_todo_not_found() {
+        // given
+        when(accountService.findByUsername("username")).thenReturn(new Account());
+        when(todoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.deleteNotificationSettings(1L, "username"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
+    @DisplayName("할 일에 알림 설정을 업데이트한다.")
+    @Test
+    void update_notifications() {
+        // given
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+        var account = new Account();
+        var dueDate = todo.getDueDate();
+        var firstDuration = Duration.ofHours(1);
+        var firstNotifyAt = dueDate.minus(firstDuration);
+        var secondDuration = Duration.ofHours(2);
+        var secondNotifyAt = dueDate.minus(secondDuration);
+        var durations = List.of(firstDuration, secondDuration);
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.updateNotificationSettings(1L, durations, "username");
+
+        // then
+        var notifications = todo.getNotificationSettings();
+        var firstNotification = notifications.get(0);
+        var secondNotification = notifications.get(1);
+        Assertions.assertAll(
+                () -> assertThat(notifications).hasSize(2),
+                () -> assertThat(firstNotification.getNotifyAt()).isEqualTo(firstNotifyAt),
+                () -> assertThat(secondNotification.getNotifyAt()).isEqualTo(secondNotifyAt)
+        );
+    }
+
+    @DisplayName("할 일에 알림 설정을 업데이트할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void update_notifications_if_todo_not_found() {
+        // given
+        var account = new Account();
+        var firstDuration = Duration.ofHours(1);
+        var secondDuration = Duration.ofHours(2);
+        var durations = List.of(firstDuration, secondDuration);
+        when(accountService.findByUsername("username")).thenReturn(account);
+        when(todoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.updateNotificationSettings(1L, durations, "username"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
 
     @DisplayName("할 일의 우선 순위를 변경한다.")
     @Test

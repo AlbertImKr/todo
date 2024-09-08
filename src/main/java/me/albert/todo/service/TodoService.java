@@ -1,5 +1,6 @@
 package me.albert.todo.service;
 
+import java.time.Duration;
 import java.util.List;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoPriority;
@@ -122,6 +123,29 @@ public interface TodoService {
      * @param id              할 일 ID
      * @param priority        변경할 우선순위
      * @param currentUsername 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 할 일의 소유자가 아닌 경우
      */
     void updatePriority(Long id, TodoPriority priority, String currentUsername);
+
+    /**
+     * 알림 설정을 업데이트합니다.
+     *
+     * @param id              할 일 ID
+     * @param durations       변경할 알림 설정
+     * @param currentUsername 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 할 일의 소유자가 아닌 경우
+     */
+    void updateNotificationSettings(Long id, List<Duration> durations, String currentUsername);
+
+    /**
+     * 알림 설정을 삭제합니다.
+     *
+     * @param id              할 일 ID
+     * @param currentUsername 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 할 일의 소유자가 아닌 경우
+     */
+    void deleteNotificationSettings(Long id, String currentUsername);
 }
