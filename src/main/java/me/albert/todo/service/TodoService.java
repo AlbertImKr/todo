@@ -2,6 +2,7 @@ package me.albert.todo.service;
 
 import java.util.List;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
@@ -114,4 +115,13 @@ public interface TodoService {
      * @param currentUsername 현재 사용자 이름
      */
     void unassignTag(Long todoId, Long tagId, String currentUsername);
+
+    /**
+     * 할 일의 우선순위를 업데이트합니다.
+     *
+     * @param id              할 일 ID
+     * @param priority        변경할 우선순위
+     * @param currentUsername 사용자 이름
+     */
+    void updatePriority(Long id, TodoPriority priority, String currentUsername);
 }

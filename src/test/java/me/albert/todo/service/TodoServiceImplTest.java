@@ -12,6 +12,7 @@ import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.TodoRepository;
@@ -40,6 +41,43 @@ class TodoServiceImplTest {
 
     @Mock
     private TagService tagService;
+
+    @DisplayName("할 일의 우선 순위를 변경한다.")
+    @Test
+    void update_priority() {
+        // given
+        var currentName = "username";
+        var account = new Account(1L);
+        var todoId = 1L;
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+        when(accountService.findByUsername(currentName)).thenReturn(account);
+        when(todoRepository.findById(todoId)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.updatePriority(todoId, TodoPriority.HIGH, currentName);
+
+        // then
+        assertThat(todo.getPriority()).isEqualTo(TodoPriority.HIGH);
+    }
+
+    @DisplayName("할 일의 우선 순위를 변경할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void update_priority_if_todo_not_found() {
+        // given
+        var currentName = "username";
+        var account = new Account(1L);
+        var todoId = 1L;
+        when(accountService.findByUsername(currentName)).thenReturn(account);
+        when(todoRepository.findById(todoId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.updatePriority(todoId, TodoPriority.HIGH, currentName))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
 
     @DisplayName("할 일에 태그를 해제한다.")
     @Test
@@ -143,7 +181,7 @@ class TodoServiceImplTest {
                 "title", "description", LocalDateTime.now().plusDays(1), TodoStatus.COMPLETED);
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), null
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
@@ -179,7 +217,7 @@ class TodoServiceImplTest {
         var account = new Account(1L);
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
-                LocalDateTime.now(), null
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         when(accountService.findByUsername("username")).thenReturn(account);
         when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.of(todo));
@@ -210,7 +248,7 @@ class TodoServiceImplTest {
         var otherAccount = new Account(2L);
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), otherAccount, LocalDateTime.now(),
-                LocalDateTime.now(), null
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         when(accountService.findByUsername("username")).thenReturn(account);
         when(todoRepository.findByIdAndGroupNull(todoId)).thenReturn(Optional.of(todo));
@@ -227,7 +265,7 @@ class TodoServiceImplTest {
         // given
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
@@ -259,13 +297,13 @@ class TodoServiceImplTest {
     @Test
     void update_todo_status() {
         // given
+        var account = new Account(1L);
         var todo = new Todo(
-                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
-        var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
 
         // when
         todoService.updateStatus(1L, TodoStatus.COMPLETED, "username");
@@ -277,7 +315,7 @@ class TodoServiceImplTest {
         // given
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+        when(todoRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> todoService.updateStatus(1L, TodoStatus.COMPLETED, "username"))
@@ -292,7 +330,7 @@ class TodoServiceImplTest {
         var account = new Account(1L);
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var username = "username";
         when(accountService.findByUsername(username)).thenReturn(account);
@@ -326,7 +364,7 @@ class TodoServiceImplTest {
         // given
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
@@ -357,7 +395,7 @@ class TodoServiceImplTest {
         // given
         var todo = new Todo(
                 "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
@@ -388,11 +426,11 @@ class TodoServiceImplTest {
         // given
         var todo1 = new Todo(
                 "title1", "description1", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var todo2 = new Todo(
                 "title2", "description2", LocalDateTime.now(), new Account(), LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);

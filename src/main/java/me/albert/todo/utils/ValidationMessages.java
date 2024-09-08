@@ -33,6 +33,12 @@ public class ValidationMessages {
     // Recurring task
     public static final String RECURRING_TASK_RECURRENCE_PATTERN_MESSAGE = "반복 주기는 필수입니다.ISO8601 기간 형식으로 입력해주세요.";
 
+    // To-do status
+    public static final String TODO_STATUS_MESSAGE = "할 일 상태는 필수 입력값입니다.";
+
+    // To-do priority
+    public static final String TODO_PRIORITY_MESSAGE = "할 일 우선순위는 필수 입력값입니다.";
+
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }

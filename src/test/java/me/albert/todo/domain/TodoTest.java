@@ -20,10 +20,38 @@ class TodoTest {
     @BeforeEach
     void setUp() {
         account = new Account(1L);
-        todo = new Todo(
-                "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+        todo = new Todo("title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
+                        LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
+    }
+
+    @DisplayName("할 일의 우선 순위를 변경한다.")
+    @Test
+    void update_priority() {
+        // given
+        var priority = TodoPriority.HIGH;
+
+        // when
+        todo.updatePriority(priority, account);
+
+        // then
+        assertThat(todo.getPriority()).isEqualTo(priority);
+    }
+
+    @DisplayName("할 일의 우선 순위를 변경할 때 권한이 없으면 예외가 발생한다.")
+    @Test
+    void update_priority_without_permission() {
+        // given
+        var priority = TodoPriority.HIGH;
+        var anotherAccount = new Account(2L);
+
+        // when
+        var exception = Assertions.assertThrows(BusinessException.class, () -> {
+            todo.updatePriority(priority, anotherAccount);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorMessages.TODO_UPDATE_NOT_ALLOWED);
     }
 
     @DisplayName("할 일에 반복 작업을 추가한다.")
@@ -146,13 +174,30 @@ class TodoTest {
         var updatedAt = LocalDateTime.now();
 
         // when
-        todo.updateStatus(status, updatedAt);
+        todo.updateStatus(status, updatedAt, account);
 
         // then
         Assertions.assertAll(
                 () -> assertThat(todo.getStatus()).isEqualTo(status),
                 () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
         );
+    }
+
+    @DisplayName("할일 수정 시 상태 변경 시 권한이 없으면 예외가 발생한다.")
+    @Test
+    void update_todo_status_without_permission() {
+        // given
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var anotherAccount = new Account(2L);
+
+        // when
+        var exception = Assertions.assertThrows(BusinessException.class, () -> {
+            todo.updateStatus(status, updatedAt, anotherAccount);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorMessages.TODO_UPDATE_NOT_ALLOWED);
     }
 
     @DisplayName("할일에 사용자를 할당한다.")
@@ -240,7 +285,7 @@ class TodoTest {
         var owner = new Account(1L);
         todo = new Todo(
                 "title", "description", LocalDateTime.now(), owner, LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
 
         // then
@@ -255,7 +300,7 @@ class TodoTest {
         var anotherAccount = new Account(2L);
         todo = new Todo(
                 "title", "description", LocalDateTime.now(), owner, LocalDateTime.now(),
-                LocalDateTime.now(), TodoStatus.PENDING
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
         );
 
         // then

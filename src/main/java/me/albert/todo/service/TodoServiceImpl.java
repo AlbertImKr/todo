@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.TodoRepository;
@@ -39,7 +40,8 @@ public class TodoServiceImpl implements TodoService {
                 owner,
                 now,
                 now,
-                TodoStatus.PENDING
+                TodoStatus.PENDING,
+                TodoPriority.MEDIUM
         );
         Todo savedTodo = todoRepository.save(todo);
         return new IdResponse(savedTodo.getId());
@@ -87,10 +89,10 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public void updateStatus(Long id, TodoStatus status, String username) {
         Account owner = accountService.findByUsername(username);
-        Todo todo = todoRepository.findByIdAndOwner(id, owner)
+        Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         LocalDateTime updatedAt = LocalDateTime.now();
-        todo.updateStatus(status, updatedAt);
+        todo.updateStatus(status, updatedAt, owner);
     }
 
     @Transactional(readOnly = true)
@@ -150,5 +152,14 @@ public class TodoServiceImpl implements TodoService {
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         Tag tag = tagService.findById(tagId);
         todo.unassignTag(tag);
+    }
+
+    @Transactional
+    @Override
+    public void updatePriority(Long id, TodoPriority priority, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        todo.updatePriority(priority, owner);
     }
 }

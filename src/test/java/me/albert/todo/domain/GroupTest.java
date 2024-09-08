@@ -134,7 +134,7 @@ class GroupTest {
         // given
         var now = LocalDateTime.now();
         var todo = new Todo(
-                "todo", "description", now, account, now, now, TodoStatus.PENDING);
+                "todo", "description", now, account, now, now, TodoStatus.PENDING, TodoPriority.MEDIUM);
         group.assignTodos(account, List.of(todo));
 
         // when
