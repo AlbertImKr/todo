@@ -2,8 +2,10 @@ package me.albert.todo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.List;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +24,31 @@ class TodoTest {
         account = new Account(1L);
         todo = new Todo("title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
                         LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+    }
+
+    @DisplayName("할 일의 알림을 업데이트 한다.")
+    @Test
+    void update_notifications() {
+        // given
+        var dueDate = todo.getDueDate();
+        var firstDuration = Duration.ofHours(1);
+        var firstNotifyAt = dueDate.minus(firstDuration);
+        var secondDuration = Duration.ofHours(2);
+        var secondNotifyAt = dueDate.minus(secondDuration);
+        var durations = List.of(firstDuration, secondDuration);
+
+        // when
+        todo.updateNotificationSettings(durations, account);
+
+        // then
+        var notifications = todo.getNotificationSettings();
+        var firstNotification = notifications.get(0);
+        var secondNotification = notifications.get(1);
+        Assertions.assertAll(
+                () -> assertThat(notifications).hasSize(2),
+                () -> assertThat(firstNotification.getNotifyAt()).isEqualTo(firstNotifyAt),
+                () -> assertThat(secondNotification.getNotifyAt()).isEqualTo(secondNotifyAt)
         );
     }
 

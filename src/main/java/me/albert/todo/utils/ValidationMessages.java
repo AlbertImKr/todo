@@ -39,6 +39,9 @@ public class ValidationMessages {
     // To-do priority
     public static final String TODO_PRIORITY_MESSAGE = "할 일 우선순위는 필수 입력값입니다.";
 
+    // Notification setting
+    public static final String NOTIFICATIONS_SETTING_NOT_NUll_MESSAGE = "알림 시간은 비어있을 수 없습니다.ISO-8601 형식으로 입력해주세요.";
+
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }
