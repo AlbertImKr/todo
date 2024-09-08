@@ -25,6 +25,35 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할 일의 우선 순위를 변경한다.")
+    @Test
+    void update_priority() {
+        // given
+        var priority = TodoPriority.HIGH;
+
+        // when
+        todo.updatePriority(priority, account);
+
+        // then
+        assertThat(todo.getPriority()).isEqualTo(priority);
+    }
+
+    @DisplayName("할 일의 우선 순위를 변경할 때 권한이 없으면 예외가 발생한다.")
+    @Test
+    void update_priority_without_permission() {
+        // given
+        var priority = TodoPriority.HIGH;
+        var anotherAccount = new Account(2L);
+
+        // when
+        var exception = Assertions.assertThrows(BusinessException.class, () -> {
+            todo.updatePriority(priority, anotherAccount);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorMessages.TODO_UPDATE_NOT_ALLOWED);
+    }
+
     @DisplayName("할 일에 반복 작업을 추가한다.")
     @Test
     void add_recurring_task() {

@@ -153,4 +153,13 @@ public class TodoServiceImpl implements TodoService {
         Tag tag = tagService.findById(tagId);
         todo.unassignTag(tag);
     }
+
+    @Transactional
+    @Override
+    public void updatePriority(Long id, TodoPriority priority, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        todo.updatePriority(priority, owner);
+    }
 }

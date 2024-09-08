@@ -4,10 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTagRequest;
 import me.albert.todo.controller.dto.request.AssignUserRequest;
+import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.UnassignUserRequest;
 import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
-import me.albert.todo.service.dto.request.TodoStatusUpdateRequest;
+import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -133,5 +134,21 @@ public class TodoController {
             @CurrentUsername String currentUsername
     ) {
         todoService.unassignTag(id, tagId, currentUsername);
+    }
+
+    /**
+     * 할 일의 우선순위를 업데이트하는 API
+     *
+     * @param id              할 일 ID
+     * @param request         우선순위 변경 요청
+     * @param currentUsername 사용자 이름
+     */
+    @PutMapping("/todos/{id}/priority")
+    public void updatePriority(
+            @PathVariable Long id,
+            @Valid @RequestBody TodoPriorityUpdateRequest request,
+            @CurrentUsername String currentUsername
+    ) {
+        todoService.updatePriority(id, request.priority(), currentUsername);
     }
 }

@@ -49,6 +49,7 @@ public class Todo {
     private Account owner;
     @ManyToOne
     private Group group;
+    @Getter
     @Enumerated(EnumType.STRING)
     private TodoPriority priority;
     @Getter
@@ -163,6 +164,13 @@ public class Todo {
 
     public void removeRecurringTask() {
         this.recurringTask = null;
+    }
+
+    public void updatePriority(TodoPriority priority, Account owner) {
+        if (!isOwner(owner)) {
+            throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        this.priority = priority;
     }
 
     @Override

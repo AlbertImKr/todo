@@ -5,6 +5,7 @@ import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentatio
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.unassignTagFromTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.updateTodoPriorityDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoStatusDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
@@ -18,6 +19,7 @@ import static me.albert.todo.controller.steps.TodoSteps.할일_상태_변경_요
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_수정_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_우선순위_변경_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_조회_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_태그_할당_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_태그_할당_해제_요청;
@@ -43,6 +45,94 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("할 일의 우선 순위 변경 성공 시 200 OK 반환")
+    @Test
+    void update_todo_priority_if_success() {
+        // docs
+        spec.filter(updateTodoPriorityDocumentation());
+
+        // given
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        var body = new HashMap<>();
+        body.put("priority", "HIGH");
+
+        // when
+        var target = 할일_우선순위_변경_요청(todoId, body, accessToken, spec);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("할 일의 우선 순위 변경 실패")
+    @Nested
+    class UpdateTodoPriorityFail {
+
+        long todoId;
+
+        @BeforeEach
+        void setTodo() {
+            todoId = 할일_생성_및_ID_반환(accessToken);
+        }
+
+        @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void todo_not_found() {
+            // when
+            var notExistTodoId = 100L;
+            var body = new HashMap<>();
+            body.put("priority", "HIGH");
+            var target = 할일_우선순위_변경_요청(notExistTodoId, body, accessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_NOT_FOUND)
+            );
+        }
+
+        @DisplayName("할 일의 우선 순위가 없으면 400 Bad Request 반환")
+        @Test
+        void priority_is_empty() {
+            // given
+            var body = new HashMap<>();
+            body.put("priority", "");
+
+            // when
+            var target = 할일_우선순위_변경_요청(todoId, body, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("할 일의 우선 순위가 null이면 400 Bad Request 반환")
+        @Test
+        void priority_is_null() {
+            // given
+            var body = new HashMap<>();
+            body.put("priority", null);
+
+            // when
+            var target = 할일_우선순위_변경_요청(todoId, body, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("할 일의 우선 순위가 잘못된 값이면 400 Bad Request 반환")
+        @Test
+        void priority_is_invalid() {
+            // given
+            var body = new HashMap<>();
+            body.put("priority", "INVALID");
+
+            // when
+            var target = 할일_우선순위_변경_요청(todoId, body, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
     }
 
     @DisplayName("할 일에 태그를 해제 성공 시 200 OK 반환")

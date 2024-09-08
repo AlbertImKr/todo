@@ -152,6 +152,24 @@ include::{snippets}/todos/update-status/request-fields.adoc[]
 
 include::{snippets}/todos/update-status/http-response.adoc[]
 
+=== 할일 우선순위 업데이트 API
+
+==== URL 경로
+
+include::{snippets}/todos/update-priority/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/update-priority/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/todos/update-priority/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/update-priority/http-response.adoc[]
+
 [[Recurring_Task]]
 == 반복 설정 API
 

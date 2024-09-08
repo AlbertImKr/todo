@@ -11,6 +11,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 import static org.springframework.restdocs.snippet.Attributes.key;
 
 import java.util.Arrays;
+import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.utils.ValidationMessages;
 import org.jetbrains.annotations.NotNull;
@@ -112,6 +113,25 @@ public class TodoDocument {
                 requestFields(
                         fieldWithPath("status").description("할 일 상태")
                                 .attributes(key("constraints").value(Arrays.stream(TodoStatus.values())
+                                                                             .map(Enum::name)
+                                                                             .reduce((a, b) -> a + ", " + b)
+                                                                             .orElse(""))
+                                )
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter updateTodoPriorityDocumentation() {
+        return document(
+                "todos/update-priority",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("priority").description("할 일 우선순위")
+                                .attributes(key("constraints").value(Arrays.stream(TodoPriority.values())
                                                                              .map(Enum::name)
                                                                              .reduce((a, b) -> a + ", " + b)
                                                                              .orElse(""))
