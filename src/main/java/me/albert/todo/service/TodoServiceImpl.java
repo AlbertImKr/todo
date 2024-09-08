@@ -14,6 +14,7 @@ import me.albert.todo.repository.TodoRepository;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.TodoDetailResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
 import me.albert.todo.utils.ErrorMessages;
 import org.springframework.data.domain.Page;
@@ -81,11 +82,11 @@ public class TodoServiceImpl implements TodoService {
 
     @Transactional(readOnly = true)
     @Override
-    public TodoResponse get(Long id, String username) {
+    public TodoDetailResponse get(Long id, String username) {
         Account owner = accountService.findByUsername(username);
-        Todo todo = todoRepository.findByIdAndOwner(id, owner)
+        Todo todo = todoRepository.findWithAllByIdAndOwnerAndGroupNull(id, owner)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
-        return TodoResponse.from(todo);
+        return TodoDetailResponse.from(todo);
     }
 
     @Transactional

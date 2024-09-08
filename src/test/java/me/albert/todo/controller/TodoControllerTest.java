@@ -4,6 +4,7 @@ import static me.albert.todo.controller.docs.TodoDocument.assignTagToTodoDocumen
 import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoNotificationDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.getTodoDetailDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.getTodoListByProjectIdDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.getTodoListByTagNameDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.getTodoListDocumentation;
@@ -18,6 +19,7 @@ import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccoun
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.ProjectSteps.프로젝트_할일_할당_요청;
+import static me.albert.todo.controller.steps.RecurringTaskSteps.반복_작업_업데이트_요청;
 import static me.albert.todo.controller.steps.TagSteps.태그_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.TodoSteps.할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_요청;
@@ -353,11 +355,33 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @DisplayName("할 일 조회 성공 시 200 OK 반환")
     @Test
     void get_todo_if_success() {
+        // docs
+        spec.filter(getTodoDetailDocumentation());
+
         // given
         var todoId = 할일_생성_및_ID_반환(accessToken);
+        for (int i = 0; i < 10; i++) {
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag" + i);
+            var assignTagBody = new HashMap<>();
+            assignTagBody.put("tagId", tagId);
+            할일_태그_할당_요청(todoId, assignTagBody, accessToken);
+        }
+        var notifyAt = List.of("PT10M", "PT1H");
+        var notifyAtBody = new HashMap<>();
+        notifyAtBody.put("notifyAt", notifyAt);
+        할일_알림_설정_변경_요청(todoId, notifyAtBody, accessToken);
+
+        var projectId = 프로젝트_생성_및_ID_반환(accessToken);
+        var projectBody = new HashMap<>();
+        projectBody.put("todoIds", List.of(todoId));
+        프로젝트_할일_할당_요청(projectId, projectBody, accessToken);
+
+        var recurringTaskBody = new HashMap<>();
+        recurringTaskBody.put("recurrencePattern", "P1D");
+        반복_작업_업데이트_요청(recurringTaskBody, todoId, accessToken);
 
         // when
-        var target = 할일_조회_요청(todoId, accessToken);
+        var target = 할일_조회_요청(todoId, accessToken, spec);
 
         // then
         Assertions.assertAll(
@@ -368,7 +392,11 @@ class TodoControllerTest extends TodoAcceptanceTest {
                 () -> assertThat(target.jsonPath().getString("dueDate")).isNotNull(),
                 () -> assertThat(target.jsonPath().getString("status")).isNotNull(),
                 () -> assertThat(target.jsonPath().getString("createdAt")).isNotNull(),
-                () -> assertThat(target.jsonPath().getString("updatedAt")).isNotNull()
+                () -> assertThat(target.jsonPath().getString("updatedAt")).isNotNull(),
+                () -> assertThat(target.jsonPath().getList("tags").size()).isEqualTo(10),
+                () -> assertThat(target.jsonPath().getString("priority")).isNotNull(),
+                () -> assertThat(target.jsonPath().getString("project")).isNotNull(),
+                () -> assertThat(target.jsonPath().getList("notificationSettings")).isEqualTo(notifyAt)
         );
     }
 

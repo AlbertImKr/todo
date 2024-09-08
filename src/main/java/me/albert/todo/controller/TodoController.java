@@ -15,6 +15,7 @@ import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
+import me.albert.todo.service.dto.response.TodoDetailResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -76,8 +77,15 @@ public class TodoController {
         todoService.delete(id, username);
     }
 
+    /**
+     * 할 일을 조회하는 API
+     *
+     * @param id       할 일 ID
+     * @param username 사용자 이름
+     * @return 할 일 정보
+     */
     @GetMapping("/todos/{id}")
-    public TodoResponse get(@PathVariable Long id, @CurrentUsername String username) {
+    public TodoDetailResponse get(@PathVariable Long id, @CurrentUsername String username) {
         return todoService.get(id, username);
     }
 

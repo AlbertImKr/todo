@@ -87,9 +87,7 @@ class TodoServiceImplTest {
         var account = new Account();
         var dueDate = todo.getDueDate();
         var firstDuration = Duration.ofHours(1);
-        var firstNotifyAt = dueDate.minus(firstDuration);
         var secondDuration = Duration.ofHours(2);
-        var secondNotifyAt = dueDate.minus(secondDuration);
         var durations = List.of(firstDuration, secondDuration);
         when(accountService.findByUsername("username")).thenReturn(account);
         when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
@@ -99,12 +97,9 @@ class TodoServiceImplTest {
 
         // then
         var notifications = todo.getNotificationSettings();
-        var firstNotification = notifications.get(0);
-        var secondNotification = notifications.get(1);
         Assertions.assertAll(
                 () -> assertThat(notifications).hasSize(2),
-                () -> assertThat(firstNotification.getNotifyAt()).isEqualTo(firstNotifyAt),
-                () -> assertThat(secondNotification.getNotifyAt()).isEqualTo(secondNotifyAt)
+                () -> assertThat(notifications).contains(firstDuration, secondDuration)
         );
     }
 
@@ -352,7 +347,7 @@ class TodoServiceImplTest {
         );
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+        when(todoRepository.findWithAllByIdAndOwnerAndGroupNull(1L, account)).thenReturn(Optional.of(todo));
 
         // when
         var response = todoService.get(1L, "username");
@@ -368,7 +363,7 @@ class TodoServiceImplTest {
         // given
         var account = new Account();
         when(accountService.findByUsername("username")).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+        when(todoRepository.findWithAllByIdAndOwnerAndGroupNull(1L, account)).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> todoService.get(1L, "username"))

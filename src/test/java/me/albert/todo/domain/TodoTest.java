@@ -45,11 +45,8 @@ class TodoTest {
     @Test
     void update_notifications() {
         // given
-        var dueDate = todo.getDueDate();
         var firstDuration = Duration.ofHours(1);
-        var firstNotifyAt = dueDate.minus(firstDuration);
         var secondDuration = Duration.ofHours(2);
-        var secondNotifyAt = dueDate.minus(secondDuration);
         var durations = List.of(firstDuration, secondDuration);
 
         // when
@@ -57,12 +54,11 @@ class TodoTest {
 
         // then
         var notifications = todo.getNotificationSettings();
-        var firstNotification = notifications.get(0);
-        var secondNotification = notifications.get(1);
         Assertions.assertAll(
                 () -> assertThat(notifications).hasSize(2),
-                () -> assertThat(firstNotification.getNotifyAt()).isEqualTo(firstNotifyAt),
-                () -> assertThat(secondNotification.getNotifyAt()).isEqualTo(secondNotifyAt)
+                () -> assertThat(notifications).contains(
+                        firstDuration, secondDuration
+                )
         );
     }
 
@@ -70,7 +66,6 @@ class TodoTest {
     @Test
     void update_notifications_delete_old_notifications() {
         // given
-        var dueDate = todo.getDueDate();
         var duration = Duration.ofHours(1);
         todo.updateNotificationSettings(List.of(duration), account);
         var newDuration = Duration.ofHours(2);
@@ -82,7 +77,7 @@ class TodoTest {
         var notification = todo.getNotificationSettings().get(0);
         Assertions.assertAll(
                 () -> assertThat(todo.getNotificationSettings()).hasSize(1),
-                () -> assertThat(notification.getNotifyAt()).isEqualTo(dueDate.minus(newDuration))
+                () -> assertThat(notification).isEqualTo(newDuration)
         );
     }
 

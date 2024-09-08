@@ -433,8 +433,32 @@ public class TodoSteps {
                 .extract();
     }
 
+    /**
+     * 할 일 조회 요청
+     *
+     * @param id          할 일 ID
+     * @param accessToken 액세스 토큰
+     * @return 응답 ExtractableResponse
+     */
     public static ExtractableResponse<Response> 할일_조회_요청(Long id, String accessToken) {
         return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/todos/{todoId}", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 할 일 조회 요청
+     *
+     * @param id          할 일 ID
+     * @param accessToken 액세스 토큰
+     * @param spec        RestDocs 스펙
+     * @return 응답 ExtractableResponse
+     */
+    public static ExtractableResponse<Response> 할일_조회_요청(Long id, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
                 .get("/todos/{todoId}", id)

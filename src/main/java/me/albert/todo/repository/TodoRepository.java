@@ -43,4 +43,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     @EntityGraph(attributePaths = {"tags"})
     Page<Todo> findAllWithTagsByProjectIdAndOwner(long projectId, Account owner, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"tags", "recurringTask", "project"})
+    Optional<Todo> findWithAllByIdAndOwnerAndGroupNull(Long id, Account owner);
 }

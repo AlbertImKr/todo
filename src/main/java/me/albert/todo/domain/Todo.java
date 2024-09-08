@@ -1,7 +1,9 @@
 package me.albert.todo.domain;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.Duration;
@@ -58,11 +59,7 @@ public class Todo {
     @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RecurringTask recurringTask;
     @Getter
-    @ManyToMany
-    @JoinTable(name = "todo_tag",
-            joinColumns = @JoinColumn(name = "todo_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Tag> tags = new ArrayList<>();
     @Getter
     @ManyToMany
@@ -76,8 +73,9 @@ public class Todo {
     @JoinColumn(name = "project_id")
     private Project project;
     @Getter
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NotificationSetting> notificationSettings = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "notification_setting", joinColumns = @JoinColumn(name = "todo_id"))
+    private List<Duration> notificationSettings = new ArrayList<>();
 
     public Todo() {
     }
@@ -188,9 +186,8 @@ public class Todo {
             throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         this.notificationSettings.clear();
-        for (Duration duration : durations) {
-            this.notificationSettings.add(new NotificationSetting(dueDate.minus(duration)));
-        }
+        this.notificationSettings.addAll(durations);
+
     }
 
     public void deleteNotificationSettings(Account owner) {
