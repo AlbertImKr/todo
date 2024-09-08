@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.TodoDocument.assignTagToTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
@@ -7,6 +8,7 @@ import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_FIRST_ACCOUNT
 import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUNT_USERNAME;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
+import static me.albert.todo.controller.steps.TagSteps.태그_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_삭제_요청;
@@ -15,6 +17,7 @@ import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_수정_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_조회_요청;
+import static me.albert.todo.controller.steps.TodoSteps.할일_태그_할당_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -37,6 +40,25 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("할 일에 태그를 할당 성공 시 200 OK 반환")
+    @Test
+    void assign_tag_to_todo_if_success() {
+        // docs
+        spec.filter(assignTagToTodoDocumentation());
+
+        // given
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        var tagId = 태그_생성_및_ID_반환(accessToken, "newTag");
+        var assignTagBody = new HashMap<>();
+        assignTagBody.put("tagId", tagId);
+
+        // when
+        var target = 할일_태그_할당_요청(todoId, assignTagBody, accessToken, spec);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("할 일 생성 성공 시 201 Created 반환")
@@ -188,6 +210,94 @@ class TodoControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(target.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("할 일에 태그를 할당 실패")
+    @Nested
+    class AssignTagToTodoFail {
+
+        long todoId;
+
+        @BeforeEach
+        void setTodo() {
+            todoId = 할일_생성_및_ID_반환(accessToken);
+        }
+
+        @DisplayName("할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void todo_not_found() {
+            // when
+            var notExistTodoId = 100L;
+            var assignTagBody = new HashMap<>();
+            assignTagBody.put("tagId", 1L);
+            var target = 할일_태그_할당_요청(notExistTodoId, assignTagBody, accessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_NOT_FOUND)
+            );
+        }
+
+        @DisplayName("다른 사용자의 할 일에 태그를 할당하려고 하면 할 일을 찾을 수 없으면 404 Not Found 반환")
+        @Test
+        void assign_tag_to_other_user_todo() {
+            // given
+            var otherUserAccessToken = getFixtureSecondAccountAccessToken();
+            var assignTagBody = new HashMap<>();
+            assignTagBody.put("tagId", 1L);
+
+            // when
+            var target = 할일_태그_할당_요청(todoId, assignTagBody, otherUserAccessToken);
+
+            // then
+            Assertions.assertAll(
+                    () -> assertThat(target.statusCode()).isEqualTo(404),
+                    () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_NOT_FOUND)
+            );
+        }
+
+        @DisplayName("태그 ID가 없으면 400 Bad Request 반환")
+        @Test
+        void tag_id_is_empty() {
+            // given
+            var assignTagBody = new HashMap<>();
+            assignTagBody.put("tagId", null);
+
+            // when
+            var target = 할일_태그_할당_요청(todoId, assignTagBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("태그 ID가 0이면 400 Bad Request 반환")
+        @Test
+        void tag_id_is_zero() {
+            // given
+            var assignTagBody = new HashMap<>();
+            assignTagBody.put("tagId", 0L);
+
+            // when
+            var target = 할일_태그_할당_요청(todoId, assignTagBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("태그 ID가 음수이면 400 Bad Request 반환")
+        @Test
+        void tag_id_is_negative() {
+            // given
+            var assignTagBody = new HashMap<>();
+            assignTagBody.put("tagId", -1L);
+
+            // when
+            var target = 할일_태그_할당_요청(todoId, assignTagBody, accessToken);
+
+            // then
+            assertThat(target.statusCode()).isEqualTo(400);
+        }
     }
 
     @Nested

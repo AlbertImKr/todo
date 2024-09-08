@@ -64,4 +64,16 @@ public class TodoDocument {
                 prettyPrintResponse()
         );
     }
+
+    public static @NotNull RestDocumentationFilter assignTagToTodoDocumentation() {
+        return document(
+                "todos/assign-tag",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                requestFields(
+                        fieldWithPath("tagId").description("태그 ID")
+                                .attributes(key("constraints").value(ValidationMessages.TAG_ID_POSITIVE))
+                )
+        );
+    }
 }

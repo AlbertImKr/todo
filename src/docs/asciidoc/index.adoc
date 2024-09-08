@@ -68,6 +68,22 @@ include::{snippets}/todos/delete/http-request.adoc[]
 
 include::{snippets}/todos/delete/http-response.adoc[]
 
+=== 할일에 태그 추가 API
+
+==== 요청
+
+include::{snippets}/todos/assign-tag/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/todos/assign-tag/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/assign-tag/http-response.adoc[]
+
+==== 요청 필드 상세
+
 [[Project]]
 == Project API
 

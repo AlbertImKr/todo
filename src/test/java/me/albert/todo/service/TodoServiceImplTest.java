@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
+import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.exception.BusinessException;
@@ -36,6 +37,47 @@ class TodoServiceImplTest {
 
     @Mock
     private AccountService accountService;
+
+    @Mock
+    private TagService tagService;
+
+    @DisplayName("할 일에 태그를 추가한다.")
+    @Test
+    void assign_tag() {
+        // given
+        var currentName = "username";
+        var account = new Account(1L);
+        var todoId = 1L;
+        var todo = new Todo(todoId);
+        var tagId = 1L;
+        var tag = new Tag(tagId, "tag");
+        when(accountService.findByUsername(currentName)).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(todoId, account)).thenReturn(Optional.of(todo));
+        when(tagService.findById(tagId)).thenReturn(tag);
+
+        // when
+        todoService.assignTag(todoId, tagId, currentName);
+
+        // then
+        assertThat(todo.containsTag(tag)).isTrue();
+    }
+
+    @DisplayName("할 일에 태그를 추가할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void assign_tag_if_todo_not_found() {
+        // given
+        var currentName = "username";
+        var account = new Account(1L);
+        var todoId = 1L;
+        var tagId = 1L;
+        when(accountService.findByUsername(currentName)).thenReturn(account);
+        when(todoRepository.findByIdAndOwner(todoId, account)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.assignTag(todoId, tagId, currentName))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
 
     @DisplayName("할 일 생성 성공 시 할 일의 ID를 반환한다.")
     @Test

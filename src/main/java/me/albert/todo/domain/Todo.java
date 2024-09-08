@@ -48,7 +48,7 @@ public class Todo {
     @ManyToOne
     private Group group;
     @ManyToMany(mappedBy = "todos")
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
     @Getter
     @ManyToMany
     @JoinTable(name = "todo_assignee",
@@ -123,6 +123,25 @@ public class Todo {
         return this.owner.equals(owner);
     }
 
+    public void assignToProject(Project project) {
+        this.project = project;
+    }
+
+    public void unassignFromProject() {
+        this.project = null;
+    }
+
+    public boolean containsTag(Tag tag) {
+        return this.tags.contains(tag);
+    }
+
+    public void assignTag(Tag tag) {
+        if (this.containsTag(tag)) {
+            return;
+        }
+        this.tags.add(tag);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
@@ -137,13 +156,5 @@ public class Todo {
             return false;
         }
         return Objects.equals(getId(), todo.getId());
-    }
-
-    public void assignToProject(Project project) {
-        this.project = project;
-    }
-
-    public void unassignFromProject() {
-        this.project = null;
     }
 }

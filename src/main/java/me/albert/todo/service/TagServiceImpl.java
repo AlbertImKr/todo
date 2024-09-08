@@ -39,4 +39,11 @@ public class TagServiceImpl implements TagService {
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TAG_NOT_FOUND, HttpStatus.NOT_FOUND));
         return new IdResponse(tag.getId());
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Tag findById(Long tagId) {
+        return tagRepository.findById(tagId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TAG_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
 }

@@ -84,4 +84,16 @@ public class TagSteps {
                 .then().log().all()
                 .extract();
     }
+
+    /**
+     * 태그 ID로 태그 조회 요청
+     *
+     * @param accessToken 엑세스 토큰
+     * @return 태그 ID
+     */
+    public static long 태그_생성_및_ID_반환(String accessToken, String name) {
+        var body = new HashMap<>();
+        body.put("name", name);
+        return 태그_생성_요청(body, accessToken).jsonPath().getLong("id");
+    }
 }

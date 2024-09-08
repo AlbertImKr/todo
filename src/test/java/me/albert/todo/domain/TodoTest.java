@@ -25,6 +25,19 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할일에 태그를 추가한다.")
+    @Test
+    void add_tag() {
+        // given
+        var tag = new Tag(1L, "tag");
+
+        // when
+        todo.assignTag(tag);
+
+        // then
+        assertThat(todo.containsTag(tag)).isTrue();
+    }
+
     @DisplayName("할일에 프로젝트 할당을 해제한다.")
     @Test
     void unassign_project() {

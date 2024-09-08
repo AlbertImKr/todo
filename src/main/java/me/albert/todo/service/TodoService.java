@@ -96,4 +96,13 @@ public interface TodoService {
      * @return 할 일 목록
      */
     List<Todo> findAllByIdInAndOwner(List<Long> todoIds, String username);
+
+    /**
+     * 할 일에 태그를 할당합니다.
+     *
+     * @param todoId          할 일 ID
+     * @param tagId           태그 ID
+     * @param currentUsername 현재 사용자 이름
+     */
+    void assignTag(Long todoId, Long tagId, String currentUsername);
 }

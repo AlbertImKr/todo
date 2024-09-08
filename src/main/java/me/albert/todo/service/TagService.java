@@ -1,5 +1,6 @@
 package me.albert.todo.service;
 
+import me.albert.todo.domain.Tag;
 import me.albert.todo.service.dto.response.IdResponse;
 
 public interface TagService {
@@ -21,4 +22,13 @@ public interface TagService {
      * @throws me.albert.todo.exception.BusinessException 존재하지 않는 태그인 경우
      */
     IdResponse getTagByName(String name);
+
+    /**
+     * 태그 ID로 태그를 조회한다.
+     *
+     * @param tagId 태그 ID
+     * @return 태그
+     * @throws me.albert.todo.exception.BusinessException 존재하지 않는 태그인 경우
+     */
+    Tag findById(Long tagId);
 }
