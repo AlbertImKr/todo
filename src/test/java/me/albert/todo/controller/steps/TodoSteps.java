@@ -65,7 +65,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + id)
+                .put("/todos/{todoId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -87,7 +87,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + id)
+                .put("/todos/{todoId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -106,7 +106,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + id + "/tags")
+                .put("/todos/{todoId}/tags", id)
                 .then().log().all()
                 .extract();
     }
@@ -128,7 +128,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + id + "/tags")
+                .put("/todos/{todoId}/tags", id)
                 .then().log().all()
                 .extract();
     }
@@ -145,7 +145,7 @@ public class TodoSteps {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .delete("/todos/" + id + "/tags/" + tagId)
+                .delete("/todos/{todoId}/tags/{tagId}", id, tagId)
                 .then().log().all()
                 .extract();
     }
@@ -181,7 +181,7 @@ public class TodoSteps {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .delete("/todos/" + id)
+                .delete("/todos/{todoId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -198,7 +198,7 @@ public class TodoSteps {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .delete("/todos/" + id)
+                .delete("/todos/{todoId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -207,7 +207,7 @@ public class TodoSteps {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .get("/todos/" + id)
+                .get("/todos/{todoId}", id)
                 .then().log().all()
                 .extract();
     }
@@ -218,7 +218,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + id + "/status")
+                .put("/todos/{todoId}/status", id)
                 .then().log().all()
                 .extract();
     }
@@ -231,7 +231,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + id + "/users")
+                .put("/todos/{todoId}/users", id)
                 .then().log().all()
                 .extract();
     }
@@ -244,7 +244,7 @@ public class TodoSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .delete("/todos/" + id + "/users")
+                .delete("/todos/{todoId}/users", id)
                 .then().log().all()
                 .extract();
     }

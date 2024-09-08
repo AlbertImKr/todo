@@ -3,6 +3,7 @@ package me.albert.todo.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.time.Period;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +24,21 @@ class TodoTest {
                 "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
                 LocalDateTime.now(), TodoStatus.PENDING
         );
+    }
+
+    @DisplayName("할 일에 반복 작업을 추가한다.")
+    @Test
+    void add_recurring_task() {
+        // given
+        var recurrencePattern = Period.ofDays(1);
+        var nextOccurrence = LocalDateTime.now().plusDays(1);
+        var recurringTask = new RecurringTask(recurrencePattern, nextOccurrence);
+
+        // when
+        todo.updateRecurringTask(recurringTask);
+
+        // then
+        assertThat(todo.getRecurringTask()).isEqualTo(recurringTask);
     }
 
     @DisplayName("할일에 태그를 해제한다.")

@@ -23,7 +23,8 @@
 - [x]  **태그 추가**: 할일에 태그를 추가할 수 있습니다.
 - [x]  **태그 삭제**: 할일에서 태그를 삭제할 수 있습니다.
 - [ ]  **할일 알림 설정**: 할일 기한 전 알림을 설정할 수 있습니다.
-- [ ]  **할일 반복 설정**: 주기적으로 반복되는 할일을 설정할 수 있습니다.
+- [x]  **할일 반복 설정**: 할일에 반복 설정을 업데이트할 수 있습니다.
+- [x]  **할일 반복 삭제**: 할일에 반복 설정을 삭제할 수 있습니다.
 
 ---
 
@@ -151,28 +152,26 @@
 
 ### 할일 API (개인인증 필요)
 
-| Endpoint                     | HTTP Method | 설명                      | 상태 |
-|------------------------------|-------------|-------------------------|----|
-| `/todos`                     | POST        | 새로운 할일을 생성합니다.          | ✅  |
-| `/todos/{id}`                | PUT         | 기존 할일의 정보를 수정합니다.       | ✅  |
-| `/todos/{id}`                | DELETE      | 특정 할일을 삭제합니다.           | ✅  |
-| `/todos/{id}`                | GET         | 특정 할일의 상세 정보를 조회합니다.    |    |
-| `/todos`                     | GET         | 전체 할일 목록을 조회합니다.        |    |
-| `/todos?tag={tagName}`       | GET         | 태그 별로 할일 목록을 조회합니다.     |    |
-| `/todos?project={projectId}` | GET         | 프로젝트 별로 할일 목록을 조회합니다.   |    |
-| `/todos/{id}/status`         | PUT         | 특정 할일의 상태를 업데이트합니다.     |    |
-| `/todos/{id}/tags`           | PUT         | 특정 할일에 태그를 추가합니다.       | ✅  |
-| `/todos/{id}/tags/{id}`      | DELETE      | 특정 할일에 태그를 삭제합니다.       | ✅  |
-| `/todos/{id}/recurrence`     | POST        | 특정 할일에 대해 반복 설정을 추가합니다. |    |
-| `/todos/{id}/recurrence`     | PUT         | 특정 할일의 반복 설정을 수정합니다.    |    |
-| `/todos/{id}/recurrence`     | DELETE      | 특정 할일의 반복 설정을 삭제합니다.    |    |
-| `/todos/{id}/recurrence`     | GET         | 특정 할일의 반복 설정을 조회합니다.    |    |
-| `/todos/{id}/assign`         | POST        | 특정 할일을 특정 사용자에게 할당합니다.  |    |
-| `/todos/{id}/assign`         | DELETE      | 특정 할일의 할당을 해제합니다.       |    |
-| `/todos/{id}/notifications`  | POST        | 특정 할일의 기한 전 알림을 설정합니다.  |    |
-| `/todos/{id}/notifications`  | PUT         | 특정 할일의 알림을 수정합니다.       |    |
-| `/todos/{id}/notifications`  | DELETE      | 특정 할일의 알림을 삭제합니다.       |    |
-| `/todos/{id}/notifications`  | GET         | 특정 할일의 알림을 조회합니다.       |    |
+| Endpoint                      | HTTP Method | 설명                         | 상태 |
+|-------------------------------|-------------|----------------------------|----|
+| `/todos`                      | POST        | 새로운 할일을 생성합니다.             | ✅  |
+| `/todos/{id}`                 | PUT         | 기존 할일의 정보를 수정합니다.          | ✅  |
+| `/todos/{id}`                 | DELETE      | 특정 할일을 삭제합니다.              | ✅  |
+| `/todos/{id}`                 | GET         | 특정 할일의 상세 정보를 조회합니다.       |    |
+| `/todos`                      | GET         | 전체 할일 목록을 조회합니다.           |    |
+| `/todos?tag={tagName}`        | GET         | 태그 별로 할일 목록을 조회합니다.        |    |
+| `/todos?project={projectId}`  | GET         | 프로젝트 별로 할일 목록을 조회합니다.      |    |
+| `/todos/{id}/status`          | PUT         | 특정 할일의 상태를 업데이트합니다.        |    |
+| `/todos/{id}/tags`            | PUT         | 특정 할일에 태그를 추가합니다.          | ✅  |
+| `/todos/{id}/tags/{id}`       | DELETE      | 특정 할일에 태그를 삭제합니다.          | ✅  |
+| `/todos/{id}/recurring-tasks` | PUT         | 특정 할일에 대해 반복 설정을 업데이트 합니다. | ✅  |
+| `/todos/{id}/recurring-tasks` | DELETE      | 특정 할일의 반복 설정을 삭제합니다.       | ✅  |
+| `/todos/{id}/assign`          | POST        | 특정 할일을 특정 사용자에게 할당합니다.     |    |
+| `/todos/{id}/assign`          | DELETE      | 특정 할일의 할당을 해제합니다.          |    |
+| `/todos/{id}/notifications`   | POST        | 특정 할일의 기한 전 알림을 설정합니다.     |    |
+| `/todos/{id}/notifications`   | PUT         | 특정 할일의 알림을 수정합니다.          |    |
+| `/todos/{id}/notifications`   | DELETE      | 특정 할일의 알림을 삭제합니다.          |    |
+| `/todos/{id}/notifications`   | GET         | 특정 할일의 알림을 조회합니다.          |    |
 
 ---
 

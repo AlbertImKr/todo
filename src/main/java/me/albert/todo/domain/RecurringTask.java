@@ -3,7 +3,6 @@ package me.albert.todo.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -17,8 +16,6 @@ public class RecurringTask {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToOne
-    private Todo task;
     @Getter
     private Period recurrencePattern;
     @Getter
@@ -27,14 +24,8 @@ public class RecurringTask {
     public RecurringTask() {
     }
 
-    public RecurringTask(Todo task, Period recurrencePattern, LocalDateTime nextOccurrence) {
-        this.task = task;
+    public RecurringTask(Period recurrencePattern, LocalDateTime nextOccurrence) {
         this.recurrencePattern = recurrencePattern;
         this.nextOccurrence = nextOccurrence;
-    }
-
-    public void updatePeriod(Period recurrencePattern, LocalDateTime updatedTime) {
-        this.recurrencePattern = recurrencePattern;
-        this.nextOccurrence = updatedTime.plus(recurrencePattern);
     }
 }

@@ -289,14 +289,14 @@ class TodoServiceImplTest {
     @Test
     void get_todo_by_id() {
         // given
+        var account = new Account(1L);
         var todo = new Todo(
-                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                "title", "description", LocalDateTime.now(), account, LocalDateTime.now(),
                 LocalDateTime.now(), TodoStatus.PENDING
         );
         var username = "username";
-        var account = new Account();
         when(accountService.findByUsername(username)).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.of(todo));
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
 
         // when
         var response = todoService.getTodoByIdAndUsername(1L, username);
@@ -312,7 +312,7 @@ class TodoServiceImplTest {
         var username = "username";
         var account = new Account();
         when(accountService.findByUsername(username)).thenReturn(account);
-        when(todoRepository.findByIdAndOwner(1L, account)).thenReturn(Optional.empty());
+        when(todoRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> todoService.getTodoByIdAndUsername(1L, username))

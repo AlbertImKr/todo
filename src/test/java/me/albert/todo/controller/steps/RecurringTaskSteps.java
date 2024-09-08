@@ -4,11 +4,20 @@ import static io.restassured.RestAssured.given;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import java.util.HashMap;
 
 public class RecurringTaskSteps {
 
-    public static ExtractableResponse<Response> 반복_작업_생성_요청(
+    /**
+     * 반복 작업 업데이트 요청
+     *
+     * @param body        요청 바디
+     * @param todoId      할일 아이디
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 반복_작업_업데이트_요청(
             HashMap<Object, Object> body, long todoId, String accessToken
     ) {
         return given().log().all()
@@ -16,51 +25,29 @@ public class RecurringTaskSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .post("/todos/" + todoId + "/recurring-tasks")
+                .put("/todos/{todoId}/recurring-tasks", todoId)
                 .then().log().all()
                 .extract();
     }
 
-
     /**
-     * 반복 작업 생성 후 아이디를 가져온다.
+     * 반복 작업 업데이트 요청
      *
+     * @param body        요청 바디
      * @param todoId      할일 아이디
      * @param accessToken 엑세스 토큰
-     * @return 반복 작업 아이디
-     */
-    public static Long 반복_작업_아이디(long todoId, String accessToken) {
-        var body = new HashMap<>();
-        body.put("recurrencePattern", "P1D");
-
-        return given().log().all()
-                .auth().oauth2(accessToken)
-                .body(body)
-                .contentType("application/json")
-                .when()
-                .post("/todos/" + todoId + "/recurring-tasks")
-                .then().log().all()
-                .extract().jsonPath().getLong("id");
-    }
-
-    /**
-     * 반복 작업 수정 요청
-     *
-     * @param body            수정할 정보
-     * @param recurringTaskId 반복 작업 아이디
-     * @param todoId          할일 아이디
-     * @param accessToken     엑세스 토큰
+     * @param spec        스펙
      * @return 응답
      */
-    public static ExtractableResponse<Response> 반복_작업_수정_요청(
-            HashMap<Object, Object> body, long recurringTaskId, long todoId, String accessToken
+    public static ExtractableResponse<Response> 반복_작업_업데이트_요청(
+            HashMap<Object, Object> body, long todoId, String accessToken, RequestSpecification spec
     ) {
-        return given().log().all()
+        return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .put("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
+                .put("/todos/{todoId}/recurring-tasks", todoId)
                 .then().log().all()
                 .extract();
     }
@@ -68,40 +55,41 @@ public class RecurringTaskSteps {
     /**
      * 반복 작업 삭제 요청
      *
-     * @param recurringTaskId 반복 작업 아이디
-     * @param accessToken     엑세스 토큰
+     * @param todoId      할일 아이디
+     * @param accessToken 엑세스 토큰
      * @return 응답
      */
     public static ExtractableResponse<Response> 반복_작업_삭제_요청(
             long todoId,
-            long recurringTaskId,
             String accessToken
     ) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .delete("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
+                .delete("/todos/{todoId}/recurring-tasks/", todoId)
                 .then().log().all()
                 .extract();
     }
 
     /**
-     * 반복 작업 조회 요청
+     * 반복 작업 삭제 요청
      *
      * @param todoId      할일 아이디
      * @param accessToken 엑세스 토큰
+     * @param spec        스펙
      * @return 응답
      */
-    public static ExtractableResponse<Response> 반복_작업_조회_요청(
-            long recurringTaskId,
+    public static ExtractableResponse<Response> 반복_작업_삭제_요청(
             long todoId,
-            String accessToken
+            String accessToken,
+            RequestSpecification spec
     ) {
-        return given().log().all()
+        return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .get("/todos/" + todoId + "/recurring-tasks/" + recurringTaskId)
+                .delete("/todos/{todoId}/recurring-tasks/", todoId)
                 .then().log().all()
                 .extract();
     }
+
 }

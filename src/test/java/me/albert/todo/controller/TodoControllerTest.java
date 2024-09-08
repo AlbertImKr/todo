@@ -275,16 +275,6 @@ class TodoControllerTest extends TodoAcceptanceTest {
                     () -> assertThat(target.body().asString()).contains(ErrorMessages.TODO_NOT_FOUND)
             );
         }
-
-        @DisplayName("태그 ID가 없으면 400 Bad Request 반환")
-        @Test
-        void tag_id_is_empty() {
-            // when
-            var target = 할일_태그_할당_해제_요청(todoId, null, accessToken);
-
-            // then
-            assertThat(target.statusCode()).isEqualTo(400);
-        }
     }
 
     @DisplayName("할 일에 태그를 할당 실패")

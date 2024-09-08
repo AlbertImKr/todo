@@ -1,5 +1,6 @@
 package me.albert.todo.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,6 +49,9 @@ public class Todo {
     private Account owner;
     @ManyToOne
     private Group group;
+    @Getter
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private RecurringTask recurringTask;
     @ManyToMany(mappedBy = "todos")
     private List<Tag> tags = new ArrayList<>();
     @Getter
@@ -144,6 +149,14 @@ public class Todo {
 
     public void unassignTag(Tag tag) {
         this.tags.remove(tag);
+    }
+
+    public void updateRecurringTask(RecurringTask savedRecurringTask) {
+        this.recurringTask = savedRecurringTask;
+    }
+
+    public void removeRecurringTask() {
+        this.recurringTask = null;
     }
 
     @Override
