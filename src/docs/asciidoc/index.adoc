@@ -68,6 +68,34 @@ include::{snippets}/todos/delete/http-request.adoc[]
 
 include::{snippets}/todos/delete/http-response.adoc[]
 
+=== 할일에 태그 추가 API
+
+==== 요청
+
+include::{snippets}/todos/assign-tag/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/todos/assign-tag/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/assign-tag/http-response.adoc[]
+
+=== 할일에 태그 해제 API
+
+==== API 경로
+
+include::{snippets}/todos/unassign-tag/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/unassign-tag/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/unassign-tag/http-response.adoc[]
+
 [[Project]]
 == Project API
 
@@ -169,3 +197,40 @@ include::{snippets}/projects/unassign-todo/request-fields.adoc[]
 
 include::{snippets}/projects/unassign-todo/http-response.adoc[]
 
+== Tag API
+
+=== 태그 생성 API
+
+==== 요청
+
+include::{snippets}/tags/create/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/tags/create/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/tags/create/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/tags/create/response-fields.adoc[]
+
+=== 태그 이름을 태그 조회 API
+
+==== 요청
+
+include::{snippets}/tags/search/http-request.adoc[]
+
+==== 요청 쿼리 파라미터 상세
+
+include::{snippets}/tags/search/query-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/tags/search/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/tags/search/response-fields.adoc[]

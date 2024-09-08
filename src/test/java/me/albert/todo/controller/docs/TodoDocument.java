@@ -5,6 +5,8 @@ import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -62,6 +64,30 @@ public class TodoDocument {
                 "todos/delete",
                 prettyPrintRequest(),
                 prettyPrintResponse()
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter assignTagToTodoDocumentation() {
+        return document(
+                "todos/assign-tag",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                requestFields(
+                        fieldWithPath("tagId").description("태그 ID")
+                                .attributes(key("constraints").value(ValidationMessages.TAG_ID_POSITIVE))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter unassignTagFromTodoDocumentation() {
+        return document(
+                "todos/unassign-tag",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("tagId").description("태그 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                )
         );
     }
 }

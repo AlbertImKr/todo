@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import me.albert.todo.utils.ValidationConstraints;
 import me.albert.todo.utils.ValidationMessages;
 
-public record TagCreateRequest(
+public record SearchTagRequest(
         @NotBlank(message = ValidationMessages.TAG_NAME_NOT_NULL)
         @Size(max = ValidationConstraints.TAG_NAME_MAX_LENGTH, message = ValidationMessages.TAG_NAME_MESSAGE)
         String name

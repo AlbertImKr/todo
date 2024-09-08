@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
+import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.exception.BusinessException;
@@ -23,6 +24,7 @@ public class TodoServiceImpl implements TodoService {
 
     private final TodoRepository todoRepository;
     private final AccountService accountService;
+    private final TagService tagService;
 
     @Transactional
     @Override
@@ -124,5 +126,25 @@ public class TodoServiceImpl implements TodoService {
     public List<Todo> findAllByIdInAndOwner(List<Long> todoIds, String username) {
         Account owner = accountService.findByUsername(username);
         return todoRepository.findAllByIdInAndOwner(todoIds, owner);
+    }
+
+    @Transactional
+    @Override
+    public void assignTag(Long todoId, Long tagId, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findByIdAndOwner(todoId, owner)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Tag tag = tagService.findById(tagId);
+        todo.assignTag(tag);
+    }
+
+    @Transactional
+    @Override
+    public void unassignTag(Long todoId, Long tagId, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findByIdAndOwnerAndGroupNull(todoId, owner)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Tag tag = tagService.findById(tagId);
+        todo.unassignTag(tag);
     }
 }

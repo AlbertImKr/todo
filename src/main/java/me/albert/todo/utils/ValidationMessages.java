@@ -24,6 +24,12 @@ public class ValidationMessages {
     public static final String PROJECT_NAME_MESSAGE = "프로젝트 이름은 20자 이하로 입력해야 합니다.";
     public static final String PROJECT_ASSIGN_TODO_NOT_NULL = "할 일 ID는 필수 입력값입니다.";
 
+    // Tag
+    public static final String TAG_NAME_NOT_NULL = "태그 이름은 필수 입력값입니다.";
+    public static final String TAG_NAME_MESSAGE = "태그 이름은 20자 이하로 입력해야 합니다.";
+    public static final String TAG_ID_NOT_NULL = "태그 ID는 필수 입력값입니다.";
+    public static final String TAG_ID_POSITIVE = "태그 ID는 0보다 커야 합니다.";
+
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }

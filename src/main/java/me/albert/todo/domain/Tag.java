@@ -9,6 +9,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 
 @Table(name = "tag")
@@ -34,5 +35,26 @@ public class Tag {
 
     public Tag(String name) {
         this.name = name;
+    }
+
+    public Tag(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Tag tag)) {
+            return false;
+        }
+        return Objects.equals(getId(), tag.getId());
     }
 }
