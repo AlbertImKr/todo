@@ -57,7 +57,12 @@ public class Todo {
     @Getter
     @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RecurringTask recurringTask;
-    @ManyToMany(mappedBy = "todos")
+    @Getter
+    @ManyToMany
+    @JoinTable(name = "todo_tag",
+            joinColumns = @JoinColumn(name = "todo_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private List<Tag> tags = new ArrayList<>();
     @Getter
     @ManyToMany

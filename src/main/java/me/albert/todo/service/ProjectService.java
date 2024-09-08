@@ -77,4 +77,14 @@ public interface ProjectService {
      * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
      */
     ProjectDetailResponse getProject(Long projectId, String username);
+
+    /**
+     * 프로젝트 ID의 유효성을 검사합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 프로젝트를 찾을 수 없는 경우
+     * @throws me.albert.todo.exception.BusinessException 프로젝트 접근 권한이 없는 경우
+     */
+    void validateProjectId(Long projectId, String username);
 }

@@ -9,6 +9,8 @@ import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TodoService {
 
@@ -148,4 +150,33 @@ public interface TodoService {
      * @throws me.albert.todo.exception.BusinessException 할 일의 소유자가 아닌 경우
      */
     void deleteNotificationSettings(Long id, String currentUsername);
+
+    /**
+     * 사용자의 할 일 목록을 조회합니다.
+     *
+     * @param username 사용자 이름
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
+    Page<TodoResponse> list(String username, Pageable pageable);
+
+    /**
+     * 태그 이름으로 사용자의 할 일 목록을 조회합니다.
+     *
+     * @param username 사용자 이름
+     * @param tagName  태그 이름
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
+    Page<TodoResponse> listByTag(String tagName, String username, Pageable pageable);
+
+    /**
+     * 프로젝트 ID로 사용자의 할 일 목록을 조회합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @param pageable  페이징 정보
+     * @return 할 일 목록
+     */
+    Page<TodoResponse> listByProject(Long projectId, String username, Pageable pageable);
 }

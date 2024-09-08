@@ -205,7 +205,7 @@ public class ProjectSteps {
      * 할 일을 프로젝트에 할당 요청
      *
      * @param id          프로젝트 ID
-     * @param body        할 일 할당 요청 바디
+     * @param body        할 일 할당 요청 바디 (key: todoIds, value: List<Long>)
      * @param accessToken 액세스 토큰
      * @return 응답
      */
@@ -226,7 +226,7 @@ public class ProjectSteps {
      * 할 일을 프로젝트에 할당 요청
      *
      * @param id          프로젝트 ID
-     * @param body        할 일 할당 요청 바디
+     * @param body        할 일 할당 요청 바디 (key: todoIds, value: List<Long>)
      * @param accessToken 액세스 토큰
      * @param spec        RestDocs 스펙
      * @return 응답

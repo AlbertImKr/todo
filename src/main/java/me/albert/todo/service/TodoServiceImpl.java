@@ -16,6 +16,8 @@ import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
 import me.albert.todo.utils.ErrorMessages;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -180,5 +182,30 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
         todo.deleteNotificationSettings(owner);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<TodoResponse> list(String username, Pageable pageable) {
+        Account owner = accountService.findByUsername(username);
+        Page<Todo> todos = todoRepository.findAllWithTagsByOwnerAndGroupNull(owner, pageable);
+        return todos.map(TodoResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<TodoResponse> listByTag(String tagName, String username, Pageable pageable) {
+        Account owner = accountService.findByUsername(username);
+        Tag tag = tagService.findByName(tagName);
+        Page<Todo> todos = todoRepository.findAllByTagsContainingAndOwnerAndGroupNull(tag, owner, pageable);
+        return todos.map(TodoResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<TodoResponse> listByProject(Long projectId, String username, Pageable pageable) {
+        Account owner = accountService.findByUsername(username);
+        Page<Todo> todos = todoRepository.findAllWithTagsByProjectIdAndOwner(projectId, owner, pageable);
+        return todos.map(TodoResponse::from);
     }
 }

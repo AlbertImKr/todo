@@ -4,18 +4,25 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTagRequest;
 import me.albert.todo.controller.dto.request.AssignUserRequest;
+import me.albert.todo.controller.dto.request.SearchByProjectQuery;
+import me.albert.todo.controller.dto.request.SearchByTagQuery;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoUpdateNotificationRequest;
 import me.albert.todo.controller.dto.request.UnassignUserRequest;
+import me.albert.todo.service.TodoFacade;
 import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TodoController {
 
     private final TodoService todoService;
+    private final TodoFacade todoFacade;
 
     /**
      * 할 일을 생성 API 입니다. 할일의 상태는 PENDING으로 설정됩니다.
@@ -182,5 +190,31 @@ public class TodoController {
             @CurrentUsername String currentUsername
     ) {
         todoService.deleteNotificationSettings(id, currentUsername);
+    }
+
+    /**
+     * 사용자의 할 일 목록을 조회하는 API
+     *
+     * @param username 사용자 이름
+     * @return 할 일 목록
+     */
+    @GetMapping("/todos")
+    public Page<TodoResponse> list(@CurrentUsername String username, @PageableDefault Pageable pageable) {
+        return todoService.list(username, pageable);
+    }
+
+    @GetMapping(value = "/todos", params = "tag")
+    public Page<TodoResponse> list(
+            @CurrentUsername String username, @ModelAttribute SearchByTagQuery query, @PageableDefault Pageable pageable
+    ) {
+        return todoService.listByTag(query.tag(), username, pageable);
+    }
+
+    @GetMapping(value = "/todos", params = "projectId")
+    public Page<TodoResponse> listByProject(
+            @CurrentUsername String username, @ModelAttribute SearchByProjectQuery query,
+            @PageableDefault Pageable pageable
+    ) {
+        return todoFacade.listByProject(query.projectId(), username, pageable);
     }
 }

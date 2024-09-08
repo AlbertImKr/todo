@@ -3,7 +3,11 @@ package me.albert.todo.repository;
 import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
+import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -30,4 +34,13 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     Optional<Todo> findByIdAndGroupNull(Long id);
 
     List<Todo> findAllByIdInAndOwner(List<Long> todoIds, Account owner);
+
+    @EntityGraph(attributePaths = {"tags"})
+    Page<Todo> findAllWithTagsByOwnerAndGroupNull(Account owner, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"tags"})
+    Page<Todo> findAllByTagsContainingAndOwnerAndGroupNull(Tag tag, Account owner, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"tags"})
+    Page<Todo> findAllWithTagsByProjectIdAndOwner(long projectId, Account owner, Pageable pageable);
 }

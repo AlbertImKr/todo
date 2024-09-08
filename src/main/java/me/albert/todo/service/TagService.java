@@ -31,4 +31,13 @@ public interface TagService {
      * @throws me.albert.todo.exception.BusinessException 존재하지 않는 태그인 경우
      */
     Tag findById(Long tagId);
+
+    /**
+     * 태그 이름으로 태그를 조회한다.
+     *
+     * @param tagName 태그 이름
+     * @return 태그
+     * @throws me.albert.todo.exception.BusinessException 존재하지 않는 태그인 경우
+     */
+    Tag findByName(String tagName);
 }

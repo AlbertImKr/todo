@@ -91,7 +91,9 @@ public class ProjectDocument {
                         fieldWithPath("todos[].dueDate").description("할 일 마감일"),
                         fieldWithPath("todos[].status").description("할 일 상태"),
                         fieldWithPath("todos[].createdAt").description("할 일 생성일"),
-                        fieldWithPath("todos[].updatedAt").description("할 일 수정일")
+                        fieldWithPath("todos[].updatedAt").description("할 일 수정일"),
+                        fieldWithPath("todos[].tags").description("할 일 태그 목록"),
+                        fieldWithPath("todos[].priority").description("할 일 우선순위")
                 )
         );
     }
