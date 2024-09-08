@@ -7,7 +7,7 @@ import me.albert.todo.utils.ValidationMessages;
 
 public record ProjectUpdateRequest(
         @NotBlank(message = ValidationMessages.PROJECT_NAME_NOT_NULL)
-        @Size(max = ValidationConstraints.PRO_NAME_MAX_LENGTH, message = ValidationMessages.PROJECT_NAME_MESSAGE)
+        @Size(max = ValidationConstraints.PROJECT_NAME_MAX_LENGTH, message = ValidationMessages.PROJECT_NAME_MESSAGE)
         String name
 ) {
 
