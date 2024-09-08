@@ -7,6 +7,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -190,4 +191,34 @@ public class TodoDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter getTodoListByTagNameDocumentation() {
+        return document(
+                "todos/list-by-tag",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                ),
+                queryParameters(
+                        parameterWithName("tag").description("태그 이름")
+                ),
+                responseFields(
+                        fieldWithPath("content[].id").description("할 일 ID"),
+                        fieldWithPath("content[].title").description("할 일 제목"),
+                        fieldWithPath("content[].description").description("할 일 설명"),
+                        fieldWithPath("content[].dueDate").description("할 일 마감일"),
+                        fieldWithPath("content[].status").description("할 일 상태"),
+                        fieldWithPath("content[].createdAt").description("생성일"),
+                        fieldWithPath("content[].updatedAt").description("수정일"),
+                        fieldWithPath("content[].priority").description("할 일 우선순위"),
+                        fieldWithPath("content[].tags").description("할 일 태그"),
+                        fieldWithPath("page.number").description("페이지 번호"),
+                        fieldWithPath("page.size").description("페이지 크기"),
+                        fieldWithPath("page.totalElements").description("전체 요소 수"),
+                        fieldWithPath("page.totalPages").description("전체 페이지 수")
+                )
+        );
+    }
+
+
 }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTagRequest;
 import me.albert.todo.controller.dto.request.AssignUserRequest;
+import me.albert.todo.controller.dto.request.SearchByTagQuery;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoUpdateNotificationRequest;
@@ -19,6 +20,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -196,5 +198,12 @@ public class TodoController {
     @GetMapping("/todos")
     public Page<TodoResponse> list(@CurrentUsername String username, @PageableDefault Pageable pageable) {
         return todoService.list(username, pageable);
+    }
+
+    @GetMapping(value = "/todos", params = "tag")
+    public Page<TodoResponse> list(
+            @CurrentUsername String username, @ModelAttribute SearchByTagQuery query, @PageableDefault Pageable pageable
+    ) {
+        return todoService.listByTag(query.tag(), username, pageable);
     }
 }
