@@ -13,6 +13,9 @@ import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -182,5 +185,16 @@ public class TodoController {
             @CurrentUsername String currentUsername
     ) {
         todoService.deleteNotificationSettings(id, currentUsername);
+    }
+
+    /**
+     * 사용자의 할 일 목록을 조회하는 API
+     *
+     * @param username 사용자 이름
+     * @return 할 일 목록
+     */
+    @GetMapping("/todos")
+    public Page<TodoResponse> list(@CurrentUsername String username, @PageableDefault Pageable pageable) {
+        return todoService.list(username, pageable);
     }
 }

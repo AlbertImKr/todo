@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.domain.TodoPriority;
 
 public record TodoResponse(
         Long id,
@@ -16,7 +18,9 @@ public record TodoResponse(
         LocalDateTime createdAt,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime updatedAt,
-        String status
+        String status,
+        List<String> tags,
+        TodoPriority priority
 ) {
 
     public static TodoResponse from(Todo todo) {
@@ -27,7 +31,11 @@ public record TodoResponse(
                 todo.getDueDate(),
                 todo.getCreatedAt(),
                 todo.getUpdatedAt(),
-                todo.getStatus().name()
+                todo.getStatus().name(),
+                todo.getTags().stream()
+                        .map(Tag::getName)
+                        .collect(Collectors.toList()),
+                todo.getPriority()
         );
     }
 

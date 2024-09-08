@@ -4,6 +4,7 @@ import static me.albert.todo.controller.docs.TodoDocument.assignTagToTodoDocumen
 import static me.albert.todo.controller.docs.TodoDocument.createTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.deleteTodoNotificationDocumentation;
+import static me.albert.todo.controller.docs.TodoDocument.getTodoListDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.unassignTagFromTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoDocumentation;
 import static me.albert.todo.controller.docs.TodoDocument.updateTodoNotificationDocumentation;
@@ -14,6 +15,7 @@ import static me.albert.todo.controller.steps.AccountSteps.FIXTURE_SECOND_ACCOUN
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.TagSteps.태그_생성_및_ID_반환;
+import static me.albert.todo.controller.steps.TodoSteps.할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_사용자_할당_해제_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_삭제_요청;
@@ -50,6 +52,30 @@ class TodoControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("할 일 목록을 조회 성공 시 200 OK 반환")
+    @Test
+    void get_todo_list_if_success() {
+        // docs
+        spec.filter(getTodoListDocumentation());
+
+        // given
+        var todo1 = 할일_생성_및_ID_반환(accessToken);
+        for (int i = 0; i < 10; i++) {
+            var body = new HashMap<>();
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag" + i);
+            body.put("tagId", tagId);
+            할일_태그_할당_요청(todo1, body, accessToken);
+        }
+        할일_생성_및_ID_반환(accessToken);
+        할일_생성_및_ID_반환(accessToken);
+
+        // when
+        var target = 할일_목록_조회_요청(accessToken, spec);
+
+        // then
+        assertThat(target.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("할 일의 알림 설정을 삭제 성공 시 204 No Content 반환")
