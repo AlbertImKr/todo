@@ -99,8 +99,8 @@ public class TodoController {
     /**
      * 할 일에 태그를 할당하는 API
      *
-     * @param id 할 일 ID
-     * @param request 태그 할당 요청
+     * @param id              할 일 ID
+     * @param request         태그 할당 요청
      * @param currentUsername 현재 사용자 이름
      */
     @PutMapping("/todos/{id}/tags")
@@ -110,5 +110,21 @@ public class TodoController {
             @CurrentUsername String currentUsername
     ) {
         todoService.assignTag(id, request.tagId(), currentUsername);
+    }
+
+    /**
+     * 할 일에 할당된 태그를 해제하는 API
+     *
+     * @param id              할 일 ID
+     * @param tagId           태그 ID
+     * @param currentUsername 현재 사용자 이름
+     */
+    @DeleteMapping("/todos/{id}/tags/{tagId}")
+    public void unassignTag(
+            @PathVariable Long id,
+            @PathVariable Long tagId,
+            @CurrentUsername String currentUsername
+    ) {
+        todoService.unassignTag(id, tagId, currentUsername);
     }
 }

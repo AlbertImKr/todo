@@ -41,6 +41,45 @@ class TodoServiceImplTest {
     @Mock
     private TagService tagService;
 
+    @DisplayName("할 일에 태그를 해제한다.")
+    @Test
+    void unassign_tag() {
+        // given
+        var currentName = "username";
+        var account = new Account(1L);
+        var todoId = 1L;
+        var todo = new Todo(todoId);
+        var tagId = 1L;
+        var tag = new Tag(tagId, "tag");
+        todo.assignTag(tag);
+        when(accountService.findByUsername(currentName)).thenReturn(account);
+        when(todoRepository.findByIdAndOwnerAndGroupNull(todoId, account)).thenReturn(Optional.of(todo));
+        when(tagService.findById(tagId)).thenReturn(tag);
+
+        // when
+        todoService.unassignTag(todoId, tagId, currentName);
+
+        // then
+        assertThat(todo.containsTag(tag)).isFalse();
+    }
+
+    @DisplayName("할 일에 태그를 해제할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void unassign_tag_if_todo_not_found() {
+        // given
+        var currentName = "username";
+        var account = new Account(1L);
+        var todoId = 1L;
+        var tagId = 1L;
+        when(accountService.findByUsername(currentName)).thenReturn(account);
+        when(todoRepository.findByIdAndOwnerAndGroupNull(todoId, account)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.unassignTag(todoId, tagId, currentName))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
     @DisplayName("할 일에 태그를 추가한다.")
     @Test
     void assign_tag() {

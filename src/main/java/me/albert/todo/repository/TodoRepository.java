@@ -13,6 +13,15 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     Optional<Todo> findByIdAndOwner(Long id, Account owner);
 
     /**
+     * 그룹이 없는 소유한 할 일을 조회한다.
+     *
+     * @param id    할 일 ID
+     * @param owner 사용자
+     * @return 할 일
+     */
+    Optional<Todo> findByIdAndOwnerAndGroupNull(Long id, Account owner);
+
+    /**
      * 할 일 그룹이 없는 할 일을 조회한다.
      *
      * @param id 할 일 ID

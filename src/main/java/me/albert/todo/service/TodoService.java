@@ -105,4 +105,13 @@ public interface TodoService {
      * @param currentUsername 현재 사용자 이름
      */
     void assignTag(Long todoId, Long tagId, String currentUsername);
+
+    /**
+     * 할 일에 할당된 태그를 해제합니다.
+     *
+     * @param todoId          할 일 ID
+     * @param tagId           태그 ID
+     * @param currentUsername 현재 사용자 이름
+     */
+    void unassignTag(Long todoId, Long tagId, String currentUsername);
 }

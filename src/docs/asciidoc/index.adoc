@@ -82,7 +82,19 @@ include::{snippets}/todos/assign-tag/request-fields.adoc[]
 
 include::{snippets}/todos/assign-tag/http-response.adoc[]
 
-==== 요청 필드 상세
+=== 할일에 태그 해제 API
+
+==== API 경로
+
+include::{snippets}/todos/unassign-tag/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/unassign-tag/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/unassign-tag/http-response.adoc[]
 
 [[Project]]
 == Project API

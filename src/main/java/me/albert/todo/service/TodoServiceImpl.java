@@ -137,4 +137,14 @@ public class TodoServiceImpl implements TodoService {
         Tag tag = tagService.findById(tagId);
         todo.assignTag(tag);
     }
+
+    @Transactional
+    @Override
+    public void unassignTag(Long todoId, Long tagId, String currentUsername) {
+        Account owner = accountService.findByUsername(currentUsername);
+        Todo todo = todoRepository.findByIdAndOwnerAndGroupNull(todoId, owner)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Tag tag = tagService.findById(tagId);
+        todo.unassignTag(tag);
+    }
 }
