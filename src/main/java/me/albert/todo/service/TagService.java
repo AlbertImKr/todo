@@ -9,7 +9,7 @@ public interface TagService {
      *
      * @param name 태그 이름
      * @return 생성된 태그의 ID
-     * @throws IllegalArgumentException 이미 존재하는 태그인 경우
+     * @throws me.albert.todo.exception.BusinessException 이미 존재하는 태그인 경우
      */
     IdResponse createTag(String name);
 }

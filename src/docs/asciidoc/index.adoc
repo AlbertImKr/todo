@@ -169,3 +169,22 @@ include::{snippets}/projects/unassign-todo/request-fields.adoc[]
 
 include::{snippets}/projects/unassign-todo/http-response.adoc[]
 
+== Tag API
+
+=== 태그 생성 API
+
+==== 요청
+
+include::{snippets}/tags/create/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/tags/create/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/tags/create/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/tags/create/response-fields.adoc[]

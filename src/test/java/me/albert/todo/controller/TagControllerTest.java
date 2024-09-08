@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.TagDocument.createTagDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.TagSteps.태그_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,12 +25,15 @@ class TagControllerTest extends TodoAcceptanceTest {
     @DisplayName("태그 생성 성공 시 201 상태 코드를 반환한다.")
     @Test
     void create_tag() {
+        // docs
+        this.spec.filter(createTagDocumentation());
+
         // given
         var body = new HashMap<>();
         body.put("name", "tag");
 
         // when
-        var response = 태그_생성_요청(body, accessToken);
+        var response = 태그_생성_요청(body, accessToken, this.spec);
 
         // then
         assertThat(response.statusCode()).isEqualTo(201);
