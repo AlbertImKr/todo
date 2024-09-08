@@ -169,4 +169,14 @@ public interface TodoService {
      * @return 할 일 목록
      */
     Page<TodoResponse> listByTag(String tagName, String username, Pageable pageable);
+
+    /**
+     * 프로젝트 ID로 사용자의 할 일 목록을 조회합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @param pageable  페이징 정보
+     * @return 할 일 목록
+     */
+    Page<TodoResponse> listByProject(Long projectId, String username, Pageable pageable);
 }

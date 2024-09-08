@@ -220,5 +220,31 @@ public class TodoDocument {
         );
     }
 
-
+    public static @NotNull RestDocumentationFilter getTodoListByProjectIdDocumentation() {
+        return document(
+                "todos/list-by-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                ),
+                queryParameters(
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                responseFields(
+                        fieldWithPath("content[].id").description("할 일 ID"),
+                        fieldWithPath("content[].title").description("할 일 제목"),
+                        fieldWithPath("content[].description").description("할 일 설명"),
+                        fieldWithPath("content[].dueDate").description("할 일 마감일"),
+                        fieldWithPath("content[].status").description("할 일 상태"),
+                        fieldWithPath("content[].createdAt").description("생성일"),
+                        fieldWithPath("content[].updatedAt").description("수정일"),
+                        fieldWithPath("content[].priority").description("할 일 우선순위"),
+                        fieldWithPath("content[].tags").description("할 일 태그"),
+                        fieldWithPath("page.number").description("페이지 번호"),
+                        fieldWithPath("page.size").description("페이지 크기"),
+                        fieldWithPath("page.totalElements").description("전체 요소 수"),
+                        fieldWithPath("page.totalPages").description("전체 페이지 수")
+                )
+        );
+    }
 }

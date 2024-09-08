@@ -2,6 +2,7 @@ package me.albert.todo.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Project;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.ProjectRepository;
@@ -99,5 +100,16 @@ public class ProjectServiceImpl implements ProjectService {
             throw new BusinessException(ErrorMessages.PROJECT_GET_NOT_ALLOWED, HttpStatus.NOT_FOUND);
         }
         return ProjectDetailResponse.from(project);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public void validateProjectId(Long projectId, String username) {
+        Project project = projectRepository.findByIdAndGroupNull(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+        Account cuurentAccount = accountService.findByUsername(username);
+        if (!project.isOwner(cuurentAccount)) {
+            throw new BusinessException(ErrorMessages.PROJECT_GET_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
     }
 }

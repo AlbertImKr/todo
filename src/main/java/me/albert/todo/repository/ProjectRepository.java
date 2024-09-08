@@ -1,5 +1,6 @@
 package me.albert.todo.repository;
 
+import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Project;
 import org.springframework.data.domain.Page;
@@ -10,4 +11,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
 
     Page<Project> findByOwnerAndGroupNull(Account owner, Pageable pageable);
+
+    Optional<Project> findByIdAndGroupNull(Long projectId);
 }

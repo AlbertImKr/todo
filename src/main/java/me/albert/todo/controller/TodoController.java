@@ -4,11 +4,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTagRequest;
 import me.albert.todo.controller.dto.request.AssignUserRequest;
+import me.albert.todo.controller.dto.request.SearchByProjectQuery;
 import me.albert.todo.controller.dto.request.SearchByTagQuery;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoUpdateNotificationRequest;
 import me.albert.todo.controller.dto.request.UnassignUserRequest;
+import me.albert.todo.service.TodoFacade;
 import me.albert.todo.service.TodoService;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TodoController {
 
     private final TodoService todoService;
+    private final TodoFacade todoFacade;
 
     /**
      * 할 일을 생성 API 입니다. 할일의 상태는 PENDING으로 설정됩니다.
@@ -205,5 +208,13 @@ public class TodoController {
             @CurrentUsername String username, @ModelAttribute SearchByTagQuery query, @PageableDefault Pageable pageable
     ) {
         return todoService.listByTag(query.tag(), username, pageable);
+    }
+
+    @GetMapping(value = "/todos", params = "projectId")
+    public Page<TodoResponse> listByProject(
+            @CurrentUsername String username, @ModelAttribute SearchByProjectQuery query,
+            @PageableDefault Pageable pageable
+    ) {
+        return todoFacade.listByProject(query.projectId(), username, pageable);
     }
 }

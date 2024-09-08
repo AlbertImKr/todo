@@ -200,4 +200,12 @@ public class TodoServiceImpl implements TodoService {
         Page<Todo> todos = todoRepository.findAllByTagsContainingAndOwnerAndGroupNull(tag, owner, pageable);
         return todos.map(TodoResponse::from);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<TodoResponse> listByProject(Long projectId, String username, Pageable pageable) {
+        Account owner = accountService.findByUsername(username);
+        Page<Todo> todos = todoRepository.findAllWithTagsByProjectIdAndOwner(projectId, owner, pageable);
+        return todos.map(TodoResponse::from);
+    }
 }

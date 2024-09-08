@@ -242,6 +242,28 @@ include::{snippets}/todos/list-by-tag/http-response.adoc[]
 
 include::{snippets}/todos/list-by-tag/response-fields.adoc[]
 
+=== 프로젝트로 할일 조회 API
+
+==== URL 경로
+
+include::{snippets}/todos/list-by-project/path-parameters.adoc[]
+
+==== 쿼리 파라미터 상세
+
+include::{snippets}/todos/list-by-project/query-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/todos/list-by-project/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/todos/list-by-project/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/todos/list-by-project/response-fields.adoc[]
+
 [[Recurring_Task]]
 == 반복 설정 API
 

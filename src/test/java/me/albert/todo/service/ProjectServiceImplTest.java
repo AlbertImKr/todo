@@ -39,6 +39,52 @@ class ProjectServiceImplTest {
     @Mock
     private TodoService todoService;
 
+    @DisplayName("프로젝트를 인증한다")
+    @Test
+    void validate_project_id() {
+        // given
+        var projectId = 1L;
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", account);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findByIdAndGroupNull(projectId)).thenReturn(Optional.of(project));
+
+        // when
+        projectService.validateProjectId(projectId, username);
+    }
+
+    @DisplayName("프로젝트를 인증할 때 프로젝트가 없으면 예외가 발생한다")
+    @Test
+    void validate_project_id_without_project() {
+        // given
+        var projectId = 1L;
+        var username = "user";
+        when(projectRepository.findByIdAndGroupNull(projectId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> projectService.validateProjectId(projectId, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
+    }
+
+    @DisplayName("프로젝트를 인증할 때 권한이 없으면 예외가 발생한다")
+    @Test
+    void validate_project_id_without_permission() {
+        // given
+        var projectId = 1L;
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project("프로젝트", new Account(2L));
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.findByIdAndGroupNull(projectId)).thenReturn(Optional.of(project));
+
+        // when & then
+        assertThatThrownBy(() -> projectService.validateProjectId(projectId, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_GET_NOT_ALLOWED);
+    }
+
     @DisplayName("프로젝트를 조회한다")
     @Test
     void get_project() {
