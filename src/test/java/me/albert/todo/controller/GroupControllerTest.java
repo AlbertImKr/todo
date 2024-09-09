@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
@@ -38,6 +39,40 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹에 사용자를 제거 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void remove_user_from_group() {
+        // docs
+        this.spec.filter(removeUsersFromGroupDocumentation());
+
+        // given
+        var createGroupBody = new HashMap<>();
+        createGroupBody.put("name", "group");
+        createGroupBody.put("description", "description");
+        var response = 그룹_생성_요청(createGroupBody, accessToken);
+        var groupId = response.jsonPath().getLong("id");
+        var accountIds = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            var createUserBody = new HashMap<>();
+            createUserBody.put("username", "newUser" + i);
+            createUserBody.put("password", "Password" + i + "!");
+            createUserBody.put("confirmPassword", "Password" + i + "!");
+            var accountId = 화원_가입_요청(createUserBody).jsonPath().getLong("id");
+            accountIds.add(accountId);
+        }
+        var addUsersToGroupBody = new HashMap<>();
+        addUsersToGroupBody.put("accountIds", accountIds);
+        GroupSteps.그룹_사용자_추가_요청(groupId, addUsersToGroupBody, accessToken);
+        var removeUsersFromGroupBody = new HashMap<>();
+        removeUsersFromGroupBody.put("accountIds", List.of(accountIds.get(0)));
+
+        // when
+        var removeResponse = GroupSteps.그룹_사용자_추가_요청(groupId, removeUsersFromGroupBody, accessToken, this.spec);
+
+        // then
+        assertThat(removeResponse.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹에 사용자를 추가 성공 시 200 상태 코드를 반환한다.")

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("그룹에 사용자 할당 요청 DTO")
-class AssignUserToGroupRequestTest {
+class AddUserToGroupRequestTest {
 
     Validator validator;
 
@@ -25,7 +25,7 @@ class AssignUserToGroupRequestTest {
     @Test
     void assign_user_to_group_request_is_valid() {
         // given
-        var request = new AssignUserToGroupRequest(List.of(1L, 2L));
+        var request = new AddUserToGroupRequest(List.of(1L, 2L));
 
         // when
         var violations = validator.validate(request);
@@ -38,7 +38,7 @@ class AssignUserToGroupRequestTest {
     @Test
     void user_id_is_empty() {
         // given
-        var request = new AssignUserToGroupRequest(List.of());
+        var request = new AddUserToGroupRequest(List.of());
 
         // when
         var violations = validator.validate(request);
@@ -51,7 +51,7 @@ class AssignUserToGroupRequestTest {
     @Test
     void user_id_is_null() {
         // given
-        var request = new AssignUserToGroupRequest(null);
+        var request = new AddUserToGroupRequest(null);
 
         // when
         var violations = validator.validate(request);

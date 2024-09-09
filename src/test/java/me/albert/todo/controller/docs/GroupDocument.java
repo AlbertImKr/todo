@@ -72,4 +72,19 @@ public class GroupDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter removeUsersFromGroupDocumentation() {
+        return document(
+                "groups/remove-users",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("id").description("그룹 ID")
+                ),
+                requestFields(
+                        fieldWithPath("accountIds").description("사용자 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_ACCOUNT_IDS))
+                )
+        );
+    }
 }

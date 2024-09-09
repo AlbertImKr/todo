@@ -114,4 +114,14 @@ public class GroupServiceImpl implements GroupService {
         List<Account> accountsToAdd = accountService.findAllById(accountIds);
         group.addAccounts(account, accountsToAdd);
     }
+
+    @Transactional
+    @Override
+    public void removeAccounts(Long id, List<Long> accountIds, String username) {
+        Account account = accountService.findByUsername(username);
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        List<Account> accountsToRemove = accountService.findAllById(accountIds);
+        group.removeAccounts(account, accountsToRemove);
+    }
 }

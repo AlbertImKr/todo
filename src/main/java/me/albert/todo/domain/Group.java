@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import me.albert.todo.exception.BusinessException;
+import me.albert.todo.utils.ErrorMessages;
 import org.springframework.http.HttpStatus;
 
 @Table(name = "todo_group")
@@ -98,9 +99,16 @@ public class Group {
 
     public void addAccounts(Account currentAccount, List<Account> accounts) {
         if (!isOwner(currentAccount)) {
-            throw new BusinessException("사용자를 할당할 권한이 없습니다.", HttpStatus.FORBIDDEN);
+            throw new BusinessException(ErrorMessages.GROUP_ADD_USER_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         this.users.addAll(accounts);
+    }
+
+    public void removeAccounts(Account account, List<Account> accountsToRemove) {
+        if (!isOwner(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_REMOVE_USER_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        accountsToRemove.forEach(users::remove);
     }
 
     @Override

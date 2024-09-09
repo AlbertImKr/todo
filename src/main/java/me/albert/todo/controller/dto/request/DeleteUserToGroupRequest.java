@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import me.albert.todo.utils.ValidationMessages;
 
-public record AssignUserToGroupRequest(
+public record DeleteUserToGroupRequest(
         @NotEmpty(message = ValidationMessages.EMPTY_ACCOUNT_IDS)
         List<Long> accountIds
 ) {

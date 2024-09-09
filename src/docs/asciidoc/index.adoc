@@ -562,4 +562,18 @@ include::{snippets}/groups/add-user/request-fields.adoc[]
 
 include::{snippets}/groups/add-user/http-response.adoc[]
 
+=== 그룹에서 사용자 삭제 API
+
+==== URL 경로
+
+include::{snippets}/groups/remove-users/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/remove-users/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/remove-users/http-response.adoc[]
+
 

@@ -40,6 +40,41 @@ class GroupServiceImplTest {
     @Mock
     private TodoService todoService;
 
+    @DisplayName("그룹에 유저를 삭제하면 예외가 발생하지 않아야 한다.")
+    @Test
+    void remove_user_if_success() {
+        // given
+        var groupId = 1L;
+        var username = "test";
+        var account = new Account(1L);
+        var accountsIds = List.of(2L, 3L);
+        var accountsToRemove = List.of(new Account(2L), new Account(3L));
+        var now = LocalDateTime.now();
+        var groupEntity = new Group("group", "description", account, now, now);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(groupEntity));
+        when(accountService.findAllById(accountsIds)).thenReturn(accountsToRemove);
+
+        // when, then
+        assertThatCode(() -> groupService.removeAccounts(groupId, accountsIds, username)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("그룹에 유저를 삭제할 때 그룹이 존재하지 않으면 예외가 발생해야 한다.")
+    @Test
+    void remove_user_if_group_not_found() {
+        // given
+        var groupId = 1L;
+        var username = "test";
+        var accountsIds = List.of(2L, 3L);
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        when(groupRepository.findById(groupId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> groupService.removeAccounts(groupId, accountsIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NOT_FOUND);
+    }
+
     @DisplayName("그룹에 계정을 추가하면 예외가 발생하지 않아야 한다.")
     @Test
     void add_user_if_success() {
