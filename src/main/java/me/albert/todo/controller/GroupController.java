@@ -77,6 +77,13 @@ public class GroupController {
         return groupService.list(username, pageable);
     }
 
+    /**
+     * 그룹에 할 일 할당 API
+     *
+     * @param id       그룹 ID
+     * @param request  할 일 할당 요청 DTO
+     * @param username 현재 사용자 이름
+     */
     @PutMapping("/groups/{id}/todos")
     public void assignTodo(
             @PathVariable Long id,

@@ -70,6 +70,9 @@ public class GroupServiceImpl implements GroupService {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
+        if (!group.isOwner(account) && !group.isMember(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
+        }
         List<Todo> todos = todoService.findAllByIdInAndOwner(todoIds, username);
         group.assignTodos(account, todos);
     }
