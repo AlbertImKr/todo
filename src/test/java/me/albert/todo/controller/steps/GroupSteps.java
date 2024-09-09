@@ -552,8 +552,30 @@ public class GroupSteps {
                 .extract();
     }
 
+    /**
+     * 그룹 목록 조회 요청
+     *
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
     public static ExtractableResponse<Response> 그룹_목록_조회_요청(String accessToken) {
         return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups")
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 목록 조회 요청
+     *
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_목록_조회_요청(String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
                 .get("/groups")

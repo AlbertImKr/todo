@@ -351,6 +351,21 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter listGroupsDocumentation() {
+        return document(
+                "groups/list",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(),
+                responseFields(
+                        fieldWithPath("[].id").description("그룹 ID"),
+                        fieldWithPath("[].name").description("그룹 이름"),
+                        fieldWithPath("[].description").description("그룹 설명"),
+                        fieldWithPath("[].updatedAt").description("그룹 수정일")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter updateGroupTodoDocumentation() {
         return document(
                 "groups/update-todo",

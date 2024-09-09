@@ -85,6 +85,13 @@ public class GroupController {
         groupService.update(id, request.name(), request.description(), username);
     }
 
+    /**
+     * 그룹 목록 조회 API
+     *
+     * @param username 현재 사용자 이름
+     * @param pageable 페이지 정보
+     * @return 그룹 목록
+     */
     @GetMapping("/groups")
     public List<GroupResponse> list(@CurrentUsername String username, @PageableDefault(size = 20) Pageable pageable) {
         return groupService.list(username, pageable);

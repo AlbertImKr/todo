@@ -913,3 +913,21 @@ include::{snippets}/groups/get-todo/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/groups/get-todo/response-fields.adoc[]
+
+=== 그룹 목록 조회 API
+
+==== URL 경로
+
+include::{snippets}/groups/list/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/list/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/list/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/groups/list/response-fields.adoc[]
