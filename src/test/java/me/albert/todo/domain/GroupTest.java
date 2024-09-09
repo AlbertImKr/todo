@@ -26,7 +26,39 @@ class GroupTest {
         group = new Group(name, description, account, createdAt, updatedAt);
     }
 
-    @DisplayName("그룹 할일을 그룹 맴버에게 할당한다")
+    @DisplayName("그룹의 멤버가 맞으면 권한이 있다")
+    @Test
+    void validate_permission_if_has() {
+        // when
+        group.validatePermission(account);
+    }
+
+    @DisplayName("그룹의 멤버가 아니면 권한이 없다")
+    @Test
+    void validate_permission_if_not_has() {
+        // given
+        var otherAccount = new Account(2L);
+
+        // when, then
+        assertThatThrownBy(() -> group.validatePermission(otherAccount))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("그룹 할일에 할당한 멤버를 제거한다")
+    @Test
+    void unassign_todo() {
+        // given
+        var todo = new Todo();
+        group.assignTodos(account, List.of(todo));
+
+        // when
+        group.unassignTodoFromUsers(todo, List.of(account));
+
+        // then
+        assertThat(todo.getAssignees()).isEmpty();
+    }
+
+    @DisplayName("그룹 할일을 그룹 멤버에게 할당한다")
     @Test
     void assign_todo() {
         // given

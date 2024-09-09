@@ -135,6 +135,12 @@ public class Group {
         return users.contains(currentAccount);
     }
 
+    public void validatePermission(Account account) {
+        if (!isOwner(account) && !isMember(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
+        }
+    }
+
     public void assignTodoToUsers(Todo todo, List<Account> accounts) {
         if (!this.contains(todo)) {
             throw new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -142,6 +148,13 @@ public class Group {
         accounts.stream()
                 .filter(account -> !this.isMember(account))
                 .forEach(todo::assignUser);
+    }
+
+    public void unassignTodoFromUsers(Todo todo, List<Account> accounts) {
+        if (!this.contains(todo)) {
+            throw new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        accounts.forEach(todo::unassignUser);
     }
 
     @Override

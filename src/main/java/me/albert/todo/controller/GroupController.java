@@ -7,6 +7,7 @@ import me.albert.todo.controller.dto.request.AddUserToGroupRequest;
 import me.albert.todo.controller.dto.request.AddUserToTodoRequest;
 import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToGroupRequest;
+import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
@@ -126,6 +127,24 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.assignTodoToUsers(id, todoId, request.accountIds(), username);
+    }
+
+    /**
+     * 할 일을 사용자에서 제거 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param request  사용자 할당 해제 요청 DTO
+     * @param username 현재 사용자 이름
+     */
+    @DeleteMapping("/groups/{id}/todos/{todoId}/users")
+    public void unassignTodoFromUser(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @Valid @RequestBody DeleteUserToTodoRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.unassignTodoFromUsers(id, todoId, request.accountIds(), username);
     }
 
     /**

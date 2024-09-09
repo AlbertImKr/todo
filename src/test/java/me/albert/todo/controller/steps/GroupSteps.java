@@ -437,6 +437,55 @@ public class GroupSteps {
                 .extract();
     }
 
+    /**
+     * 그룹 할일에 할당된 멥버 취소 요청
+     *
+     * @param group       그룹 ID
+     * @param todoId      할당된 할일 ID
+     * @param accountIds  취소할 멥버 ID 목록
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일에_할당된_멤버_취소_요청(
+            Long group, Long todoId, List<Long> accountIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("accountIds", accountIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/todos/{todoId}/users", group, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일에 할당된 멥버 취소 요청
+     *
+     * @param group       그룹 ID
+     * @param todoId      할당된 할일 ID
+     * @param accountIds  취소할 멥버 ID 목록
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일에_할당된_멤버_취소_요청(
+            Long group, Long todoId, List<Long> accountIds, String accessToken, RequestSpecification spec
+    ) {
+        var body = new HashMap<>();
+        body.put("accountIds", accountIds);
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/todos/{todoId}/users", group, todoId)
+                .then().log().all()
+                .extract();
+    }
+
     public static long 그룹_생성_요청_후_아이디_가져온다(String accessToken) {
         var body = new HashMap<>();
         body.put("name", "그룹 이름");

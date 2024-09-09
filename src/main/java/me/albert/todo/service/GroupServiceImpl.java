@@ -159,4 +159,16 @@ public class GroupServiceImpl implements GroupService {
         List<Account> accounts = accountService.findAllById(accountIds);
         group.assignTodoToUsers(todo, accounts);
     }
+
+    @Transactional
+    @Override
+    public void unassignTodoFromUsers(Long groupId, Long todoId, List<Long> accountIds, String username) {
+        Account account = accountService.findByUsername(username);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        group.validatePermission(account);
+        Todo todo = todoService.findByIdAndGroupId(todoId, group.getId());
+        List<Account> accounts = accountService.findAllById(accountIds);
+        group.unassignTodoFromUsers(todo, accounts);
+    }
 }

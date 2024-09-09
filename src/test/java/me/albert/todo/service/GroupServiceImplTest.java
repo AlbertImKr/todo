@@ -39,6 +39,65 @@ class GroupServiceImplTest {
     @Mock
     private TodoService todoService;
 
+    @DisplayName("그룹 할일에 할당한 맴버를 취소하면 예외가 발생하지 않아야 한다.")
+    @Test
+    void unassign_todos_to_users_if_success() {
+        // given
+        var groupId = 1L;
+        var todoId = 1L;
+        var accountIds = List.of(2L, 3L);
+        var account = new Account(1L);
+        var username = "test";
+        var group = new Group(groupId, "group", "description", account, LocalDateTime.now(), LocalDateTime.now());
+        var todo = new Todo(1L);
+        group.assignTodos(account, List.of(todo));
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(group));
+        when(accountService.findAllById(accountIds)).thenReturn(List.of(new Account(2L), new Account(3L)));
+        when(todoService.findByIdAndGroupId(todoId, groupId)).thenReturn(todo);
+
+        // when, then
+        assertThatCode(() -> groupService.unassignTodoFromUsers(groupId, todoId, accountIds, username))
+                .doesNotThrowAnyException();
+    }
+
+    @DisplayName("그룹 할일에 할당한 맴버를 취소할 때 그룹이 존재하지 않으면 예외가 발생해야 한다.")
+    @Test
+    void unassign_todos_to_users_if_group_not_found() {
+        // given
+        var groupId = 1L;
+        var todoId = 1L;
+        var accountIds = List.of(2L, 3L);
+        var username = "test";
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        when(groupRepository.findById(groupId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> groupService.unassignTodoFromUsers(groupId, todoId, accountIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NOT_FOUND);
+    }
+
+    @DisplayName("그룹 할일에 할당한 맴버를 취소할 때 현재 사용자가 그룹의 맴버가 아니면 예외가 발생해야 한다.")
+    @Test
+    void unassign_todos_to_users_if_not_member() {
+        // given
+        var groupId = 1L;
+        var todoId = 1L;
+        var accountIds = List.of(2L, 3L);
+        var account = new Account(1L);
+        var username = "test";
+        var group = new Group(groupId, "group", "description", account, LocalDateTime.now(), LocalDateTime.now());
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(group));
+
+        // when, then
+        assertThatThrownBy(() -> groupService.unassignTodoFromUsers(groupId, todoId, accountIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NOT_MEMBER);
+    }
+
+
     @DisplayName("그룹 할일을 맴버에게 할당하면 예외가 발생하지 않아야 한다.")
     @Test
     void assign_todos_to_users_if_success() {

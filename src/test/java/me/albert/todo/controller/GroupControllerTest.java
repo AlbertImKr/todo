@@ -7,6 +7,7 @@ import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentat
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
@@ -25,6 +26,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_해제_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일에_할당된_멤버_취소_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일을_멥버에게_할당_요청;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +49,27 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹의 할 일에 할당된 멤버를 제거 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void unassign_todo_from_group_member() {
+        // docs
+        this.spec.filter(unassignMembersToGroupTodoDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var memberId = 유저_가입_및_ID_반환("newUser1");
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_사용자_추가_요청(groupId, List.of(memberId), accessToken);
+        그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+        그룹_할일을_멥버에게_할당_요청(groupId, todoId, List.of(memberId), accessToken);
+
+        // when
+        var response = 그룹_할일에_할당된_멤버_취소_요청(groupId, todoId, List.of(memberId), accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹의 할 일을 멤버에게 할당 성공 시 200 상태 코드를 반환한다.")
@@ -384,6 +407,84 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(todos.size()).isEqualTo(2);
+    }
+
+    @DisplayName("그룹의 할 일에 할당된 멤버를 제거 실패")
+    @Nested
+    class UnassignTodoFromGroupMemberFail {
+
+        long groupId;
+        long memberId;
+        long todoId;
+
+        @BeforeEach
+        void create_group_and_member_and_todo() {
+            groupId = 그룹_생성및_ID_반환("group", accessToken);
+            memberId = 유저_가입_및_ID_반환("newUser1");
+            todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_사용자_추가_요청(groupId, List.of(memberId), accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            그룹_할일을_멥버에게_할당_요청(groupId, todoId, List.of(memberId), accessToken);
+        }
+
+        @DisplayName("멤버 ID가 없으면 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_from_group_member_without_member_id() {
+            // when
+            var response = 그룹_할일에_할당된_멤버_취소_요청(groupId, todoId, List.of(), accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("멤버 ID가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_from_group_member_with_null_member_id() {
+            // when
+            var response = 그룹_할일에_할당된_멤버_취소_요청(groupId, todoId, null, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("그룹이 존재하지 않으면 404 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_from_group_member_with_not_exist_group() {
+            // given
+            var notExistGroupId = 100L;
+
+            // when
+            var response = 그룹_할일에_할당된_멤버_취소_요청(notExistGroupId, todoId, List.of(memberId), accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("멤버가 아니면 403 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_from_group_member_with_not_member() {
+            // given
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
+
+            // when
+            var response = 그룹_할일에_할당된_멤버_취소_요청(groupId, todoId, List.of(memberId), otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+
+        @DisplayName("할 일이 존재하지 않으면 404 상태 코드를 반환한다.")
+        @Test
+        void unassign_todo_from_group_member_with_not_exist_todo() {
+            // given
+            var notExistTodoId = 100L;
+
+            // when
+            var response = 그룹_할일에_할당된_멤버_취소_요청(groupId, notExistTodoId, List.of(memberId), accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
     }
 
     @DisplayName("그룹의 할 일을 멤버에게 할당 실패")
