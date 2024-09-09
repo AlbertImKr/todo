@@ -21,8 +21,10 @@ import me.albert.todo.service.GroupService;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -376,5 +378,21 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.unassignTodosFromProject(id, projectId, request.todoIds(), username);
+    }
+
+    /**
+     * 그룹에 프로젝트 할 일 목록 조회 API
+     *
+     * @param id        그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param username  현재 사용자 이름
+     * @return 할 일 목록
+     */
+    @GetMapping("/groups/{id}/projects/{projectId}/todos")
+    public Page<GroupTodoDetailResponse> listProjectTodos(
+            @PathVariable Long id, @PathVariable Long projectId, @CurrentUsername String username,
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return groupService.listProjectTodos(id, projectId, username, pageable);
     }
 }

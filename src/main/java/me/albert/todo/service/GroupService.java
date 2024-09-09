@@ -6,8 +6,10 @@ import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface GroupService {
@@ -228,4 +230,15 @@ public interface GroupService {
      * @param username  사용자 이름
      */
     void unassignTodosFromProject(Long groupId, Long projectId, List<Long> todoIds, String username);
+
+    /**
+     * 그룹 프로젝트의 할 일 목록을 조회합니다.
+     *
+     * @param id        그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @param pageable  페이지 정보
+     * @return 그룹 프로젝트의 할 일 목록
+     */
+    Page<GroupTodoDetailResponse> listProjectTodos(Long id, Long projectId, String username, Pageable pageable);
 }

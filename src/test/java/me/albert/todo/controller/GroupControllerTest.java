@@ -9,6 +9,7 @@ import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentat
 import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupProjectDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.listGroupProjectTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
@@ -39,6 +40,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_생
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_수정;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_해제_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트별_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
@@ -73,6 +75,40 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 프로젝트의 할 일 목록 조회 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void list_group_project_todos() {
+        // docs
+        this.spec.filter(listGroupProjectTodosDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+        var tagsId = new ArrayList<Long>();
+        for (int j = 0; j < 3; j++) {
+            tagsId.add(태그_생성_및_ID_반환(accessToken, "tag" + j));
+        }
+        var accountIds = new ArrayList<Long>();
+        for (int i = 0; i < 3; i++) {
+            accountIds.add(유저_가입_및_ID_반환("newUser" + i));
+        }
+        for (int i = 0; i < 3; i++) {
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            그룹_프로젝트_할일_할당_요청(groupId, projectId, List.of(todoId), accessToken);
+            for (int j = 0; j < 3; j++) {
+                그룹_할일_태그_할당_요청(groupId, todoId, tagsId.get(j), accessToken);
+            }
+            그룹_할일을_멥버에게_할당_요청(groupId, todoId, accountIds, accessToken);
+        }
+
+        // when
+        var response = 그룹_프로젝트별_할일_목록_조회_요청(groupId, projectId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 프로젝트에 할 일을 할당 해제 성공 시 200 상태 코드를 반환한다.")

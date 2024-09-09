@@ -13,6 +13,7 @@ import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.TodoRepository;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoDetailResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -255,6 +256,13 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public List<Todo> getAllByIdInAndGroupId(List<Long> todoIds, Long groupId) {
         return todoRepository.findAllByIdInAndGroupId(todoIds, groupId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<GroupTodoDetailResponse> getAllWithTagsByGroupIdAndProjectId(Long groupId, Long projectId, Pageable pageable) {
+        return todoRepository.findAllWithTagsByGroupIdAndProjectId(groupId, projectId, pageable)
+                .map(GroupTodoDetailResponse::from);
     }
 
     public Todo getTodoById(Long todoId) {

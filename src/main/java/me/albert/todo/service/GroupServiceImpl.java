@@ -14,6 +14,7 @@ import me.albert.todo.repository.GroupRepository;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
 import me.albert.todo.utils.ErrorMessages;
@@ -230,6 +231,13 @@ public class GroupServiceImpl implements GroupService {
         Project project = projectService.getProjectById(projectId);
         List<Todo> todos = todoService.getAllByIdInAndGroupId(todoIds, groupId);
         project.unassignTodos(todos);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<GroupTodoDetailResponse> listProjectTodos(Long id, Long projectId, String username, Pageable pageable) {
+        validateGroupMembership(id, username);
+        return todoService.getAllWithTagsByGroupIdAndProjectId(id, projectId, pageable);
     }
 
     private Group validateGroupMembership(Long groupId, String username) {

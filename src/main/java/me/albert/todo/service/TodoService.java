@@ -7,6 +7,7 @@ import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoDetailResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -244,4 +245,13 @@ public interface TodoService {
      * @return 할 일 목록
      */
     List<Todo> getAllByIdInAndGroupId(List<Long> todoIds, Long groupId);
+
+    /**
+     * 그룹 할 일을 조회합니다.
+     *
+     * @param groupId 그룹 ID
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
+    Page<GroupTodoDetailResponse> getAllWithTagsByGroupIdAndProjectId(Long groupId, Long projectId, Pageable pageable);
 }
