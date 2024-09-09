@@ -74,6 +74,47 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹에 사용자 제거 요청
+     *
+     * @param id          그룹 ID
+     * @param body        사용자 제거 요청 바디 (accountIds)
+     * @param accessToken 엑세스 토큰
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_제거_요청(
+            Long id, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹에 사용자 제거 요청
+     *
+     * @param id          그룹 ID
+     * @param body        사용자 제거 요청 바디 (accountIds)
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_제거_요청(
+            Long id, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹에 사용자 목록 조회 요청
      *
      * @param id          그룹 ID
@@ -482,6 +523,39 @@ public class GroupSteps {
                 .contentType("application/json")
                 .when()
                 .delete("/groups/{groupId}/todos/{todoId}/users", group, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 목록 조회 요청
+     *
+     * @param groupId     그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_수정_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 그룹_할일_수정_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}", groupId, todoId)
                 .then().log().all()
                 .extract();
     }

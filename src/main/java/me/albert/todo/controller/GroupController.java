@@ -11,6 +11,7 @@ import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
+import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
@@ -194,5 +195,22 @@ public class GroupController {
     @GetMapping("/groups/{id}/todos")
     public List<TodoResponse> listTodos(@PathVariable Long id, @CurrentUsername String username) {
         return groupService.listTodos(id, username);
+    }
+
+    /**
+     * 그룹에 속한 할 일 수정 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param username 현재 사용자 이름
+     */
+    @PutMapping("/groups/{id}/todos/{todoId}")
+    public void editTodo(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @RequestBody TodoUpdateRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.editTodo(id, todoId, request, username);
     }
 }

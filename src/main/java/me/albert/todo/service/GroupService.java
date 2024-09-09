@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.util.List;
+import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
@@ -101,29 +102,39 @@ public interface GroupService {
     /**
      * 그룹에 속한 사용자 목록을 조회합니다.
      *
-     * @param id       그룹 ID
+     * @param groupId  그룹 ID
      * @param username 사용자 이름
      * @return 그룹에 속한 사용자 목록
      */
-    List<AccountResponse> listAccounts(Long id, String username);
+    List<AccountResponse> listAccounts(Long groupId, String username);
 
     /**
      * 할일을 사용자에게 할당합니다.
      *
-     * @param id       그룹 ID
+     * @param groupId  그룹 ID
      * @param todoId   할 일 ID
      * @param longs    사용자 ID 목록
      * @param username 사용자 이름
      */
-    void assignTodoToUsers(Long id, Long todoId, List<Long> longs, String username);
+    void assignTodoToUsers(Long groupId, Long todoId, List<Long> longs, String username);
 
     /**
      * 할일을 사용자에게서 해제합니다.
      *
-     * @param id       그룹 ID
+     * @param groupId  그룹 ID
      * @param todoId   할 일 ID
      * @param longs    사용자 ID 목록
      * @param username 사용자 이름
      */
-    void unassignTodoFromUsers(Long id, Long todoId, List<Long> longs, String username);
+    void unassignTodoFromUsers(Long groupId, Long todoId, List<Long> longs, String username);
+
+    /**
+     * 그룹에 속한 할 일을 수정합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param request  할 일 수정 요청
+     * @param username 사용자 이름
+     */
+    void editTodo(Long groupId, Long todoId, TodoUpdateRequest request, String username);
 }

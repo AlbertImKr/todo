@@ -666,3 +666,20 @@ include::{snippets}/groups/unassign-members-todos/request-fields.adoc[]
 
 include::{snippets}/groups/unassign-members-todos/http-response.adoc[]
 
+=== 그룹 할일 업데이트 API
+
+==== URL 경로
+
+include::{snippets}/groups/update-todo/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/update-todo/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/update-todo/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/update-todo/http-response.adoc[]

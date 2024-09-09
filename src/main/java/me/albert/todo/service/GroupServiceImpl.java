@@ -8,6 +8,7 @@ import me.albert.todo.domain.Group;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.GroupRepository;
+import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
@@ -147,6 +148,13 @@ public class GroupServiceImpl implements GroupService {
         Todo todo = todoService.findByIdAndGroupId(todoId, group.getId());
         List<Account> accounts = accountService.findAllById(accountIds);
         group.unassignTodoFromUsers(todo, accounts);
+    }
+
+    @Transactional
+    @Override
+    public void editTodo(Long groupId, Long todoId, TodoUpdateRequest request, String username) {
+        validateGroupMembership(groupId, username);
+        todoService.updateGroupTodo(groupId, todoId, request);
     }
 
     private Group validateGroupMembership(Long groupId, String username) {

@@ -184,10 +184,19 @@ public interface TodoService {
     /**
      * 그룹 ID로 사용자의 할 일 목록을 조회합니다.
      *
-     * @param todoId   할 일 ID
-     * @param groupId   그룹 ID
+     * @param todoId  할 일 ID
+     * @param groupId 그룹 ID
      * @return 할 일 목록
      * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
      */
     Todo findByIdAndGroupId(Long todoId, Long groupId);
+
+    /**
+     * 그룹 할 일을 업데이트합니다.
+     *
+     * @param groupId 그룹 ID
+     * @param todoId  할 일 ID
+     * @param request 할 일 업데이트 요청 DTO
+     */
+    void updateGroupTodo(Long groupId, Long todoId, TodoUpdateRequest request);
 }
