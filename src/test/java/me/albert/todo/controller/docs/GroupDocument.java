@@ -115,6 +115,22 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter addRepeatSettingToGroupTodoDocumentation(){
+        return document(
+                "groups/add-repeat-setting",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("recurrencePattern").description("반복 주기 타입")
+                                .attributes(key("constraints").value(ValidationMessages.RECURRING_TASK_RECURRENCE_PATTERN_MESSAGE))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter assignTodosToGroupDocumentation() {
         return document(
                 "groups/assign-todos",

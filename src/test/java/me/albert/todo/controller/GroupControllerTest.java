@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.GroupDocument.addRepeatSettingToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTagToGroupTodoDocumentation;
@@ -42,6 +43,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_해제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트별_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_반복_설정_추가_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_우선순위_수정_요청;
@@ -75,6 +77,26 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 할일에 반복 설정을 추가 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void add_repeat_setting_to_group_todo() {
+        // docs
+        this.spec.filter(addRepeatSettingToGroupTodoDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+        var repeatSetting = new HashMap<>();
+        repeatSetting.put("recurrencePattern", "P1D");
+
+        // when
+        var response = 그룹_할일_반복_설정_추가_요청(groupId, todoId, repeatSetting, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 프로젝트의 할 일 목록 조회 성공 시 200 상태 코드를 반환한다.")

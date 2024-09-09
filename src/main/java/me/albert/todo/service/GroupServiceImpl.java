@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
@@ -238,6 +239,13 @@ public class GroupServiceImpl implements GroupService {
     public Page<GroupTodoDetailResponse> listProjectTodos(Long id, Long projectId, String username, Pageable pageable) {
         validateGroupMembership(id, username);
         return todoService.getAllWithTagsByGroupIdAndProjectId(id, projectId, pageable);
+    }
+
+    @Transactional
+    @Override
+    public void updateRecurringTask(Long groupId, Long todoId, Period period, String username) {
+        validateGroupMembership(groupId, username);
+        todoService.updateRecurringTask(groupId, todoId, period);
     }
 
     private Group validateGroupMembership(Long groupId, String username) {

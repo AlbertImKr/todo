@@ -1,5 +1,6 @@
 package me.albert.todo.service;
 
+import java.time.Period;
 import java.util.List;
 import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
@@ -241,4 +242,14 @@ public interface GroupService {
      * @return 그룹 프로젝트의 할 일 목록
      */
     Page<GroupTodoDetailResponse> listProjectTodos(Long id, Long projectId, String username, Pageable pageable);
+
+    /**
+     * 그룹 할일의 반복 작업을 업데이트합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param period   반복 주기
+     * @param username 사용자 이름
+     */
+    void updateRecurringTask(Long groupId, Long todoId, Period period, String username);
 }

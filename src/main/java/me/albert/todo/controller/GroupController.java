@@ -13,6 +13,7 @@ import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.controller.dto.request.ProjectCreateRequest;
 import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
+import me.albert.todo.controller.dto.request.RecurringTaskUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.UnAssignTodoToProjectRequest;
@@ -394,5 +395,15 @@ public class GroupController {
             @PageableDefault(size = 20) Pageable pageable
     ) {
         return groupService.listProjectTodos(id, projectId, username, pageable);
+    }
+
+    @PutMapping("/groups/{id}/todos/{todoId}/recurring-tasks")
+    public void updateRecurringTask(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @Valid @RequestBody RecurringTaskUpdateRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.updateRecurringTask(id, todoId, request.recurrencePattern(), username);
     }
 }

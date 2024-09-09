@@ -2,9 +2,11 @@ package me.albert.todo.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
+import me.albert.todo.domain.RecurringTask;
 import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoPriority;
@@ -263,6 +265,15 @@ public class TodoServiceImpl implements TodoService {
     public Page<GroupTodoDetailResponse> getAllWithTagsByGroupIdAndProjectId(Long groupId, Long projectId, Pageable pageable) {
         return todoRepository.findAllWithTagsByGroupIdAndProjectId(groupId, projectId, pageable)
                 .map(GroupTodoDetailResponse::from);
+    }
+
+    @Transactional
+    @Override
+    public void updateRecurringTask(Long groupId, Long todoId, Period period) {
+        Todo todo = getTodoById(todoId);
+        LocalDateTime nextOccurrence = todo.getDueDate().plus(period);
+        RecurringTask recurringTask = new RecurringTask(period,nextOccurrence);
+        todo.updateRecurringTask(recurringTask, groupId);
     }
 
     public Todo getTodoById(Long todoId) {
