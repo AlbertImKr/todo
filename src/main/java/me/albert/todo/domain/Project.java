@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -32,10 +31,7 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Todo> todos = new ArrayList<>();
     @ManyToOne
-    @JoinTable(name = "group_project",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
-    )
+    @JoinColumn(name = "group_id")
     private Group group;
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -91,6 +87,21 @@ public class Project {
                     todo.unassignFromProject();
                 }
         );
+    }
+
+    public void assignGroup(Group group) {
+        this.group = group;
+    }
+
+    public void updateByGroup(String name, Group group) {
+        validateGroup(group);
+        this.name = name;
+    }
+
+    public void validateGroup(Group group) {
+        if (this.group == null || !this.group.equals(group)) {
+            throw new BusinessException(ErrorMessages.PROJECT_GROUP_NOT_MATCHED, HttpStatus.FORBIDDEN);
+        }
     }
 
     @Override

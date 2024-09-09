@@ -241,6 +241,11 @@ public class Todo {
         this.tags.remove(tag);
     }
 
+    public void updateRecurringTask(RecurringTask recurringTask, Long groupId) {
+        validateGroupId(groupId);
+        this.recurringTask = recurringTask;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());

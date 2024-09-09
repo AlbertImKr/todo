@@ -1,10 +1,12 @@
 package me.albert.todo.service;
 
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Group;
+import me.albert.todo.domain.Project;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
@@ -13,6 +15,7 @@ import me.albert.todo.repository.GroupRepository;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
 import me.albert.todo.utils.ErrorMessages;
@@ -30,6 +33,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final AccountService accountService;
     private final TodoService todoService;
+    private final ProjectService projectService;
 
     @Transactional
     @Override
@@ -185,6 +189,63 @@ public class GroupServiceImpl implements GroupService {
     public void unassignTag(Long groupId, Long todoId, Long tagId, String username) {
         validateGroupMembership(groupId, username);
         todoService.unassignGroupTodoTag(groupId, todoId, tagId);
+    }
+
+    @Transactional
+    @Override
+    public IdResponse createProject(Long groupId, String name, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Project project = projectService.createGroupProject(name, username);
+        group.addProject(project);
+        return new IdResponse(project.getId());
+    }
+
+    @Transactional
+    @Override
+    public void updateProject(Long groupId, Long projectId, String name, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        group.updateProject(project, name);
+    }
+
+    @Transactional
+    @Override
+    public void deleteProject(Long groupId, Long projectId, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        group.deleteProject(project);
+    }
+
+    @Transactional
+    @Override
+    public void assignTodosToProject(Long groupId, Long projectId, List<Long> todoIds, String username) {
+        validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        List<Todo> todos = todoService.getAllByIdInAndGroupId(todoIds, groupId);
+        project.assignTodos(todos);
+    }
+
+    @Transactional
+    @Override
+    public void unassignTodosFromProject(Long groupId, Long projectId, List<Long> todoIds, String username) {
+        validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        List<Todo> todos = todoService.getAllByIdInAndGroupId(todoIds, groupId);
+        project.unassignTodos(todos);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<GroupTodoDetailResponse> listProjectTodos(Long id, Long projectId, String username, Pageable pageable) {
+        validateGroupMembership(id, username);
+        return todoService.getAllWithTagsByGroupIdAndProjectId(id, projectId, pageable);
+    }
+
+    @Transactional
+    @Override
+    public void updateRecurringTask(Long groupId, Long todoId, Period period, String username) {
+        validateGroupMembership(groupId, username);
+        todoService.updateRecurringTask(groupId, todoId, period);
     }
 
     private Group validateGroupMembership(Long groupId, String username) {

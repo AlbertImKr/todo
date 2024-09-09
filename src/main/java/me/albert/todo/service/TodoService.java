@@ -1,12 +1,14 @@
 package me.albert.todo.service;
 
 import java.time.Duration;
+import java.time.Period;
 import java.util.List;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoCreateRequest;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoDetailResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -235,4 +237,31 @@ public interface TodoService {
      * @param tagId   태그 ID
      */
     void unassignGroupTodoTag(Long groupId, Long todoId, Long tagId);
+
+    /**
+     * 그룹 할 일 목록을 조회합니다.
+     *
+     * @param todoIds 할 일 ID 목록
+     * @param groupId 그룹 ID
+     * @return 할 일 목록
+     */
+    List<Todo> getAllByIdInAndGroupId(List<Long> todoIds, Long groupId);
+
+    /**
+     * 그룹 할 일 디테일 조회합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
+    Page<GroupTodoDetailResponse> getAllWithTagsByGroupIdAndProjectId(Long groupId, Long projectId, Pageable pageable);
+
+    /**
+     * 그룹 할 일의 반복 주기를 업데이트합니다.
+     *
+     * @param groupId 그룹 ID
+     * @param todoId  할 일 ID
+     * @param period  반복 주기
+     */
+    void updateRecurringTask(Long groupId, Long todoId, Period period);
 }

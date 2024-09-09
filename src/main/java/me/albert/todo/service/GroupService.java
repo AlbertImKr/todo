@@ -1,13 +1,16 @@
 package me.albert.todo.service;
 
+import java.time.Period;
 import java.util.List;
 import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
+import me.albert.todo.service.dto.response.GroupTodoDetailResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface GroupService {
@@ -179,4 +182,74 @@ public interface GroupService {
      * @param username 사용자 이름
      */
     void unassignTag(Long groupId, Long todoId, Long tagId, String username);
+
+    /**
+     * 그룹에 프로젝트를 생성합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param name     프로젝트 이름
+     * @param username 사용자 이름
+     * @return 생성된 프로젝트의 ID
+     */
+    IdResponse createProject(Long groupId, String name, String username);
+
+    /**
+     * 그룹의 포로젝트를 업데이트합니다.
+     *
+     * @param groupId   그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param name      프로젝트 이름
+     * @param username  사용자 이름
+     */
+    void updateProject(Long groupId, Long projectId, String name, String username);
+
+    /**
+     * 그룹의 프로젝트를 삭제합니다.
+     *
+     * @param groupId   그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     */
+    void deleteProject(Long groupId, Long projectId, String username);
+
+    /**
+     * 그룹 프로젝트에 할 일을 할당합니다.
+     *
+     * @param groupId   그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param todoIds   할 일 ID 목록
+     * @param username  사용자 이름
+     */
+    void assignTodosToProject(Long groupId, Long projectId, List<Long> todoIds, String username);
+
+    /**
+     * 그룹 프로젝트에서 할 일을 해제합니다.
+     *
+     * @param groupId   그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param todoIds   할 일 ID 목록
+     * @param username  사용자 이름
+     */
+    void unassignTodosFromProject(Long groupId, Long projectId, List<Long> todoIds, String username);
+
+    /**
+     * 그룹 프로젝트의 할 일 목록을 조회합니다.
+     *
+     * @param id        그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     * @param pageable  페이지 정보
+     * @return 그룹 프로젝트의 할 일 목록
+     */
+    Page<GroupTodoDetailResponse> listProjectTodos(Long id, Long projectId, String username, Pageable pageable);
+
+    /**
+     * 그룹 할일의 반복 작업을 업데이트합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param period   반복 주기
+     * @param username 사용자 이름
+     */
+    void updateRecurringTask(Long groupId, Long todoId, Period period, String username);
 }

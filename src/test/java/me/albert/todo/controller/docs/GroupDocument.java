@@ -50,6 +50,87 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter assignTodoToGroupProjectDocumentation() {
+        return document(
+                "groups/assign-todo-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_TODO_IDS))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter unassignTodoFromGroupProjectDocumentation() {
+        return document(
+                "groups/unassign-todo-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_TODO_IDS))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter listGroupProjectTodosDocumentation(){
+        return document(
+                "groups/list-project-todos",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                responseFields(
+                        fieldWithPath("content[].id").description("할 일 ID"),
+                        fieldWithPath("content[].title").description("할 일 제목"),
+                        fieldWithPath("content[].description").description("할 일 설명"),
+                        fieldWithPath("content[].dueDate").description("할 일 마감일"),
+                        fieldWithPath("content[].createdAt").description("할 일 생성일"),
+                        fieldWithPath("content[].updatedAt").description("할 일 수정일"),
+                        fieldWithPath("content[].status").description("할 일 상태"),
+                        fieldWithPath("content[].priority").description("할 일 우선순위"),
+                        fieldWithPath("content[].project").description("할 일 프로젝트"),
+                        fieldWithPath("content[].recurringTask").description("할 일 반복 작업"),
+                        fieldWithPath("content[].notificationSettings").description("할 일 알림 설정"),
+                        fieldWithPath("content[].tags").description("할 일 태그 목록"),
+                        fieldWithPath("content[].assignees").description("할 일 담당자 목록"),
+                        fieldWithPath("content[]").description("할 일 내용"),
+                        fieldWithPath("page").description("페이지 정보"),
+                        fieldWithPath("page.size").description("페이지 크기"),
+                        fieldWithPath("page.totalElements").description("전체 요소 수"),
+                        fieldWithPath("page.totalPages").description("전체 페이지 수"),
+                        fieldWithPath("page.number").description("현재 페이지 번호")
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter addRepeatSettingToGroupTodoDocumentation(){
+        return document(
+                "groups/add-repeat-setting",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("recurrencePattern").description("반복 주기 타입")
+                                .attributes(key("constraints").value(ValidationMessages.RECURRING_TASK_RECURRENCE_PATTERN_MESSAGE))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter assignTodosToGroupDocumentation() {
         return document(
                 "groups/assign-todos",
@@ -76,6 +157,52 @@ public class GroupDocument {
                 requestFields(
                         fieldWithPath("todoIds").description("할당 해제할 할 일 ID 목록").attributes(
                                 key("constraints").value(ValidationMessages.EMPTY_TODO_IDS))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter createGroupProjectDocumentation() {
+        return document(
+                "groups/create-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID")
+                ),
+                requestFields(
+                        fieldWithPath("name").description("프로젝트 이름").attributes(
+                                key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
+                ),
+                responseFields(
+                        fieldWithPath("id").description("프로젝트 ID")
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter updateGroupProjectDocumentation() {
+        return document(
+                "groups/update-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                requestFields(
+                        fieldWithPath("name").description("프로젝트 이름").attributes(
+                                key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter deleteGroupProjectDocumentation() {
+        return document(
+                "groups/delete-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
                 )
         );
     }

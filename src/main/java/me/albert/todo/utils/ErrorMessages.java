@@ -21,6 +21,7 @@ public class ErrorMessages {
     public static final String PROJECT_ASSIGN_NOT_ALLOWED = "할 일을 프로젝트에 할당할 권한이 없습니다.";
     public static final String PROJECT_UNASSIGN_NOT_ALLOWED = "할 일을 프로젝트에서 해제할 권한이 없습니다.";
     public static final String PROJECT_GET_NOT_ALLOWED = "프로젝트 목록을 조회할 권한이 없습니다.";
+    public static final String PROJECT_GROUP_NOT_MATCHED = "프로젝트의 그룹이 일치하지 않습니다.";
 
     // Tag
     public static final String TAG_ALREADY_EXISTS = "이미 존재하는 태그입니다.";

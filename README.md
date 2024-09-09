@@ -212,9 +212,9 @@
 | `/groups/{id}/todos/{todoId}`            | GET         | 특정 그룹의 할일 상세 정보를 조회할 수 있습니다.     |    |
 | `/groups/{id}/todos/{todoId}/tags`       | POST        | 특정 그룹의 할일에 태그를 추가할 수 있습니다.       | ✅  |
 | `/groups/{id}/todos/{todoId}/tags`       | DELETE      | 특정 그룹의 할일에서 태그를 삭제할 수 있습니다.      | ✅  |
-| `/groups/{id}/todos/{todoId}/projects`   | PUT         | 특정 그룹의 할일을 프로젝트 별로 분류할 수 있습니다.   |    |
+| `/groups/{id}/todos/{todoId}/projects`   | PUT         | 특정 그룹의 할일을 프로젝트 별로 분류할 수 있습니다.   | ✅ |
 | `/groups/{id}/todos?tag={tagName}`       | GET         | 특정 그룹의 할일을 태그 별로 조회할 수 있습니다.     |    |
-| `/groups/{id}/todos?project={projectId}` | GET         | 특정 그룹의 할일을 프로젝트 별로 조회할 수 있습니다.   |    |
+| `/groups/{id}/todos?project={projectId}` | GET         | 특정 그룹의 할일을 프로젝트 별로 조회할 수 있습니다.   | ✅  |
 | `/groups/{id}/todos`                     | GET         | 특정 그룹의 모든 할일 목록을 조회할 수 있습니다.     |    |
 | `/groups/{id}/todos/{todoId}/priority`   | PUT         | 특정 그룹의 할일에 우선순위를 설정할 수 있습니다.     | ✅  |
 | `/groups/{id}/todos/progress`            | GET         | 특정 그룹의 할일 진행 상태를 비율로 추적할 수 있습니다. |    |

@@ -242,6 +242,235 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹 프로젝트 생성
+     *
+     * @param groupId     그룹 ID
+     * @param name        프로젝트 이름
+     * @param accessToken 액세스 토큰
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_생성(long groupId, String name, String accessToken) {
+        var body = new HashMap<>();
+        body.put("name", name);
+
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .post("/groups/{groupId}/projects", groupId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 생성
+     *
+     * @param groupId     그룹 ID
+     * @param name        프로젝트 이름
+     * @param accessToken 액세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_생성(long groupId, String name, String accessToken, RequestSpecification spec) {
+        var body = new HashMap<>();
+        body.put("name", name);
+
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .post("/groups/{groupId}/projects", groupId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 수정
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param name        프로젝트 이름
+     * @param accessToken 액세스 토큰
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_수정(
+            long groupId, long projectId, String name, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("name", name);
+
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 수정
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param name        프로젝트 이름
+     * @param accessToken 액세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_수정(
+            long groupId, long projectId, String name, String accessToken, RequestSpecification spec){
+        var body = new HashMap<>();
+        body.put("name", name);
+
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 삭제
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param accessToken 액세스 토큰
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_삭제(
+            long groupId, long projectId, String accessToken){
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/groups/{groupId}/projects/{projectId}", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 삭제
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param accessToken 액세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_삭제(
+            long groupId, long projectId, String accessToken, RequestSpecification spec){
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/groups/{groupId}/projects/{projectId}", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 할일 할당 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken, RequestSpecification spec
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 할일 할당 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 할일 할당 해제 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당 해제할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_해제_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 할일 할당 해제 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당 해제할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_해제_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken, RequestSpecification spec
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹 삭제 요청
      *
      * @param id          그룹 ID
@@ -702,7 +931,8 @@ public class GroupSteps {
      * @return 응답
      */
     public static ExtractableResponse<Response> 그룹_할일_태그_할당_해제_요청(
-            Long groupId, Long todoId, Long tagId, String accessToken, RequestSpecification spec){
+            Long groupId, Long todoId, Long tagId, String accessToken, RequestSpecification spec
+    ) {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .contentType("application/json")
@@ -769,6 +999,82 @@ public class GroupSteps {
                 .auth().oauth2(accessToken)
                 .when()
                 .get("/groups/" + id + "/todos")
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트별 할일 목록 조회 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트별_할일_목록_조회_요청(Long groupId, Long projectId, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트별 할일 목록 조회 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트별_할일_목록_조회_요청(Long groupId, Long projectId, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 반복 설정 추가 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param body        반복 설정 추가 요청 바디
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_반복_설정_추가_요청(Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .post("/groups/{groupId}/todos/{todoId}/recurring-tasks", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 반복 설정 추가 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param body        반복 설정 추가 요청 바디
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_반복_설정_추가_요청(Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/recurring-tasks", groupId, todoId)
                 .then().log().all()
                 .extract();
     }

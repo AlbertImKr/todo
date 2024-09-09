@@ -1,17 +1,24 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.GroupDocument.addRepeatSettingToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTagToGroupTodoDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.assignTodoToGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.deleteGroupProjectDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.listGroupProjectTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignTagFromGroupTodoDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.unassignTodoFromGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.updateGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupTodoPriorityDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupTodoStatusDocumentation;
@@ -29,7 +36,14 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_후_아이디_가져온다;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성및_ID_반환;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_삭제;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_생성;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_수정;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_해제_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트별_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_반복_설정_추가_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_우선순위_수정_요청;
@@ -65,6 +79,150 @@ class GroupControllerTest extends TodoAcceptanceTest {
         accessToken = getFixtureFirstAccountAccessToken();
     }
 
+    @DisplayName("그룹 할일에 반복 설정을 추가 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void add_repeat_setting_to_group_todo() {
+        // docs
+        this.spec.filter(addRepeatSettingToGroupTodoDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+        var repeatSetting = new HashMap<>();
+        repeatSetting.put("recurrencePattern", "P1D");
+
+        // when
+        var response = 그룹_할일_반복_설정_추가_요청(groupId, todoId, repeatSetting, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 프로젝트의 할 일 목록 조회 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void list_group_project_todos() {
+        // docs
+        this.spec.filter(listGroupProjectTodosDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+        var tagsId = new ArrayList<Long>();
+        for (int j = 0; j < 3; j++) {
+            tagsId.add(태그_생성_및_ID_반환(accessToken, "tag" + j));
+        }
+        var accountIds = new ArrayList<Long>();
+        for (int i = 0; i < 3; i++) {
+            accountIds.add(유저_가입_및_ID_반환("newUser" + i));
+        }
+        for (int i = 0; i < 3; i++) {
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            그룹_프로젝트_할일_할당_요청(groupId, projectId, List.of(todoId), accessToken);
+            for (int j = 0; j < 3; j++) {
+                그룹_할일_태그_할당_요청(groupId, todoId, tagsId.get(j), accessToken);
+            }
+            그룹_할일을_멥버에게_할당_요청(groupId, todoId, accountIds, accessToken);
+            var repeatSetting = new HashMap<>();
+            repeatSetting.put("recurrencePattern", "P1D");
+            그룹_할일_반복_설정_추가_요청(groupId, todoId, repeatSetting, accessToken, this.spec);
+        }
+
+        // when
+        var response = 그룹_프로젝트별_할일_목록_조회_요청(groupId, projectId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 프로젝트에 할 일을 할당 해제 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void unassign_todo_from_group_project() {
+        // docs
+        this.spec.filter(unassignTodoFromGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_프로젝트_할일_할당_요청(groupId, projectId, List.of(todoId), accessToken);
+
+        // when
+        var response = 그룹_프로젝트_할일_할당_해제_요청(groupId, projectId, List.of(todoId), accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 프로젝트에 할 일을 할당 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void assign_todo_to_group_project() {
+        // docs
+        this.spec.filter(assignTodoToGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+
+        // when
+        var response = 그룹_프로젝트_할일_할당_요청(groupId, projectId, List.of(todoId), accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 프로젝트를 삭제 성공 시 204 상태 코드를 반환한다.")
+    @Test
+    void delete_group_project() {
+        // docs
+        this.spec.filter(deleteGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+
+        // when
+        var response = 그룹_프로젝트_삭제(groupId, projectId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(204);
+    }
+
+    @DisplayName("그룹 프로젝트를 업데이트 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void update_group_project() {
+        // docs
+        this.spec.filter(updateGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+
+        // when
+        var response = 그룹_프로젝트_수정(groupId, projectId, "updated project", accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 프로젝트를 생성 성공 시 201 상태 코드를 반환한다.")
+    @Test
+    void create_group_project() {
+        // docs
+        this.spec.filter(createGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+
+        // when
+        var response = 그룹_프로젝트_생성(groupId, "project", accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(201);
+    }
+
     @DisplayName("그룹 할일에 할당된 태그를 제거 성공 시 200 상태 코드를 반환한다.")
     @Test
     void unassign_tag_from_group_todo() {
@@ -83,94 +241,6 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(200);
-    }
-
-    @DisplayName("그룹 할일에 할당된 태그를 제거 실패")
-    @Nested
-    class UnassignTagFromGroupTodoFail {
-
-        @DisplayName("잘못된 태그 ID로 요청 시 404 상태 코드를 반환한다.")
-        @Test
-        void unassign_tag_from_group_todo_fail_by_wrong_tag_id() {
-            // given
-            var groupId = 그룹_생성및_ID_반환("group", accessToken);
-            var todoId = 할일_생성_및_ID_반환(accessToken);
-            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
-            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
-            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
-
-            // when
-            var response = 그룹_할일_태그_할당_해제_요청(groupId, todoId, 0L, accessToken);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
-
-        @DisplayName("잘못된 할일 ID로 요청 시 404 상태 코드를 반환한다.")
-        @Test
-        void unassign_tag_from_group_todo_fail_by_wrong_todo_id() {
-            // given
-            var groupId = 그룹_생성및_ID_반환("group", accessToken);
-            var todoId = 할일_생성_및_ID_반환(accessToken);
-            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
-            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
-            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
-
-            // when
-            var response = 그룹_할일_태그_할당_해제_요청(groupId, 0L, tagId, accessToken);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
-
-        @DisplayName("잘못된 그룹 ID로 요청 시 404 상태 코드를 반환한다.")
-        @Test
-        void unassign_tag_from_group_todo_fail_by_wrong_group_id() {
-            // given
-            var groupId = 그룹_생성및_ID_반환("group", accessToken);
-            var todoId = 할일_생성_및_ID_반환(accessToken);
-            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
-            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
-            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
-
-            // when
-            var response = 그룹_할일_태그_할당_해제_요청(0L, todoId, tagId, accessToken);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
-
-        @DisplayName("권한이 없는 사용자가 요청 시 403 상태 코드를 반환한다.")
-        @Test
-        void unassign_tag_from_group_todo_fail_by_no_permission() {
-            // given
-            var groupId = 그룹_생성및_ID_반환("group", accessToken);
-            var todoId = 할일_생성_및_ID_반환(accessToken);
-            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
-            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
-            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
-
-            // when
-            var response = 그룹_할일_태그_할당_해제_요청(groupId, todoId, tagId, getFixtureSecondAccountAccessToken());
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(403);
-        }
-
-        @DisplayName("할일이 그룹에 할당되지 않은 경우 400 상태 코드를 반환한다.")
-        @Test
-        void unassign_tag_from_group_todo_fail_by_todo_not_assigned() {
-            // given
-            var groupId = 그룹_생성및_ID_반환("group", accessToken);
-            var todoId = 할일_생성_및_ID_반환(accessToken);
-            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
-
-            // when
-            var response = 그룹_할일_태그_할당_해제_요청(groupId, todoId, tagId, accessToken);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(400);
-        }
     }
 
     @DisplayName("그룹 할일에 태그를 할당 성공 시 200 상태 코드를 반환한다.")
@@ -405,8 +475,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         var body = new HashMap<>();
         body.put("name", "group");
         body.put("description", "description");
-        var response = 그룹_생성_요청(body, accessToken);
-        var groupId = response.jsonPath().getLong("id");
+        var groupId = 그룹_생성_요청(body, accessToken).jsonPath().getLong("id");
 
         // when
         var deleteResponse = 그룹_삭제_요청(groupId, accessToken, this.spec);
@@ -612,6 +681,122 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(todos.size()).isEqualTo(2);
+    }
+
+    @DisplayName("그룹 프로젝트를 생성 실패")
+    @Nested
+    class CreateGroupProjectFail {
+
+        @DisplayName("그룹 ID가 없으면 404 상태 코드를 반환한다.")
+        @Test
+        void create_group_project_fail_by_no_group_id() {
+            // when
+            var response = 그룹_프로젝트_생성(0L, "project", accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("권한이 없는 사용자가 요청 시 403 상태 코드를 반환한다.")
+        @Test
+        void create_group_project_fail_by_no_permission() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+
+            // when
+            var response = 그룹_프로젝트_생성(groupId, "project", getFixtureSecondAccountAccessToken());
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+    }
+
+    @DisplayName("그룹 할일에 할당된 태그를 제거 실패")
+    @Nested
+    class UnassignTagFromGroupTodoFail {
+
+        @DisplayName("잘못된 태그 ID로 요청 시 404 상태 코드를 반환한다.")
+        @Test
+        void unassign_tag_from_group_todo_fail_by_wrong_tag_id() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
+            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
+
+            // when
+            var response = 그룹_할일_태그_할당_해제_요청(groupId, todoId, 0L, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("잘못된 할일 ID로 요청 시 404 상태 코드를 반환한다.")
+        @Test
+        void unassign_tag_from_group_todo_fail_by_wrong_todo_id() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
+            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
+
+            // when
+            var response = 그룹_할일_태그_할당_해제_요청(groupId, 0L, tagId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("잘못된 그룹 ID로 요청 시 404 상태 코드를 반환한다.")
+        @Test
+        void unassign_tag_from_group_todo_fail_by_wrong_group_id() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
+            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
+
+            // when
+            var response = 그룹_할일_태그_할당_해제_요청(0L, todoId, tagId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("권한이 없는 사용자가 요청 시 403 상태 코드를 반환한다.")
+        @Test
+        void unassign_tag_from_group_todo_fail_by_no_permission() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
+            그룹_할일_태그_할당_요청(groupId, todoId, tagId, accessToken);
+
+            // when
+            var response = 그룹_할일_태그_할당_해제_요청(groupId, todoId, tagId, getFixtureSecondAccountAccessToken());
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+
+        @DisplayName("할일이 그룹에 할당되지 않은 경우 400 상태 코드를 반환한다.")
+        @Test
+        void unassign_tag_from_group_todo_fail_by_todo_not_assigned() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+            var todoId = 할일_생성_및_ID_반환(accessToken);
+            var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
+
+            // when
+            var response = 그룹_할일_태그_할당_해제_요청(groupId, todoId, tagId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
     }
 
     @DisplayName("그룹 할일의 우선순위를 수정 실패")
