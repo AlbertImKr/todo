@@ -230,6 +230,19 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter unassignTagFromGroupTodoDocumentation() {
+        return document(
+                "groups/unassign-tag",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID"),
+                        parameterWithName("tagId").description("태그 ID")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter updateGroupTodoStatusDocumentation() {
         return document(
                 "groups/update-todo-status",

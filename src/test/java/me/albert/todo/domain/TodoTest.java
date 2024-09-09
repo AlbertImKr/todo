@@ -28,6 +28,22 @@ class TodoTest {
         );
     }
 
+    @DisplayName("그룹 할일의 태그를 해제한다.")
+    @Test
+    void unassign_tag_for_group() {
+        // given
+        var tag = new Tag(1L, "tag");
+        var groupId = 1L;
+        todo.assignGroup(new Group(groupId));
+        todo.assignTag(tag);
+
+        // when
+        todo.unassignTag(tag);
+
+        // then
+        assertThat(todo.containsTag(tag)).isFalse();
+    }
+
     @DisplayName("그룹 할일에 태그를 할당한다.")
     @Test
     void assign_tag_for_group() {

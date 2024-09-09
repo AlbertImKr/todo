@@ -226,4 +226,13 @@ public interface TodoService {
      * @param tagId   태그 ID
      */
     void assignGroupTodoTag(Long groupId, Long todoId, Long tagId);
+
+    /**
+     * 할 일에 할당된 태그를 해제합니다.
+     *
+     * @param groupId 그룹 ID
+     * @param todoId  할 일 ID
+     * @param tagId   태그 ID
+     */
+    void unassignGroupTodoTag(Long groupId, Long todoId, Long tagId);
 }

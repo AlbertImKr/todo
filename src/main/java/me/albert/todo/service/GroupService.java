@@ -163,10 +163,20 @@ public interface GroupService {
     /**
      * 할 일에 태그를 할당합니다.
      *
-     * @param groupId      그룹 ID
-     * @param todoId       할 일 ID
-     * @param tagId        태그 ID
-     * @param username     사용자 이름
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param tagId    태그 ID
+     * @param username 사용자 이름
      */
     void assignTag(Long groupId, Long todoId, Long tagId, String username);
+
+    /**
+     * 할 일에 할당된 태그를 해제합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param tagId    태그 ID
+     * @param username 사용자 이름
+     */
+    void unassignTag(Long groupId, Long todoId, Long tagId, String username);
 }

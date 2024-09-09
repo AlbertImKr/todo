@@ -180,6 +180,13 @@ public class GroupServiceImpl implements GroupService {
         todoService.assignGroupTodoTag(groupId, todoId, tagId);
     }
 
+    @Transactional
+    @Override
+    public void unassignTag(Long groupId, Long todoId, Long tagId, String username) {
+        validateGroupMembership(groupId, username);
+        todoService.unassignGroupTodoTag(groupId, todoId, tagId);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)
