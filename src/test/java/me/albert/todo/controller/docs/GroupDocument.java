@@ -146,6 +146,33 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter getGroupTodoDocumentation() {
+        return document(
+                "groups/get-todo",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                responseFields(
+                        fieldWithPath("id").description("할 일 ID"),
+                        fieldWithPath("title").description("할 일 제목"),
+                        fieldWithPath("description").description("할 일 설명"),
+                        fieldWithPath("dueDate").description("할 일 마감일"),
+                        fieldWithPath("createdAt").description("할 일 생성일"),
+                        fieldWithPath("updatedAt").description("할 일 수정일"),
+                        fieldWithPath("status").description("할 일 상태"),
+                        fieldWithPath("tags").description("할 일 태그 목록"),
+                        fieldWithPath("priority").description("할 일 우선순위"),
+                        fieldWithPath("assignees").description("할 일 담당자 목록"),
+                        fieldWithPath("project").description("할 일 프로젝트"),
+                        fieldWithPath("recurringTask").description("할 일 반복 작업"),
+                        fieldWithPath("notificationSettings").description("할 일 알림 설정")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter listGroupTodosDocumentation(){
         return document(
                 "groups/list-todos",

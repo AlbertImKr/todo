@@ -424,4 +424,21 @@ public class GroupController {
     ) {
         groupService.updateRecurringTask(id, todoId, request.recurrencePattern(), username);
     }
+
+    /**
+     * 그룹 할 일 상세 조회 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param username 현재 사용자 이름
+     * @return 할 일 상세 정보
+     */
+    @GetMapping("/groups/{id}/todos/{todoId}")
+    public GroupTodoDetailResponse getTodo(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @CurrentUsername String username
+    ) {
+        return groupService.getTodoDetail(id, todoId, username);
+    }
 }

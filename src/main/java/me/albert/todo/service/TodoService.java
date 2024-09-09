@@ -273,4 +273,13 @@ public interface TodoService {
      * @return 할 일 목록
      */
     Page<TodoResponse> getAllByGroupId(Long groupId, Pageable pageable);
+
+    /**
+     * 그룹 할 일 상세 정보를 조회합니다.
+     *
+     * @param groupId 그룹 ID
+     * @param todoId  할 일 ID
+     * @return 그룹 할 일 상세 정보
+     */
+    GroupTodoDetailResponse getGroupTodoDetail(Long groupId, Long todoId);
 }

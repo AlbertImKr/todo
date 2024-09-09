@@ -283,6 +283,14 @@ public class TodoServiceImpl implements TodoService {
                 .map(TodoResponse::from);
     }
 
+    @Transactional
+    @Override
+    public GroupTodoDetailResponse getGroupTodoDetail(Long groupId, Long todoId) {
+        Todo todo = todoRepository.findByIdAndGroupId(todoId, groupId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        return GroupTodoDetailResponse.from(todo);
+    }
+
     public Todo getTodoById(Long todoId) {
         return todoRepository.findById(todoId)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
