@@ -12,9 +12,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import lombok.Getter;
 import me.albert.todo.exception.BusinessException;
+import me.albert.todo.utils.ErrorMessages;
 import org.springframework.http.HttpStatus;
 
 @Table(name = "todo_group")
@@ -43,6 +47,13 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "todo_id")
     )
     private List<Todo> todos = new ArrayList<>();
+    @Getter
+    @ManyToMany
+    @JoinTable(name = "group_account",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id")
+    )
+    private Set<Account> users = new HashSet<>();
 
     public Group() {
     }
@@ -84,5 +95,35 @@ public class Group {
             throw new BusinessException("할 일을 해제할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
         todos.forEach(this.todos::remove);
+    }
+
+    public void addAccounts(Account currentAccount, List<Account> accounts) {
+        if (!isOwner(currentAccount)) {
+            throw new BusinessException(ErrorMessages.GROUP_ADD_USER_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        this.users.addAll(accounts);
+    }
+
+    public void removeAccounts(Account account, List<Account> accountsToRemove) {
+        if (!isOwner(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_REMOVE_USER_NOT_ALLOWED, HttpStatus.FORBIDDEN);
+        }
+        accountsToRemove.forEach(users::remove);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Group group)) {
+            return false;
+        }
+        return Objects.equals(getId(), group.getId());
     }
 }

@@ -22,7 +22,7 @@ public interface GroupService {
     /**
      * 그룹을 수정합니다.
      *
-     * @param groupId          그룹 ID
+     * @param groupId     그룹 ID
      * @param name        그룹 이름
      * @param description 그룹 설명
      * @param username    사용자 이름
@@ -72,9 +72,28 @@ public interface GroupService {
     /**
      * 그룹을 삭제합니다.
      *
-     * @param id       그룹 ID
+     * @param groupId       그룹 ID
      * @param username 사용자 이름
      * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
      */
-    void delete(Long id, String username);
+    void delete(Long groupId, String username);
+
+    /**
+     * 그룹에 사용자를 추가합니다.
+     *
+     * @param groupId         그룹 ID
+     * @param accountIds 사용자 ID 목록
+     * @param username   사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
+     */
+    void addAccounts(Long groupId, List<Long> accountIds, String username);
+
+    /**
+     * 그룹에서 사용자를 제거합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param longs    사용자 ID 목록
+     * @param username 사용자 이름
+     */
+    void removeAccounts(Long groupId, List<Long> longs, String username);
 }

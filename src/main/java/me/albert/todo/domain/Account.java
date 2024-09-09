@@ -7,11 +7,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.Getter;
 
 @Table(name = "account")
 @Entity
 public class Account {
 
+    @Getter
     @Id
     @GeneratedValue
     private Long id;

@@ -2,7 +2,6 @@ package me.albert.todo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,12 +18,70 @@ class GroupTest {
 
     @BeforeEach
     void setUp() {
-        account = mock(Account.class);
+        account = new Account(1L);
         var name = "group";
         var description = "description";
         var createdAt = LocalDateTime.now().minusDays(1);
         var updatedAt = LocalDateTime.now().minusDays(1);
         group = new Group(name, description, account, createdAt, updatedAt);
+    }
+
+    @DisplayName("그룹에서 유저를 제거 한다")
+    @Test
+    void remove_user() {
+        // given
+        var account1 = new Account(2L);
+        var account2 = new Account(3L);
+        var accounts = List.of(account1, account2);
+        group.addAccounts(account, accounts);
+
+        // when
+        group.removeAccounts(account, List.of(account1));
+
+        // then
+        assertThat(group.getUsers()).containsExactly(account2);
+    }
+
+    @DisplayName("그룹에서 유저를 제거할 때 권한이 없으면 예외가 발생한다")
+    @Test
+    void remove_user_if_not_group_owner() {
+        // given
+        var account1 = new Account(2L);
+        var account2 = new Account(3L);
+        var accounts = List.of(account1, account2);
+        group.addAccounts(account, accounts);
+
+        // when, then
+        assertThatThrownBy(() -> group.removeAccounts(account2, List.of(account1)))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("그룹에 유저를 추가한다")
+    @Test
+    void add_user() {
+        // given
+        var account1 = new Account(2L);
+        var account2 = new Account(3L);
+        var accounts = List.of(account1, account2);
+
+        // when
+        group.addAccounts(account, accounts);
+
+        // then
+        assertThat(group.getUsers()).contains(account1, account2);
+    }
+
+    @DisplayName("그룹에 유저를 추가할 때 권한이 없으면 예외가 발생한다")
+    @Test
+    void add_user_if_not_group_owner() {
+        // given
+        var account1 = new Account(2L);
+        var account2 = new Account(3L);
+        var accounts = List.of(account1, account2);
+
+        // when, then
+        assertThatThrownBy(() -> group.addAccounts(account2, accounts))
+                .isInstanceOf(BusinessException.class);
     }
 
     @DisplayName("그룹의 소유자이면 true를 반환한다")
@@ -83,9 +140,10 @@ class GroupTest {
     void assign_todos_if_not_group_owner() {
         // given
         var todo = new Todo();
+        var otherAccount = new Account(2L);
 
         // when, then
-        assertThatThrownBy(() -> group.assignTodos(mock(Account.class), List.of(todo)))
+        assertThatThrownBy(() -> group.assignTodos(otherAccount, List.of(todo)))
                 .isInstanceOf(BusinessException.class);
     }
 

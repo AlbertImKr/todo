@@ -543,3 +543,37 @@ include::{snippets}/groups/update/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/groups/update/http-response.adoc[]
+
+=== 그룹에 사용자 추가 API
+
+==== URL 경로
+
+include::{snippets}/groups/add-user/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/add-user/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/add-user/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/add-user/http-response.adoc[]
+
+=== 그룹에서 사용자 삭제 API
+
+==== URL 경로
+
+include::{snippets}/groups/remove-users/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/remove-users/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/remove-users/http-response.adoc[]
+
+
