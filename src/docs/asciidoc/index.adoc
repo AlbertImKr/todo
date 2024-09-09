@@ -648,3 +648,21 @@ include::{snippets}/groups/assign-members-todos/request-fields.adoc[]
 
 include::{snippets}/groups/assign-members-todos/http-response.adoc[]
 
+=== 그룹에 속한 할일을 멤버들에게 해제 API
+
+==== URL 경로
+
+include::{snippets}/groups/unassign-members-todos/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/unassign-members-todos/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/unassign-members-todos/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/unassign-members-todos/http-response.adoc[]
+

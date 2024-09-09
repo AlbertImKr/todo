@@ -32,6 +32,22 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter unassignMembersToGroupTodoDocumentation() {
+        return document(
+                "groups/unassign-members-todos",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("accountIds").description("할당 해제할 사용자 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_ACCOUNT_IDS))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter assignTodosToGroupDocumentation() {
         return document(
                 "groups/assign-todos",
