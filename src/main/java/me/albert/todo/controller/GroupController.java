@@ -93,6 +93,13 @@ public class GroupController {
         groupService.assignTodos(id, request.todoIds(), username);
     }
 
+    /**
+     * 그룹에서 할 일 제거 API
+     *
+     * @param id       그룹 ID
+     * @param request  할 일 할당 요청 DTO
+     * @param username 현재 사용자 이름
+     */
     @DeleteMapping("/groups/{id}/todos")
     public void unassignTodo(
             @PathVariable Long id,

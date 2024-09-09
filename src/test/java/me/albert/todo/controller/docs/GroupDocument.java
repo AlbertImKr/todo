@@ -31,6 +31,21 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter unassignTodosToGroupDocumentation() {
+        return document(
+                "groups/unassign-todos",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("id").description("그룹 ID")
+                ),
+                requestFields(
+                        fieldWithPath("todoIds").description("할당 해제할 할 일 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_TODO_IDS))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter createGroupDocumentation() {
         return document(
                 "groups/create",
