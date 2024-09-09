@@ -45,6 +45,37 @@ class TodoServiceImplTest {
     @Mock
     private TagService tagService;
 
+    @DisplayName("그룹 할일의 상태를 변경한다.")
+    @Test
+    void update_group_todo_status() {
+        // given
+        var groupId = 1L;
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+        todo.assignGroup(new Group(groupId));
+        var todoId = 1L;
+        when(todoRepository.findById(todoId)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.updateGroupTodoStatus(groupId, todoId, TodoStatus.COMPLETED);
+    }
+
+    @DisplayName("그룹 할일의 상태를 변경할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void update_group_todo_status_if_not_found() {
+        // given
+        var groupId = 1L;
+        var todoId = 1L;
+        when(todoRepository.findById(todoId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.updateGroupTodoStatus(groupId, todoId, TodoStatus.COMPLETED))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
     @DisplayName("그룹 할일을 업데이트 한다.")
     @Test
     void update_group_todo() {

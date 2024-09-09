@@ -9,6 +9,7 @@ import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
+import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
@@ -149,7 +150,7 @@ public class GroupController {
     }
 
     /**
-     * 그룹에 사용자 추가 API
+     * 그룹 사용자 추가 API
      *
      * @param id       그룹 ID
      * @param request  사용자 할당 요청 DTO
@@ -165,7 +166,7 @@ public class GroupController {
     }
 
     /**
-     * 그룹에서 사용자 제거 API
+     * 그룹 사용자 제거 API
      *
      * @param id       그룹 ID
      * @param request  사용자 할당 요청 DTO
@@ -181,7 +182,7 @@ public class GroupController {
     }
 
     /**
-     * 그룹에 속한 사용자 목록 조회 API
+     * 그룹 사용자 목록 조회 API
      *
      * @param id       그룹 ID
      * @param username 현재 사용자 이름
@@ -198,7 +199,7 @@ public class GroupController {
     }
 
     /**
-     * 그룹에 속한 할 일 수정 API
+     * 그룹 할 일 수정 API
      *
      * @param id       그룹 ID
      * @param todoId   할 일 ID
@@ -212,5 +213,23 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.editTodo(id, todoId, request, username);
+    }
+
+    /**
+     *  그룹 할 일 상태 수정 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param request  할 일 상태 수정 요청 DTO
+     * @param username 현재 사용자 이름
+     */
+    @PutMapping("/groups/{id}/todos/{todoId}/status")
+    public void updateTodoStatus(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @RequestBody TodoStatusUpdateRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.updateTodoStatus(id, todoId, request.status(), username);
     }
 }

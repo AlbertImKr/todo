@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.util.List;
+import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
@@ -137,4 +138,14 @@ public interface GroupService {
      * @param username 사용자 이름
      */
     void editTodo(Long groupId, Long todoId, TodoUpdateRequest request, String username);
+
+    /**
+     * 그룹에 속한 할 일의 상태를 수정합니다.
+     *
+     * @param id         그룹 ID
+     * @param todoId     할 일 ID
+     * @param todoStatus 할 일 상태
+     * @param username   사용자 이름
+     */
+    void updateTodoStatus(Long id, Long todoId, TodoStatus todoStatus, String username);
 }
