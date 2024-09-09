@@ -683,3 +683,21 @@ include::{snippets}/groups/update-todo/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/groups/update-todo/http-response.adoc[]
+
+=== 그룹 할일 상태 업데이트 API
+
+==== URL 경로
+
+include::{snippets}/groups/update-todo-status/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/update-todo-status/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/update-todo-status/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/update-todo-status/http-response.adoc[]

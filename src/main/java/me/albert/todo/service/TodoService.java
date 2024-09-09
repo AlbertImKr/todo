@@ -199,4 +199,13 @@ public interface TodoService {
      * @param request 할 일 업데이트 요청 DTO
      */
     void updateGroupTodo(Long groupId, Long todoId, TodoUpdateRequest request);
+
+    /**
+     * 할 일의 상태를 업데이트합니다.
+     *
+     * @param groupId    그룹 ID
+     * @param todoId     할 일 ID
+     * @param todoStatus 할 일 상태
+     */
+    void updateGroupTodoStatus(Long groupId, Long todoId, TodoStatus todoStatus);
 }

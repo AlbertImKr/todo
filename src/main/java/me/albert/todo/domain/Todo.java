@@ -216,6 +216,14 @@ public class Todo {
         this.status = status;
     }
 
+    public void updateStatus(TodoStatus status, LocalDateTime now, Long groupId) {
+        if (this.group == null || !this.group.getId().equals(groupId)) {
+            throw new BusinessException(ErrorMessages.TODO_NOT_IN_GROUP, HttpStatus.BAD_REQUEST);
+        }
+        this.status = status;
+        this.updatedAt = now;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());

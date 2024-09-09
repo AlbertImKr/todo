@@ -11,6 +11,7 @@ import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGrou
 import static me.albert.todo.controller.docs.GroupDocument.unassignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupTodoDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.updateGroupTodoStatusDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.로그인_요청;
@@ -26,6 +27,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_�
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성및_ID_반환;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_해제_요청;
@@ -54,6 +56,66 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 할일의 상태를 수정 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void update_group_todo_status() {
+        // docs
+        this.spec.filter(updateGroupTodoStatusDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+        var updateTodoBody = new HashMap<>();
+        updateTodoBody.put("status", "IN_PROGRESS");
+
+        // when
+        var response = 그룹_할일_상태_수정_요청(groupId, todoId, updateTodoBody, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 할일의 상태를 수정 실패")
+    @Nested
+    class UpdateGroupTodoStatusFail {
+
+        long groupId;
+        long todoId;
+
+        @BeforeEach
+        void create_group_and_todo() {
+            groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
+            todoId = 할일_생성_및_ID_반환(accessToken);
+            그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+        }
+
+        @DisplayName("할 일 ID가 없으면 404 상태 코드를 반환한다.")
+        @Test
+        void update_group_todo_status_without_todo_id() {
+            // when
+            var response = 그룹_할일_상태_수정_요청(groupId, 0L, new HashMap<>(), accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("그룹이 존재하지 않으면 404 상태 코드를 반환한다.")
+        @Test
+        void update_group_todo_status_with_not_exist_group() {
+            // given
+            var notExistGroupId = 100L;
+            var body = new HashMap<>();
+            body.put("status", "IN_PROGRESS");
+
+            // when
+            var response = 그룹_할일_상태_수정_요청(notExistGroupId, todoId, body, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
     }
 
     @DisplayName("그룹 할일을 수정 성공 시 200 상태 코드를 반환한다.")

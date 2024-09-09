@@ -528,9 +528,11 @@ public class GroupSteps {
     }
 
     /**
-     * 그룹 할일 목록 조회 요청
+     * 그룹 할일 수정 요청
      *
      * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param body        할일 수정 요청 바디 (name, description)
      * @param accessToken 엑세스 토큰
      * @return 응답
      */
@@ -547,6 +549,16 @@ public class GroupSteps {
                 .extract();
     }
 
+    /**
+     * 그룹 할일 수정 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param body        할일 수정 요청 바디 (name, description)
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
     public static ExtractableResponse<Response> 그룹_할일_수정_요청(
             Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
     ) {
@@ -556,6 +568,51 @@ public class GroupSteps {
                 .contentType("application/json")
                 .when()
                 .put("/groups/{groupId}/todos/{todoId}", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 상태 수정 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param body        할일 상태 수정 요청 바디 (status)
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_상태_수정_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/status", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 상태 수정 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param body        할일 상태 수정 요청 바디 (status)
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_상태_수정_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/status", groupId, todoId)
                 .then().log().all()
                 .extract();
     }

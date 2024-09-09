@@ -1,6 +1,7 @@
 package me.albert.todo.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -27,6 +28,57 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할일의 상태를 변경한다. (그룹) ")
+    @Test
+    void update_status_for_group() {
+        // given
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var groupId = 1L;
+        todo.assignGroup(new Group(groupId));
+
+        // when
+        todo.updateStatus(status, updatedAt, groupId);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(todo.getStatus()).isEqualTo(status),
+                () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
+        );
+    }
+
+    @DisplayName("할일의 상태를 변경할 때 그룹아이디와 일치하지 않으면 실패한다. (그룹)")
+    @Test
+    void update_status_for_group_fail() {
+        // given
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var groupId = 1L;
+        todo.assignGroup(new Group(2L));
+
+        // when
+        var exception = Assertions.assertThrows(BusinessException.class, () -> {
+            todo.updateStatus(status, updatedAt, groupId);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorMessages.TODO_NOT_IN_GROUP);
+    }
+
+    @DisplayName("할일의 상태를 변경할 때 그룹이 없으면 실패한다. (그룹)")
+    @Test
+    void update_status_for_group_fail_without_group() {
+        // given
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var groupId = 1L;
+
+        // when,then
+        assertThatThrownBy(() -> todo.updateStatus(status, updatedAt, groupId))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_IN_GROUP);
+    }
+
     @DisplayName("할일을 업데이트한다. (그룹)")
     @Test
     void update_todo_for_group() {
@@ -40,7 +92,7 @@ class TodoTest {
         todo.assignGroup(new Group(groupId));
 
         // when
-        todo.update(title, description, dueDate, updatedAt, status,groupId);
+        todo.update(title, description, dueDate, updatedAt, status, groupId);
 
         // then
         Assertions.assertAll(

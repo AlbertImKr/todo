@@ -33,15 +33,22 @@ class GroupTest {
         group.validatePermission(account);
     }
 
-    @DisplayName("그룹의 멤버가 아니면 권한이 없다")
+    @DisplayName("그룹의 소유자 및 멤버가 아니면 권한이 없다")
     @Test
-    void validate_permission_if_not_has() {
+    void validate_permission_if_not_owner_and_not_member() {
         // given
         var otherAccount = new Account(2L);
 
         // when, then
         assertThatThrownBy(() -> group.validatePermission(otherAccount))
                 .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("그룹의 소유자이면 권한이 있다")
+    @Test
+    void validate_permission_if_owner() {
+        // when
+        group.validatePermission(account);
     }
 
     @DisplayName("그룹 할일에 할당한 멤버를 제거한다")
@@ -57,6 +64,18 @@ class GroupTest {
         // then
         assertThat(todo.getAssignees()).isEmpty();
     }
+
+    @DisplayName("그룹 할일에 할당한 멤버를 제거할 때 할일이 없으면 예외가 발생한다")
+    @Test
+    void unassign_todo_if_not_contains_todo() {
+        // given
+        var todo = new Todo();
+
+        // when, then
+        assertThatThrownBy(() -> group.unassignTodoFromUsers(todo, List.of(account)))
+                .isInstanceOf(BusinessException.class);
+    }
+
 
     @DisplayName("그룹 할일을 그룹 멤버에게 할당한다")
     @Test
