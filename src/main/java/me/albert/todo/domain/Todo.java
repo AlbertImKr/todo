@@ -231,6 +231,11 @@ public class Todo {
         }
     }
 
+    public void assignTag(Tag tag, Long groupId) {
+        validateGroupId(groupId);
+        this.tags.add(tag);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());

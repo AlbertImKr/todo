@@ -217,4 +217,13 @@ public interface TodoService {
      * @param priority  할 일 우선순위
      */
     void updateGroupTodoPriority(Long projectId, Long todoId, TodoPriority priority);
+
+    /**
+     * 할 일에 태그를 할당합니다.
+     *
+     * @param groupId 그룹 ID
+     * @param todoId  할 일 ID
+     * @param tagId   태그 ID
+     */
+    void assignGroupTodoTag(Long groupId, Long todoId, Long tagId);
 }

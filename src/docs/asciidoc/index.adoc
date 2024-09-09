@@ -719,3 +719,25 @@ include::{snippets}/groups/update-todo-priority/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/groups/update-todo-priority/http-response.adoc[]
+
+=== 그룹 할일에 태그 추가 API
+
+==== URL 경로
+
+include::{snippets}/groups/assign-tag/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/assign-tag/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/assign-tag/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/assign-tag/http-response.adoc[]
+
+
+
+

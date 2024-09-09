@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AddUserToGroupRequest;
 import me.albert.todo.controller.dto.request.AddUserToTodoRequest;
+import me.albert.todo.controller.dto.request.AssignTagRequest;
 import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
@@ -217,7 +218,7 @@ public class GroupController {
     }
 
     /**
-     *  그룹 할 일 상태 수정 API
+     * 그룹 할 일 상태 수정 API
      *
      * @param id       그룹 ID
      * @param todoId   할 일 ID
@@ -250,5 +251,23 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.updateTodoPriority(id, todoId, request.priority(), username);
+    }
+
+    /**
+     * 그룹 할 일에 태그를 할당하는 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param request  태그 할당 요청
+     * @param username 현재 사용자 이름
+     */
+    @PutMapping("/groups/{id}/todos/{todoId}/tags")
+    public void assignTag(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @Valid @RequestBody AssignTagRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.assignTag(id, todoId, request.tagId(), username);
     }
 }

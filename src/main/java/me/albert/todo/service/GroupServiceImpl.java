@@ -173,6 +173,13 @@ public class GroupServiceImpl implements GroupService {
         todoService.updateGroupTodoPriority(groupId, todoId, priority);
     }
 
+    @Transactional
+    @Override
+    public void assignTag(Long groupId, Long todoId, Long tagId, String username) {
+        validateGroupMembership(groupId, username);
+        todoService.assignGroupTodoTag(groupId, todoId, tagId);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)

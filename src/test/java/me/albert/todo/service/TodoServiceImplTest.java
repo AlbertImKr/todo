@@ -45,6 +45,51 @@ class TodoServiceImplTest {
     @Mock
     private TagService tagService;
 
+    @DisplayName("그룹 할일에 태그를 추가한다.")
+    @Test
+    void assign_group_todo_tag() {
+        // given
+        var groupId = 1L;
+        var todo = new Todo();
+        todo.assignGroup(new Group(groupId));
+        var tagId = 1L;
+        var tag = new Tag(tagId, "tag");
+        when(tagService.findById(tagId)).thenReturn(tag);
+        when(todoRepository.findById(todo.getId())).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.assignGroupTodoTag(groupId, todo.getId(), tagId);
+
+        // then
+        assertThat(todo.containsTag(tag)).isTrue();
+    }
+
+    @DisplayName("할일 아이디로 할일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void get_todo_by_id_not_found() {
+        // given
+        when(todoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.getTodoById(1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
+    @DisplayName("할일 아이디로 할일을 찾으면 할일 정보를 반환한다.")
+    @Test
+    void get_todo_by_id() {
+        // given
+        var todo = new Todo();
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
+
+        // when
+        var response = todoService.getTodoById(1L);
+
+        // then
+        assertThat(response).isEqualTo(todo);
+    }
+
     @DisplayName("그룹 할일의 우선 순위를 변경한다.")
     @Test
     void update_group_todo_priority() {
@@ -527,7 +572,7 @@ class TodoServiceImplTest {
 
     @DisplayName("할 일 ID로 조회 성공 시 할 일 정보를 반환한다.")
     @Test
-    void get_todo_by_id() {
+    void get_todo_by_id_and_username() {
         // given
         var account = new Account(1L);
         var todo = new Todo(
@@ -547,7 +592,7 @@ class TodoServiceImplTest {
 
     @DisplayName("할 일 ID로 조회 시 할 일을 찾을 수 없는 경우 예외가 발생한다.")
     @Test
-    void get_todo_by_id_not_found() {
+    void get_todo_by_id_and_username_not_found() {
         // given
         var username = "username";
         var account = new Account();

@@ -214,6 +214,22 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter assignTagToGroupTodoDocumentation() {
+        return document(
+                "groups/assign-tag",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("tagId").description("태그 ID")
+                                .attributes(key("constraints").value(ValidationMessages.TAG_ID_POSITIVE))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter updateGroupTodoStatusDocumentation() {
         return document(
                 "groups/update-todo-status",
