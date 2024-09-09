@@ -41,6 +41,18 @@ public class GroupController {
         return groupService.create(request.name(), request.description(), username);
     }
 
+    /**
+     * 그룹을 삭제 API
+     *
+     * @param id       그룹 ID
+     * @param username 현재 사용자 이름
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/groups/{id}")
+    public void delete(@PathVariable Long id, @CurrentUsername String username) {
+        groupService.delete(id, username);
+    }
+
     @PutMapping("/groups/{id}")
     public void update(
             @Valid @RequestBody GroupRequest request,

@@ -91,4 +91,16 @@ public class GroupServiceImpl implements GroupService {
                 .map(TodoResponse::from)
                 .toList();
     }
+
+    @Transactional
+    @Override
+    public void delete(Long id, String username) {
+        Account account = accountService.findByUsername(username);
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!group.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_NOT_OWNER, HttpStatus.FORBIDDEN);
+        }
+        groupRepository.delete(group);
+    }
 }

@@ -68,4 +68,13 @@ public interface GroupService {
      * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
      */
     List<TodoResponse> listTodos(Long groupId, String username);
+
+    /**
+     * 그룹을 삭제합니다.
+     *
+     * @param id       그룹 ID
+     * @param username 사용자 이름
+     * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
+     */
+    void delete(Long id, String username);
 }

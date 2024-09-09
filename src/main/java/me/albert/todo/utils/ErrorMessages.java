@@ -27,6 +27,8 @@ public class ErrorMessages {
 
     // Group
     public static final String GROUP_NAME_ALREADY_EXISTS = "이미 존재하는 그룹 이름입니다.";
+    public static final String GROUP_NOT_OWNER = "그룹의 소유자가 아닙니다.";
+    public static final String GROUP_NOT_FOUND = "그룹을 찾을 수 없습니다.";
 
     private ErrorMessages() {
         throw new AssertionError("Cannot instantiate utility class");

@@ -511,3 +511,17 @@ include::{snippets}/groups/create/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/groups/create/http-response.adoc[]
+
+=== 그룹 삭제 API
+
+==== URL 경로
+
+include::{snippets}/groups/delete/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/delete/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/delete/http-response.adoc[]

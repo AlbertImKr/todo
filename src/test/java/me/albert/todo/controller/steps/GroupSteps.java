@@ -48,6 +48,40 @@ public class GroupSteps {
                 .extract();
     }
 
+    /**
+     * 그룹 삭제 요청
+     *
+     * @param id          그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_삭제_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/groups/{id}", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 삭제 요청
+     *
+     * @param id          그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_삭제_요청(Long id, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .delete("/groups/{id}", id)
+                .then().log().all()
+                .extract();
+    }
+
+
     public static ExtractableResponse<Response> 그룹_수정_요청(HashMap<Object, Object> body, Long id, String accessToken) {
         return given().log().all()
                 .auth().oauth2(accessToken)
