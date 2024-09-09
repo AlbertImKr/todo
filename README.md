@@ -14,19 +14,23 @@ gradle build
 - Gradle Wrapper 사용:
 
 ```
-./gradlew build`
+./gradlew build
 ``` 
 
 2. docker 실행
 
-`docker compose up -d`
+```shell
+docker compose up -d
+```
 
 > [!TIP]
 > Docker Compose가 설치되어 있어야 합니다. Docker가 설치되어 있으면 기본적으로 함께 설치됩니다.
 
 3. 실행 (JPA )
 
-`java -jar build/libs/todo-0.0.1-SNAPSHOT.jar`
+```shell
+java -jar build/libs/todo-0.0.1-SNAPSHOT.jar
+```
 
 > [!TIP]
 > `jpa.hibernate.ddl-auto`가 `create-drop`으로 설정되어 있어서 테이블이 자동으로 생성됩니다.
@@ -34,6 +38,10 @@ gradle build
 ## API 문서
 
 https://todo.albert-im.com/docs/index.html
+
+## 배포링크
+
+https://todo.albert-im.com
 
 ## 기능 목록
 
