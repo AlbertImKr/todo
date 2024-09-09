@@ -49,6 +49,7 @@ public class ValidationMessages {
     public static final String GROUP_NAME_MESSAGE = "그룹 이름은 20자 이하로 입력해야 합니다.";
     public static final String GROUP_DESCRIPTION_NOT_NULL = "그룹 설명은 필수 입력값입니다.";
     public static final String GROUP_DESCRIPTION_MESSAGE = "그룹 설명은 100자 이하로 입력해야 합니다.";
+    public static final String EMPTY_ACCOUNT_IDS = "계정 ID는 비어있을 수 없습니다.";
 
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");

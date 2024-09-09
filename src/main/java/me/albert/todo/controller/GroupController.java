@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
+import me.albert.todo.controller.dto.request.AssignUserToGroupRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
@@ -90,6 +91,22 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.unassignTodos(id, request.todoIds(), username);
+    }
+
+    /**
+     * 그룹에 사용자 추가 API
+     *
+     * @param id       그룹 ID
+     * @param request  사용자 할당 요청 DTO
+     * @param username 현재 사용자 이름
+     */
+    @PutMapping("/groups/{id}/users")
+    public void addAccounts(
+            @PathVariable Long id,
+            @Valid @RequestBody AssignUserToGroupRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.addAccounts(id, request.accountIds(), username);
     }
 
     @GetMapping("/groups/{id}/todos")

@@ -10,6 +10,47 @@ import java.util.HashMap;
 public class GroupSteps {
 
     /**
+     * 그룹에 사용자 추가 요청
+     *
+     * @param id          그룹 ID
+     * @param body        사용자 할당 요청 바디 (accountIds)
+     * @param accessToken 엑세스 토큰
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_추가_요청(
+            Long id, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹에 사용자 추가 요청
+     *
+     * @param id          그룹 ID
+     * @param body        사용자 할당 요청 바디 (accountIds)
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_추가_요청(
+            Long id, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹 생성 요청
      *
      * @param body        그룹 생성 요청 바디 (name, description)
@@ -89,7 +130,10 @@ public class GroupSteps {
      * @param accessToken 엑세스 토큰
      * @return 응답
      */
-    public static ExtractableResponse<Response> 그룹_수정_요청(HashMap<Object, Object> body, Long id, String accessToken) {
+    public static ExtractableResponse<Response> 그룹_수정_요청(
+            HashMap<Object, Object> body, Long id, String
+            accessToken
+    ) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
@@ -131,7 +175,10 @@ public class GroupSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 그룹_할일_할당_요청(Long id, HashMap<Object, Object> body, String accessToken) {
+    public static ExtractableResponse<Response> 그룹_할일_할당_요청(
+            Long id, HashMap<Object, Object> body, String
+            accessToken
+    ) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .body(body)

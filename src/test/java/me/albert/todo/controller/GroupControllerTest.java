@@ -1,11 +1,14 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_추가_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_삭제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_후_아이디_가져온다;
@@ -16,9 +19,11 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_�
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import me.albert.todo.TodoAcceptanceTest;
+import me.albert.todo.controller.steps.GroupSteps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +38,37 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹에 사용자를 추가 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void add_user_to_group() {
+        // docs
+        this.spec.filter(addUserToGroupDocumentation());
+
+        // given
+        var createGroupBody = new HashMap<>();
+        createGroupBody.put("name", "group");
+        createGroupBody.put("description", "description");
+        var response = 그룹_생성_요청(createGroupBody, accessToken);
+        var groupId = response.jsonPath().getLong("id");
+        var accountIds = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            var createUserBody = new HashMap<>();
+            createUserBody.put("username", "newUser" + i);
+            createUserBody.put("password", "Password" + i + "!");
+            createUserBody.put("confirmPassword", "Password" + i + "!");
+            var accountId = 화원_가입_요청(createUserBody).jsonPath().getLong("id");
+            accountIds.add(accountId);
+        }
+        var body = new HashMap<>();
+        body.put("accountIds", accountIds);
+
+        // when
+        var assignResponse = GroupSteps.그룹_사용자_추가_요청(groupId, body, accessToken, this.spec);
+
+        // then
+        assertThat(assignResponse.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 삭제 성공 시 204 상태 코드를 반환한다.")
@@ -212,6 +248,65 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(todos.size()).isEqualTo(2);
+    }
+
+    @DisplayName("그룹에 사용자를 추가 실패")
+    @Nested
+    class AddUserToGroupFail {
+
+        long groupId;
+
+        @BeforeEach
+        void create_group() {
+            var body = new HashMap<>();
+            body.put("name", "group");
+            body.put("description", "description");
+            var response = 그룹_생성_요청(body, accessToken);
+            groupId = response.jsonPath().getLong("id");
+        }
+
+        @DisplayName("사용자 ID가 없으면 400 상태 코드를 반환한다.")
+        @Test
+        void add_user_to_group_without_user_id() {
+            // given
+            var body = new HashMap<>();
+            body.put("accountIds", List.of());
+
+            // when
+            var response = 그룹_사용자_추가_요청(groupId, body, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("사용자 ID가 null이면 400 상태 코드를 반환한다.")
+        @Test
+        void add_user_to_group_with_null_user_id() {
+            // given
+            var body = new HashMap<>();
+            body.put("accountIds", null);
+
+            // when
+            var response = 그룹_사용자_추가_요청(groupId, body, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(400);
+        }
+
+        @DisplayName("그룹 소유주가 아닌 사용자가 사용자를 추가하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void add_user_to_group_with_other_user() {
+            // given
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
+            var body = new HashMap<>();
+            body.put("accountIds", List.of(1L, 2L, 3L));
+
+            // when
+            var response = 그룹_사용자_추가_요청(groupId, body, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
     }
 
     @DisplayName("그룹 삭제 실패")

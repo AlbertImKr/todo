@@ -7,6 +7,7 @@ import me.albert.todo.controller.dto.request.UserLoginRequest;
 import me.albert.todo.controller.dto.request.UserRegisterRequest;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.service.AccountService;
+import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TokensResponse;
 import me.albert.todo.utils.ErrorMessages;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,16 @@ public class AccountController {
      * 회원가입
      *
      * @param request 회원가입 요청
+     * @return 회원 ID
      * @throws BusinessException 비번이 일치하지 않을 경우
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/users")
-    public void register(@Valid @RequestBody UserRegisterRequest request) {
+    public IdResponse register(@Valid @RequestBody UserRegisterRequest request) {
         if (!Objects.equals(request.password(), request.confirmPassword())) {
             throw new BusinessException(ErrorMessages.PASSWORD_NOT_MATCHED, HttpStatus.BAD_REQUEST);
         }
-        accountService.register(request.username(), request.password());
+        return accountService.register(request.username(), request.password());
     }
 
     /**
