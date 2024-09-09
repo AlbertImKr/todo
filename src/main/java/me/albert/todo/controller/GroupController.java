@@ -270,4 +270,22 @@ public class GroupController {
     ) {
         groupService.assignTag(id, todoId, request.tagId(), username);
     }
+
+    /**
+     * 그룹 할 일에 할당된 태그를 해제하는 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param tagId    태그 ID
+     * @param username 현재 사용자 이름
+     */
+    @DeleteMapping("/groups/{id}/todos/{todoId}/tags/{tagId}")
+    public void unassignTag(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @PathVariable Long tagId,
+            @CurrentUsername String username
+    ) {
+        groupService.unassignTag(id, todoId, tagId, username);
+    }
 }

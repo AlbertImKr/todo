@@ -582,7 +582,8 @@ public class GroupSteps {
      * @return 응답
      */
     public static ExtractableResponse<Response> 그룹_할일_우선순위_수정_요청(
-            Long groupId, Long todoId, String priority, String accessToken){
+            Long groupId, Long todoId, String priority, String accessToken
+    ) {
         var body = new HashMap<>();
         body.put("priority", priority);
         return given().log().all()
@@ -606,7 +607,8 @@ public class GroupSteps {
      * @return 응답
      */
     public static ExtractableResponse<Response> 그룹_할일_우선순위_수정_요청(
-            Long groupId, Long todoId, String priority, String accessToken, RequestSpecification spec){
+            Long groupId, Long todoId, String priority, String accessToken, RequestSpecification spec
+    ) {
         var body = new HashMap<>();
         body.put("priority", priority);
         return given(spec).log().all()
@@ -664,6 +666,48 @@ public class GroupSteps {
                 .contentType("application/json")
                 .when()
                 .put("/groups/{groupId}/todos/{todoId}/tags", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 태그 할당 해제 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param tagId       태그 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_태그_할당_해제_요청(
+            Long groupId, Long todoId, Long tagId, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/todos/{todoId}/tags/{tagId}", groupId, todoId, tagId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 태그 할당 해제 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param tagId       태그 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_태그_할당_해제_요청(
+            Long groupId, Long todoId, Long tagId, String accessToken, RequestSpecification spec){
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/todos/{todoId}/tags/{tagId}", groupId, todoId, tagId)
                 .then().log().all()
                 .extract();
     }
