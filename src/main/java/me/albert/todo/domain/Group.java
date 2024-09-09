@@ -58,6 +58,10 @@ public class Group {
     public Group() {
     }
 
+    public Group(Long id) {
+        this.id = id;
+    }
+
     public Group(String name, String description, Account owner, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.description = description;
@@ -109,6 +113,10 @@ public class Group {
             throw new BusinessException(ErrorMessages.GROUP_REMOVE_USER_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         accountsToRemove.forEach(users::remove);
+    }
+
+    public boolean isMember(Account currentAccount) {
+        return users.contains(currentAccount);
     }
 
     @Override

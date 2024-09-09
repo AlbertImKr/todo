@@ -31,6 +31,7 @@ public class ErrorMessages {
     public static final String GROUP_NOT_FOUND = "그룹을 찾을 수 없습니다.";
     public static final String GROUP_ADD_USER_NOT_ALLOWED = "그룹에 사용자를 추가할 권한이 없습니다.";
     public static final String GROUP_REMOVE_USER_NOT_ALLOWED = "그룹에서 사용자를 제거할 권한이 없습니다.";
+    public static final String GROUP_NOT_MEMBER = "그룹의 멤버가 아닙니다.";
 
     private ErrorMessages() {
         throw new AssertionError("Cannot instantiate utility class");

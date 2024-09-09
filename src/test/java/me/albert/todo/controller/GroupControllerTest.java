@@ -3,12 +3,14 @@ package me.albert.todo.controller;
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_추가_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_삭제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
@@ -24,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import me.albert.todo.TodoAcceptanceTest;
-import me.albert.todo.controller.steps.GroupSteps;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,39 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹에 포함된 유저 목록 조회 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void list_group_users() {
+        // docs
+        this.spec.filter(listGroupUsersDocumentation());
+
+        // given
+        var createGroupBody = new HashMap<>();
+        createGroupBody.put("name", "group");
+        createGroupBody.put("description", "description");
+        var groupId = 그룹_생성_요청(createGroupBody, accessToken).jsonPath().getLong("id");
+        var accountIds = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            var createUserBody = new HashMap<>();
+            createUserBody.put("username", "newUser" + i);
+            createUserBody.put("password", "Password" + i + "!");
+            createUserBody.put("confirmPassword", "Password" + i + "!");
+            var accountId = 화원_가입_요청(createUserBody).jsonPath().getLong("id");
+            accountIds.add(accountId);
+        }
+        var addUsersToGroupBody = new HashMap<>();
+        addUsersToGroupBody.put("accountIds", accountIds);
+        그룹_사용자_추가_요청(groupId, addUsersToGroupBody, accessToken);
+        var removeUsersFromGroupBody = new HashMap<>();
+        removeUsersFromGroupBody.put("accountIds", List.of(accountIds.get(0)));
+
+        // when
+        var response = 그룹_사용자_목록_조회_요청(groupId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹에 사용자를 제거 성공 시 200 상태 코드를 반환한다.")
@@ -64,12 +98,12 @@ class GroupControllerTest extends TodoAcceptanceTest {
         }
         var addUsersToGroupBody = new HashMap<>();
         addUsersToGroupBody.put("accountIds", accountIds);
-        GroupSteps.그룹_사용자_추가_요청(groupId, addUsersToGroupBody, accessToken);
+        그룹_사용자_추가_요청(groupId, addUsersToGroupBody, accessToken);
         var removeUsersFromGroupBody = new HashMap<>();
         removeUsersFromGroupBody.put("accountIds", List.of(accountIds.get(0)));
 
         // when
-        var removeResponse = GroupSteps.그룹_사용자_추가_요청(groupId, removeUsersFromGroupBody, accessToken, this.spec);
+        var removeResponse = 그룹_사용자_추가_요청(groupId, removeUsersFromGroupBody, accessToken, this.spec);
 
         // then
         assertThat(removeResponse.statusCode()).isEqualTo(200);
@@ -100,7 +134,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         body.put("accountIds", accountIds);
 
         // when
-        var assignResponse = GroupSteps.그룹_사용자_추가_요청(groupId, body, accessToken, this.spec);
+        var assignResponse = 그룹_사용자_추가_요청(groupId, body, accessToken, this.spec);
 
         // then
         assertThat(assignResponse.statusCode()).isEqualTo(200);

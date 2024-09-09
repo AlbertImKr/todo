@@ -17,9 +17,11 @@ public class Account {
     @Id
     @GeneratedValue
     private Long id;
+    @Getter
     @Column(unique = true)
     private String username;
     private String password;
+    @Getter
     private String email;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

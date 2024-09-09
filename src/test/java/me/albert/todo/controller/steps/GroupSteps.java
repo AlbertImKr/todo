@@ -51,6 +51,37 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹에 사용자 목록 조회 요청
+     *
+     * @param id          그룹 ID
+     * @param accessToken 엑세스 토큰
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_목록_조회_요청(Long id, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹에 사용자 목록 조회 요청
+     *
+     * @param id          그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_목록_조회_요청(Long id, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹에 사용자 삭제 요청
      *
      * @param id          그룹 ID

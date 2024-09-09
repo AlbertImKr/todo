@@ -3,12 +3,13 @@ package me.albert.todo.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.AddUserToGroupRequest;
+import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToGroupRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
+import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -124,6 +125,18 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.removeAccounts(id, request.accountIds(), username);
+    }
+
+    /**
+     * 그룹에 속한 사용자 목록 조회 API
+     *
+     * @param id       그룹 ID
+     * @param username 현재 사용자 이름
+     * @return 그룹에 속한 사용자 목록
+     */
+    @GetMapping("/groups/{id}/users")
+    public List<AccountResponse> listAccounts(@PathVariable Long id, @CurrentUsername String username) {
+        return groupService.listAccounts(id, username);
     }
 
     @GetMapping("/groups/{id}/todos")
