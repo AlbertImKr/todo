@@ -25,6 +25,9 @@ public class ErrorMessages {
     public static final String TAG_ALREADY_EXISTS = "이미 존재하는 태그입니다.";
     public static final String TAG_NOT_FOUND = "태그를 찾을 수 없습니다.";
 
+    // Group
+    public static final String GROUP_NAME_ALREADY_EXISTS = "이미 존재하는 그룹 이름입니다.";
+
     private ErrorMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }

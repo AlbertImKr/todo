@@ -1,5 +1,6 @@
 package me.albert.todo.controller;
 
+import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
@@ -34,13 +35,16 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @DisplayName("그룹 생성 성공 시 201 상태 코드를 반환한다.")
     @Test
     void createGroup() {
+        // docs
+        this.spec.filter(createGroupDocumentation());
+
         // given
         var body = new HashMap<>();
         body.put("name", "group");
         body.put("description", "description");
 
         // when
-        var response = 그룹_생성_요청(body, accessToken);
+        var response = 그룹_생성_요청(body, accessToken, this.spec);
 
         // then
         Assertions.assertAll(

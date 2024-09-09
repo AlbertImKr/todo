@@ -1,5 +1,6 @@
 package me.albert.todo.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Getter
+    @Column(unique = true)
     private String name;
     @Getter
     private String description;

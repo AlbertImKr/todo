@@ -491,3 +491,23 @@ include::{snippets}/tags/search/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/tags/search/response-fields.adoc[]
+
+== Group API
+
+=== 그룹 생성 API
+
+==== URL 경로
+
+include::{snippets}/groups/create/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/create/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/create/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/create/http-response.adoc[]

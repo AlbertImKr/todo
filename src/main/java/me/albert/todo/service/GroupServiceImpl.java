@@ -11,6 +11,8 @@ import me.albert.todo.repository.GroupRepository;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import me.albert.todo.utils.ErrorMessages;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,8 +34,15 @@ public class GroupServiceImpl implements GroupService {
     public IdResponse create(String name, String description, String username) {
         Account account = accountService.findByUsername(username);
         LocalDateTime now = LocalDateTime.now();
-        Group group = groupRepository.save(new Group(name, description, account, now, now));
-        return new IdResponse(group.getId());
+        if (groupRepository.existsByName(name)) {
+            throw new BusinessException(ErrorMessages.GROUP_NAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Group group = groupRepository.save(new Group(name, description, account, now, now));
+            return new IdResponse(group.getId());
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(ErrorMessages.GROUP_NAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Transactional

@@ -14,12 +14,14 @@ import me.albert.todo.domain.Group;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.GroupRepository;
+import me.albert.todo.utils.ErrorMessages;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @DisplayName("그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +38,39 @@ class GroupServiceImplTest {
 
     @Mock
     private TodoService todoService;
+
+    @DisplayName("그룹을 생성할 때 이미 존재하는 이름이면 예외가 발생해야 한다.")
+    @Test
+    void create_group_if_name_exists() {
+        // given
+        String name = "group";
+        String description = "description";
+        String username = "test";
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        when(groupRepository.existsByName(name)).thenReturn(true);
+
+        // when, then
+        assertThatThrownBy(() -> groupService.create(name, description, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NAME_ALREADY_EXISTS);
+    }
+
+    @DisplayName("그룹을 생성할 때 DataIntegrityViolationException이 발생하면 예외가 발생해야 한다.")
+    @Test
+    void create_group_if_data_integrity_violation_exception() {
+        // given
+        String name = "group";
+        String description = "description";
+        String username = "test";
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        when(groupRepository.existsByName(name)).thenReturn(false);
+        when(groupRepository.save(any())).thenThrow(new DataIntegrityViolationException(""));
+
+        // when, then
+        assertThatThrownBy(() -> groupService.create(name, description, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NAME_ALREADY_EXISTS);
+    }
 
     @DisplayName("그룹을 생성하면 IdResponse를 반환해야 한다.")
     @Test
