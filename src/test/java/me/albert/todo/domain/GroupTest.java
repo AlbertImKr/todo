@@ -26,6 +26,31 @@ class GroupTest {
         group = new Group(name, description, account, createdAt, updatedAt);
     }
 
+    @DisplayName("그룹의 프로젝트를 업데이트 한다")
+    @Test
+    void update_project() {
+        // given
+        var project = new Project(1L);
+        group.addProject(project);
+
+        // when
+        group.updateProject(project, "new project");
+
+        // then
+        assertThat(project.getName()).isEqualTo("new project");
+    }
+
+    @DisplayName("그룹의 프로젝트를 업데이트할 때 프로젝트가 없으면 예외가 발생한다")
+    @Test
+    void update_project_if_not_contains_project() {
+        // given
+        var project = new Project(1L);
+
+        // when, then
+        assertThatThrownBy(() -> group.updateProject(project, "new project"))
+                .isInstanceOf(BusinessException.class);
+    }
+
     @DisplayName("프로젝트를 추가한다")
     @Test
     void add_project() {

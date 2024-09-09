@@ -97,4 +97,12 @@ public interface ProjectService {
      * @return 생성된 프로젝트
      */
     Project createGroupProject(String name, String username);
+
+    /**
+     * 프로젝트를 조회합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @return 프로젝트
+     */
+    Project getProjectById(Long projectId);
 }

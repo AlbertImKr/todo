@@ -43,6 +43,26 @@ class GroupServiceImplTest {
     @Mock
     private ProjectService projectService;
 
+    @DisplayName("프로젝트를 업데이트 성공하면 예외가 발생하지 않아야 한다.")
+    @Test
+    void update_project_if_success() {
+        // given
+        var groupId = 1L;
+        var projectName = "project";
+        var projectId = 1L;
+        var username = "test";
+        var account = new Account(1L);
+        var group = new Group(groupId, "group", "description", account, LocalDateTime.now(), LocalDateTime.now());
+        var project = new Project(1L);
+        group.addProject(project);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(group));
+        when(projectService.getProjectById(projectId)).thenReturn(project);
+
+        // when, then
+        assertThatCode(() -> groupService.updateProject(groupId, projectId, projectName, username)).doesNotThrowAnyException();
+    }
+
     @DisplayName("프로젝트를 추가하면 예외가 발생하지 않아야 한다.")
     @Test
     void add_project_if_success() {

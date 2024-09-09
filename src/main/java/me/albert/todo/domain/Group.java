@@ -163,6 +163,13 @@ public class Group {
         project.assignGroup(this);
     }
 
+    public void updateProject(Project project, String name) {
+        if (!projects.contains(project)) {
+            throw new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        project.updateByGroup(name, this);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());

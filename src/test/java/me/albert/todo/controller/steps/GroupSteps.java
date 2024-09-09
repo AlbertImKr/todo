@@ -287,6 +287,56 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹 프로젝트 수정
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param name        프로젝트 이름
+     * @param accessToken 액세스 토큰
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_수정(
+            long groupId, long projectId, String name, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("name", name);
+
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 수정
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param name        프로젝트 이름
+     * @param accessToken 액세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 프로젝트 ID
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_수정(
+            long groupId, long projectId, String name, String accessToken, RequestSpecification spec){
+        var body = new HashMap<>();
+        body.put("name", name);
+
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹 삭제 요청
      *
      * @param id          그룹 ID

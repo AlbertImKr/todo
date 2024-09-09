@@ -119,4 +119,11 @@ public class ProjectServiceImpl implements ProjectService {
         var account = accountService.findByUsername(username);
         return projectRepository.save(new Project(name, account));
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Project getProjectById(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.PROJECT_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
 }

@@ -11,6 +11,7 @@ import me.albert.todo.controller.dto.request.DeleteUserToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
 import me.albert.todo.controller.dto.request.ProjectCreateRequest;
+import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
@@ -306,5 +307,23 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         return groupService.createProject(id, request.name(), username);
+    }
+
+    /**
+     * 그룹에 프로젝트 수정 API
+     *
+     * @param id       그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param request  프로젝트 수정 요청 DTO
+     * @param username 현재 사용자 이름
+     */
+    @PutMapping("/groups/{id}/projects/{projectId}")
+    public void updateProject(
+            @PathVariable Long id,
+            @PathVariable Long projectId,
+            @RequestBody ProjectUpdateRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.updateProject(id, projectId, request.name(), username);
     }
 }

@@ -189,4 +189,14 @@ public interface GroupService {
      * @return 생성된 프로젝트의 ID
      */
     IdResponse createProject(Long groupId, String name, String username);
+
+    /**
+     * 그룹의 포로젝트를 업데이트합니다.
+     *
+     * @param groupId   그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param name      프로젝트 이름
+     * @param username  사용자 이름
+     */
+    void updateProject(Long groupId, Long projectId, String name, String username);
 }

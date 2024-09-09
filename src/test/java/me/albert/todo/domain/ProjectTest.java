@@ -22,6 +22,43 @@ class ProjectTest {
         project = new Project(1L, account);
     }
 
+    @DisplayName("그룹 검증 시 성공하면 아무것도 반환하지 않는다")
+    @Test
+    void validate_group() {
+        // given
+        var group = new Group(1L);
+        project.assignGroup(group);
+
+        // when
+        project.validateGroup(group);
+    }
+
+    @DisplayName("그룹 검증 시 그룹이 null이면 예외를 발생한다")
+    @Test
+    void validate_group_fail_when_group_is_null() {
+        // given
+        var group = new Group(2L);
+
+        // when & then
+        assertThatThrownBy(() -> project.validateGroup(group))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.PROJECT_GROUP_NOT_MATCHED);
+    }
+
+    @DisplayName("그룹 검증 시 그룹이 다르면 예외를 발생한다")
+    @Test
+    void validate_group_fail_when_group_is_different() {
+        // given
+        var group = new Group(1L);
+        project.assignGroup(group);
+        var anotherGroup = new Group(2L);
+
+        // when & then
+        assertThatThrownBy(() -> project.validateGroup(anotherGroup))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.PROJECT_GROUP_NOT_MATCHED);
+    }
+
     @DisplayName("프로젝트에 할당한 할 일을 해제한다")
     @Test
     void unassign_todos() {

@@ -198,6 +198,14 @@ public class GroupServiceImpl implements GroupService {
         return new IdResponse(project.getId());
     }
 
+    @Transactional
+    @Override
+    public void updateProject(Long groupId, Long projectId, String name, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        group.updateProject(project, name);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)

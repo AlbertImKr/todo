@@ -98,6 +98,22 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter updateGroupProjectDocumentation() {
+        return document(
+                "groups/update-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                requestFields(
+                        fieldWithPath("name").description("프로젝트 이름").attributes(
+                                key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter createGroupDocumentation() {
         return document(
                 "groups/create",

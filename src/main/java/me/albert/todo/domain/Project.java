@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -92,6 +91,17 @@ public class Project {
 
     public void assignGroup(Group group) {
         this.group = group;
+    }
+
+    public void updateByGroup(String name, Group group) {
+        validateGroup(group);
+        this.name = name;
+    }
+
+    public void validateGroup(Group group) {
+        if (this.group == null || !this.group.equals(group)) {
+            throw new BusinessException(ErrorMessages.PROJECT_GROUP_NOT_MATCHED, HttpStatus.FORBIDDEN);
+        }
     }
 
     @Override

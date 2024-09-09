@@ -39,6 +39,34 @@ class ProjectServiceImplTest {
     @Mock
     private TodoService todoService;
 
+    @DisplayName("프로젝트 아이디로 프로젝트를 조회한다")
+    @Test
+    void get_project_by_id() {
+        // given
+        var projectId = 1L;
+        var project = new Project(1L);
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+
+        // when
+        var target = projectService.getProjectById(projectId);
+
+        // then
+        assertThat(target).isNotNull();
+    }
+
+    @DisplayName("프로젝트 아이디로 프로젝트를 조회할 때 프로젝트가 없으면 예외가 발생한다")
+    @Test
+    void get_project_by_id_without_project() {
+        // given
+        var projectId = 1L;
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> projectService.getProjectById(projectId))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(ErrorMessages.PROJECT_NOT_FOUND);
+    }
+
     @DisplayName("그룹 프로젝트를 생성한다")
     @Test
     void create_group_project() {
