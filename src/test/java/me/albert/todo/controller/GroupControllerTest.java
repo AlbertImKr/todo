@@ -14,6 +14,7 @@ import static me.albert.todo.controller.docs.GroupDocument.getGroupTodoDocumenta
 import static me.albert.todo.controller.docs.GroupDocument.listGroupProjectTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.listGroupsDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignTagFromGroupTodoDocumentation;
@@ -551,6 +552,9 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @DisplayName("그룹 목록 조회 성공 시 200 상태 코드를 반환한다.")
     @Test
     void listGroup() {
+        // docs
+        this.spec.filter(listGroupsDocumentation());
+
         // given
         var body = new HashMap<>();
         body.put("name", "group");
@@ -562,7 +566,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         그룹_생성_요청(body2, accessToken);
 
         // when
-        var response = 그룹_목록_조회_요청(accessToken);
+        var response = 그룹_목록_조회_요청(accessToken, this.spec);
 
         // then
         Assertions.assertAll(
