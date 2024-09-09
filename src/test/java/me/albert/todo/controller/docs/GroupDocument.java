@@ -146,6 +146,34 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter listGroupTodosDocumentation(){
+        return document(
+                "groups/list-todos",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("id").description("그룹 ID")
+                ),
+                responseFields(
+                        fieldWithPath("content[].id").description("할 일 ID"),
+                        fieldWithPath("content[].title").description("할 일 제목"),
+                        fieldWithPath("content[].description").description("할 일 설명"),
+                        fieldWithPath("content[].dueDate").description("할 일 마감일"),
+                        fieldWithPath("content[].createdAt").description("할 일 생성일"),
+                        fieldWithPath("content[].updatedAt").description("할 일 수정일"),
+                        fieldWithPath("content[].status").description("할 일 상태"),
+                        fieldWithPath("content[].tags").description("할 일 태그 목록"),
+                        fieldWithPath("content[].priority").description("할 일 우선순위"),
+                        fieldWithPath("content[]").description("할 일 내용"),
+                        fieldWithPath("page").description("페이지 정보"),
+                        fieldWithPath("page.size").description("페이지 크기"),
+                        fieldWithPath("page.totalElements").description("전체 요소 수"),
+                        fieldWithPath("page.totalPages").description("전체 페이지 수"),
+                        fieldWithPath("page.number").description("현재 페이지 번호")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter unassignTodosToGroupDocumentation() {
         return document(
                 "groups/unassign-todos",

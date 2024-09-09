@@ -276,6 +276,13 @@ public class TodoServiceImpl implements TodoService {
         todo.updateRecurringTask(recurringTask, groupId);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Page<TodoResponse> getAllByGroupId(Long groupId, Pageable pageable) {
+        return todoRepository.findWithTagsAllByGroupId(groupId, pageable)
+                .map(TodoResponse::from);
+    }
+
     public Todo getTodoById(Long todoId) {
         return todoRepository.findById(todoId)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));

@@ -264,4 +264,13 @@ public interface TodoService {
      * @param period  반복 주기
      */
     void updateRecurringTask(Long groupId, Long todoId, Period period);
+
+    /**
+     * 그룹의 할 일 목록을 조회합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param pageable 페이징 정보
+     * @return 할 일 목록
+     */
+    Page<TodoResponse> getAllByGroupId(Long groupId, Pageable pageable);
 }

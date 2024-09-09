@@ -535,31 +535,4 @@ class GroupServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage(ErrorMessages.GROUP_NOT_MEMBER);
     }
-
-    @DisplayName("그룹의 할 일 목록을 조회하면 예외가 발생하지 않아야 한다.")
-    @Test
-    void list_todos_if_success() {
-        // given
-        Long id = 1L;
-        String username = "test";
-        var group = new Group(id, "group", "description", new Account(), LocalDateTime.now(), LocalDateTime.now());
-        when(groupRepository.findByIdAndOwnerUsername(id, username)).thenReturn(Optional.of(group));
-
-        // when, then
-        assertThatCode(() -> groupService.listTodos(id, username)).doesNotThrowAnyException();
-    }
-
-    @DisplayName("그룹의 할 일 목록을 조회할 때 그룹이 존재하지 않으면 예외가 발생해야 한다.")
-    @Test
-    void list_todos_if_group_not_found() {
-        // given
-        Long id = 1L;
-        String username = "test";
-        when(groupRepository.findByIdAndOwnerUsername(id, username)).thenReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> groupService.listTodos(id, username))
-                .isInstanceOf(BusinessException.class)
-                .hasMessage(ErrorMessages.GROUP_NOT_FOUND);
-    }
 }
