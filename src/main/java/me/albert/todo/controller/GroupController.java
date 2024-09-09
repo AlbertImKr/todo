@@ -312,10 +312,10 @@ public class GroupController {
     /**
      * 그룹에 프로젝트 수정 API
      *
-     * @param id       그룹 ID
+     * @param id        그룹 ID
      * @param projectId 프로젝트 ID
-     * @param request  프로젝트 수정 요청 DTO
-     * @param username 현재 사용자 이름
+     * @param request   프로젝트 수정 요청 DTO
+     * @param username  현재 사용자 이름
      */
     @PutMapping("/groups/{id}/projects/{projectId}")
     public void updateProject(
@@ -325,5 +325,18 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.updateProject(id, projectId, request.name(), username);
+    }
+
+    /**
+     * 그룹에 프로젝트 삭제 API
+     *
+     * @param id        그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param username  현재 사용자 이름
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/groups/{id}/projects/{projectId}")
+    public void deleteProject(@PathVariable Long id, @PathVariable Long projectId, @CurrentUsername String username) {
+        groupService.deleteProject(id, projectId, username);
     }
 }

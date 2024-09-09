@@ -170,6 +170,10 @@ public class Group {
         project.updateByGroup(name, this);
     }
 
+    public void deleteProject(Project project) {
+        projects.remove(project);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());

@@ -7,6 +7,7 @@ import static me.albert.todo.controller.docs.GroupDocument.assignTodosToGroupDoc
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.deleteGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
@@ -31,6 +32,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_후_아이디_가져온다;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성및_ID_반환;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_삭제;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_생성;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_수정;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
@@ -67,6 +69,23 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 프로젝트를 삭제 성공 시 204 상태 코드를 반환한다.")
+    @Test
+    void delete_group_project() {
+        // docs
+        this.spec.filter(deleteGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+
+        // when
+        var response = 그룹_프로젝트_삭제(groupId, projectId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(204);
     }
 
     @DisplayName("그룹 프로젝트를 업데이트 성공 시 200 상태 코드를 반환한다.")

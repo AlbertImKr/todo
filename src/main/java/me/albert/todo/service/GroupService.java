@@ -199,4 +199,13 @@ public interface GroupService {
      * @param username  사용자 이름
      */
     void updateProject(Long groupId, Long projectId, String name, String username);
+
+    /**
+     * 그룹의 프로젝트를 삭제합니다.
+     *
+     * @param groupId        그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param username  사용자 이름
+     */
+    void deleteProject(Long groupId, Long projectId, String username);
 }

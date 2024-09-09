@@ -206,6 +206,14 @@ public class GroupServiceImpl implements GroupService {
         group.updateProject(project, name);
     }
 
+    @Transactional
+    @Override
+    public void deleteProject(Long groupId, Long projectId, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        group.deleteProject(project);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)

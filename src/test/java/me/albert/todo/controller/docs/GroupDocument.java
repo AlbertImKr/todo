@@ -114,6 +114,18 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter deleteGroupProjectDocumentation() {
+        return document(
+                "groups/delete-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter createGroupDocumentation() {
         return document(
                 "groups/create",
