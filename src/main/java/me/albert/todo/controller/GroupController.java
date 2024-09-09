@@ -53,6 +53,13 @@ public class GroupController {
         groupService.delete(id, username);
     }
 
+    /**
+     * 그룹을 수정 API
+     *
+     * @param request  그룹 수정 요청 DTO
+     * @param id       그룹 ID
+     * @param username 현재 사용자 이름
+     */
     @PutMapping("/groups/{id}")
     public void update(
             @Valid @RequestBody GroupRequest request,

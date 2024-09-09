@@ -2,6 +2,7 @@ package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
@@ -54,48 +55,6 @@ class GroupControllerTest extends TodoAcceptanceTest {
         assertThat(deleteResponse.statusCode()).isEqualTo(204);
     }
 
-    @DisplayName("그룹 삭제 실패")
-    @Nested
-    class DeleteGroupFail {
-
-        long groupId;
-
-        @BeforeEach
-        void create_group() {
-            var body = new HashMap<>();
-            body.put("name", "group");
-            body.put("description", "description");
-            var response = 그룹_생성_요청(body, accessToken);
-            groupId = response.jsonPath().getLong("id");
-        }
-
-        @DisplayName("그룹 소유주가 아닌 사용자가 그룹을 삭제하려고 하면 403 상태 코드를 반환한다.")
-        @Test
-        void delete_group_with_other_user() {
-            // given
-            var otherAccessToken = getFixtureSecondAccountAccessToken();
-
-            // when
-            var response = 그룹_삭제_요청(groupId, otherAccessToken);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(403);
-        }
-
-        @DisplayName("그룹이 존재하지 않으면 404 상태 코드를 반환한다.")
-        @Test
-        void delete_group_with_not_exist_group() {
-            // given
-            var notExistGroupId = 100L;
-
-            // when
-            var response = 그룹_삭제_요청(notExistGroupId, accessToken);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(404);
-        }
-    }
-
     @DisplayName("그룹 생성 성공 시 201 상태 코드를 반환한다.")
     @Test
     void createGroup() {
@@ -120,6 +79,9 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @DisplayName("그룹 수정 성공 시 200 상태 코드를 반환한다.")
     @Test
     void update_group_if_success() {
+        // docs
+        this.spec.filter(updateGroupDocumentation());
+
         // given
         var body = new HashMap<>();
         body.put("name", "group");
@@ -130,7 +92,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         body.put("description", "updated description");
 
         // when
-        var updateResponse = 그룹_수정_요청(body, groupId, accessToken);
+        var updateResponse = 그룹_수정_요청(body, groupId, accessToken, this.spec);
 
         // then
         assertThat(updateResponse.statusCode()).isEqualTo(200);
@@ -250,6 +212,48 @@ class GroupControllerTest extends TodoAcceptanceTest {
 
         // then
         assertThat(todos.size()).isEqualTo(2);
+    }
+
+    @DisplayName("그룹 삭제 실패")
+    @Nested
+    class DeleteGroupFail {
+
+        long groupId;
+
+        @BeforeEach
+        void create_group() {
+            var body = new HashMap<>();
+            body.put("name", "group");
+            body.put("description", "description");
+            var response = 그룹_생성_요청(body, accessToken);
+            groupId = response.jsonPath().getLong("id");
+        }
+
+        @DisplayName("그룹 소유주가 아닌 사용자가 그룹을 삭제하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void delete_group_with_other_user() {
+            // given
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
+
+            // when
+            var response = 그룹_삭제_요청(groupId, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+
+        @DisplayName("그룹이 존재하지 않으면 404 상태 코드를 반환한다.")
+        @Test
+        void delete_group_with_not_exist_group() {
+            // given
+            var notExistGroupId = 100L;
+
+            // when
+            var response = 그룹_삭제_요청(notExistGroupId, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
     }
 
     @DisplayName("그룹 할일 할당 해제 실패")

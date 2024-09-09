@@ -47,11 +47,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public void update(long id, String name, String description, String username) {
+    public void update(long groupId, String name, String description, String username) {
         Account account = accountService.findByUsername(username);
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
-        group.update(account, name, description, LocalDateTime.now());
+        LocalDateTime updatedAt = LocalDateTime.now();
+        group.update(account, name, description, updatedAt);
     }
 
     @Transactional(readOnly = true)

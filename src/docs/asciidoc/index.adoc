@@ -525,3 +525,21 @@ include::{snippets}/groups/delete/http-request.adoc[]
 ==== 응답
 
 include::{snippets}/groups/delete/http-response.adoc[]
+
+=== 그룹 수정 API
+
+==== URL 경로
+
+include::{snippets}/groups/update/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/update/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/update/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/update/http-response.adoc[]

@@ -40,4 +40,21 @@ public class GroupDocument {
                 )
         );
     }
+
+    public static @NotNull RestDocumentationFilter updateGroupDocumentation() {
+        return document(
+                "groups/update",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("id").description("그룹 ID")
+                ),
+                requestFields(
+                        fieldWithPath("name").description("그룹 이름").attributes(
+                                key("constraints").value(ValidationMessages.GROUP_NAME_MESSAGE)),
+                        fieldWithPath("description").description("그룹 설명").attributes(
+                                key("constraints").value(ValidationMessages.GROUP_DESCRIPTION_MESSAGE))
+                )
+        );
+    }
 }
