@@ -11,6 +11,8 @@ import me.albert.todo.repository.GroupRepository;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
+import me.albert.todo.utils.ErrorMessages;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,17 +34,25 @@ public class GroupServiceImpl implements GroupService {
     public IdResponse create(String name, String description, String username) {
         Account account = accountService.findByUsername(username);
         LocalDateTime now = LocalDateTime.now();
-        Group group = groupRepository.save(new Group(name, description, account, now, now));
-        return new IdResponse(group.getId());
+        if (groupRepository.existsByName(name)) {
+            throw new BusinessException(ErrorMessages.GROUP_NAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Group group = groupRepository.save(new Group(name, description, account, now, now));
+            return new IdResponse(group.getId());
+        } catch (DataIntegrityViolationException e) {
+            throw new BusinessException(ErrorMessages.GROUP_NAME_ALREADY_EXISTS, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Transactional
     @Override
-    public void update(long id, String name, String description, String username) {
+    public void update(long groupId, String name, String description, String username) {
         Account account = accountService.findByUsername(username);
-        Group group = groupRepository.findById(id)
+        Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
-        group.update(account, name, description, LocalDateTime.now());
+        LocalDateTime updatedAt = LocalDateTime.now();
+        group.update(account, name, description, updatedAt);
     }
 
     @Transactional(readOnly = true)
@@ -81,5 +91,17 @@ public class GroupServiceImpl implements GroupService {
         return group.getTodos().stream()
                 .map(TodoResponse::from)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public void delete(Long id, String username) {
+        Account account = accountService.findByUsername(username);
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!group.isOwner(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_NOT_OWNER, HttpStatus.FORBIDDEN);
+        }
+        groupRepository.delete(group);
     }
 }

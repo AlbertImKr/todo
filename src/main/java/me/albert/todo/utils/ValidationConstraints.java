@@ -17,6 +17,12 @@ public class ValidationConstraints {
     // tag
     public static final int TAG_NAME_MAX_LENGTH = 20;
 
+    // group
+    public static final int GROUP_NAME_MIN_LENGTH = 1;
+    public static final int GROUP_NAME_MAX_LENGTH = 20;
+    public static final int GROUP_DESCRIPTION_MIN_LENGTH = 1;
+    public static final int GROUP_DESCRIPTION_MAX_LENGTH = 100;
+
     private ValidationConstraints() {
         throw new AssertionError("Cannot instantiate utility class");
     }

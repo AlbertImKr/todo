@@ -44,6 +44,12 @@ public class ValidationMessages {
     // Notification setting
     public static final String NOTIFICATIONS_SETTING_NOT_NUll_MESSAGE = "알림 시간은 비어있을 수 없습니다.ISO-8601 형식으로 입력해주세요.";
 
+    // group
+    public static final String GROUP_NAME_NOT_NULL = "그룹 이름은 필수 입력값입니다.";
+    public static final String GROUP_NAME_MESSAGE = "그룹 이름은 20자 이하로 입력해야 합니다.";
+    public static final String GROUP_DESCRIPTION_NOT_NULL = "그룹 설명은 필수 입력값입니다.";
+    public static final String GROUP_DESCRIPTION_MESSAGE = "그룹 설명은 100자 이하로 입력해야 합니다.";
+
     private ValidationMessages() {
         throw new AssertionError("Cannot instantiate utility class");
     }

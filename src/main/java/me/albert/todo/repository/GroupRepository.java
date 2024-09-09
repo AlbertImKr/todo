@@ -14,4 +14,6 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Page<Group> findByOwner(Account account, Pageable pageable);
 
     Optional<Group> findByIdAndOwnerUsername(Long id, String username);
+
+    boolean existsByName(String name);
 }
