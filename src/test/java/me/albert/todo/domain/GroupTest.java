@@ -26,6 +26,19 @@ class GroupTest {
         group = new Group(name, description, account, createdAt, updatedAt);
     }
 
+    @DisplayName("프로젝트를 추가한다")
+    @Test
+    void add_project() {
+        // given
+        var project = new Project(1L);
+
+        // when
+        group.addProject(project);
+
+        // then
+        assertThat(group.getProjects()).contains(project);
+    }
+
     @DisplayName("그룹의 멤버가 맞으면 권한이 있다")
     @Test
     void validate_permission_if_has() {

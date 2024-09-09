@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Group;
+import me.albert.todo.domain.Project;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
@@ -30,6 +31,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final AccountService accountService;
     private final TodoService todoService;
+    private final ProjectService projectService;
 
     @Transactional
     @Override
@@ -185,6 +187,15 @@ public class GroupServiceImpl implements GroupService {
     public void unassignTag(Long groupId, Long todoId, Long tagId, String username) {
         validateGroupMembership(groupId, username);
         todoService.unassignGroupTodoTag(groupId, todoId, tagId);
+    }
+
+    @Transactional
+    @Override
+    public IdResponse createProject(Long groupId, String name, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Project project = projectService.createGroupProject(name, username);
+        group.addProject(project);
+        return new IdResponse(project.getId());
     }
 
     private Group validateGroupMembership(Long groupId, String username) {

@@ -32,10 +32,7 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Todo> todos = new ArrayList<>();
     @ManyToOne
-    @JoinTable(name = "group_project",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
-    )
+    @JoinColumn(name = "group_id")
     private Group group;
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -91,6 +88,10 @@ public class Project {
                     todo.unassignFromProject();
                 }
         );
+    }
+
+    public void assignGroup(Group group) {
+        this.group = group;
     }
 
     @Override

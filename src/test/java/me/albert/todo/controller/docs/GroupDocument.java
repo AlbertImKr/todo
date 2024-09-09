@@ -80,6 +80,24 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter createGroupProjectDocumentation() {
+        return document(
+                "groups/create-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID")
+                ),
+                requestFields(
+                        fieldWithPath("name").description("프로젝트 이름").attributes(
+                                key("constraints").value(ValidationMessages.PROJECT_NAME_MESSAGE))
+                ),
+                responseFields(
+                        fieldWithPath("id").description("프로젝트 ID")
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter createGroupDocumentation() {
         return document(
                 "groups/create",

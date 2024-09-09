@@ -5,6 +5,7 @@ import static me.albert.todo.controller.docs.GroupDocument.assignMembersToGroupT
 import static me.albert.todo.controller.docs.GroupDocument.assignTagToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
@@ -29,6 +30,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청_후_아이디_가져온다;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성및_ID_반환;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_생성;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
@@ -63,6 +65,50 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 프로젝트를 생성 성공 시 201 상태 코드를 반환한다.")
+    @Test
+    void create_group_project() {
+        // docs
+        this.spec.filter(createGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+
+        // when
+        var response = 그룹_프로젝트_생성(groupId, "project", accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(201);
+    }
+
+    @DisplayName("그룹 프로젝트를 생성 실패")
+    @Nested
+    class CreateGroupProjectFail {
+
+        @DisplayName("그룹 ID가 없으면 404 상태 코드를 반환한다.")
+        @Test
+        void create_group_project_fail_by_no_group_id() {
+            // when
+            var response = 그룹_프로젝트_생성(0L, "project", accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("권한이 없는 사용자가 요청 시 403 상태 코드를 반환한다.")
+        @Test
+        void create_group_project_fail_by_no_permission() {
+            // given
+            var groupId = 그룹_생성및_ID_반환("group", accessToken);
+
+            // when
+            var response = 그룹_프로젝트_생성(groupId, "project", getFixtureSecondAccountAccessToken());
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
     }
 
     @DisplayName("그룹 할일에 할당된 태그를 제거 성공 시 200 상태 코드를 반환한다.")
@@ -405,8 +451,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         var body = new HashMap<>();
         body.put("name", "group");
         body.put("description", "description");
-        var response = 그룹_생성_요청(body, accessToken);
-        var groupId = response.jsonPath().getLong("id");
+        var groupId = 그룹_생성_요청(body, accessToken).jsonPath().getLong("id");
 
         // when
         var deleteResponse = 그룹_삭제_요청(groupId, accessToken, this.spec);

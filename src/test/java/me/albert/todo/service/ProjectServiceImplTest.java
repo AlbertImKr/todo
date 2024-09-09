@@ -39,6 +39,21 @@ class ProjectServiceImplTest {
     @Mock
     private TodoService todoService;
 
+    @DisplayName("그룹 프로젝트를 생성한다")
+    @Test
+    void create_group_project() {
+        // given
+        var name = "프로젝트";
+        var username = "user";
+        var account = new Account(1L);
+        var project = new Project(1L);
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(projectRepository.save(any(Project.class))).thenReturn(project);
+
+        // when, then
+        projectService.createGroupProject(name, username);
+    }
+
     @DisplayName("프로젝트를 인증한다")
     @Test
     void validate_project_id() {

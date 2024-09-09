@@ -1,5 +1,6 @@
 package me.albert.todo.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,11 +43,7 @@ public class Group {
     @Getter
     private LocalDateTime updatedAt;
     @Getter
-    @ManyToMany
-    @JoinTable(name = "group_todo",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "todo_id")
-    )
+    @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Todo> todos = new ArrayList<>();
     @Getter
     @ManyToMany
@@ -54,6 +52,9 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "account_id")
     )
     private Set<Account> users = new HashSet<>();
+    @Getter
+    @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Project> projects = new HashSet<>();
 
     public Group() {
     }
@@ -155,6 +156,11 @@ public class Group {
             throw new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         accounts.forEach(todo::unassignUser);
+    }
+
+    public void addProject(Project project) {
+        this.projects.add(project);
+        project.assignGroup(this);
     }
 
     @Override

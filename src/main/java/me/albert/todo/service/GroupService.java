@@ -179,4 +179,14 @@ public interface GroupService {
      * @param username 사용자 이름
      */
     void unassignTag(Long groupId, Long todoId, Long tagId, String username);
+
+    /**
+     * 그룹에 프로젝트를 생성합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param name     프로젝트 이름
+     * @param username 사용자 이름
+     * @return 생성된 프로젝트의 ID
+     */
+    IdResponse createProject(Long groupId, String name, String username);
 }

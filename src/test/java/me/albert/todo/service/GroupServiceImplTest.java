@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Group;
+import me.albert.todo.domain.Project;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.GroupRepository;
@@ -38,6 +39,27 @@ class GroupServiceImplTest {
 
     @Mock
     private TodoService todoService;
+
+    @Mock
+    private ProjectService projectService;
+
+    @DisplayName("프로젝트를 추가하면 예외가 발생하지 않아야 한다.")
+    @Test
+    void add_project_if_success() {
+        // given
+        var groupId = 1L;
+        var username = "test";
+        var account = new Account(1L);
+        var group = new Group(groupId, "group", "description", account, LocalDateTime.now(), LocalDateTime.now());
+        var projectName = "project";
+        when(accountService.findByUsername(username)).thenReturn(account);
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(group));
+        var project = new Project(projectName, account);
+        when(projectService.createGroupProject(projectName, username)).thenReturn(project);
+
+        // when, then
+        assertThatCode(() -> groupService.createProject(groupId, projectName, username)).doesNotThrowAnyException();
+    }
 
     @DisplayName("그룹 할일에 할당한 맴버를 취소하면 예외가 발생하지 않아야 한다.")
     @Test

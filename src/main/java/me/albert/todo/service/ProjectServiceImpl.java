@@ -112,4 +112,11 @@ public class ProjectServiceImpl implements ProjectService {
             throw new BusinessException(ErrorMessages.PROJECT_GET_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
     }
+
+    @Transactional
+    @Override
+    public Project createGroupProject(String name, String username) {
+        var account = accountService.findByUsername(username);
+        return projectRepository.save(new Project(name, account));
+    }
 }

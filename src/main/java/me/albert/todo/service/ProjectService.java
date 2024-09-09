@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.util.List;
+import me.albert.todo.domain.Project;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.ProjectDetailResponse;
 import me.albert.todo.service.dto.response.ProjectResponse;
@@ -87,4 +88,13 @@ public interface ProjectService {
      * @throws me.albert.todo.exception.BusinessException 프로젝트 접근 권한이 없는 경우
      */
     void validateProjectId(Long projectId, String username);
+
+    /**
+     * 프로젝트를 생성합니다.
+     *
+     * @param name     프로젝트 이름
+     * @param username 사용자 이름
+     * @return 생성된 프로젝트
+     */
+    Project createGroupProject(String name, String username);
 }
