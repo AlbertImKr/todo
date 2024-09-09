@@ -28,6 +28,49 @@ class TodoTest {
         );
     }
 
+    @DisplayName("그룹 할일의 상태를 변경한다.")
+    @Test
+    void update_status() {
+        // given
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var groupId = 1L;
+        todo.assignGroup(new Group(groupId));
+
+        // when
+        todo.updateStatus(status, updatedAt,groupId);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(todo.getStatus()).isEqualTo(status),
+                () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
+        );
+    }
+
+    @DisplayName("그룹 아이디를 검증한다")
+    @Test
+    void validate_group_id() {
+        // given
+        var groupId = 1L;
+        todo.assignGroup(new Group(groupId));
+
+        // when, then
+        todo.validateGroupId(groupId);
+    }
+
+    @DisplayName("그룹 아이디가 일치하지 않으면 예외가 발생한다")
+    @Test
+    void validate_group_id_fail() {
+        // given
+        var groupId = 1L;
+        todo.assignGroup(new Group(2L));
+
+        // when, then
+        assertThatThrownBy(() -> todo.validateGroupId(groupId))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_IN_GROUP);
+    }
+
     @DisplayName("할일의 상태를 변경한다. (그룹) ")
     @Test
     void update_status_for_group() {
