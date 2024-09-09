@@ -216,4 +216,14 @@ public class TodoServiceImpl implements TodoService {
         return todoRepository.findByIdAndGroupId(todoId, groupId)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
+
+    @Transactional
+    @Override
+    public void updateGroupTodo(Long groupId, Long todoId, TodoUpdateRequest request) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+        todo.update(request.title(), request.description(), request.dueDate(), LocalDateTime.now(), request.status(),
+                    groupId
+        );
+    }
 }

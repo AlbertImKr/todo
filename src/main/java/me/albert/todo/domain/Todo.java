@@ -202,6 +202,20 @@ public class Todo {
         this.group = group;
     }
 
+    public void update(
+            String title, String description, LocalDateTime dueDate, LocalDateTime updatedAt, TodoStatus status,
+            Long groupId
+    ) {
+        if (this.group == null || !this.group.getId().equals(groupId)) {
+            throw new BusinessException(ErrorMessages.TODO_NOT_IN_GROUP, HttpStatus.BAD_REQUEST);
+        }
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.updatedAt = updatedAt;
+        this.status = status;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());

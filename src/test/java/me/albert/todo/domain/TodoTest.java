@@ -27,6 +27,53 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할일을 업데이트한다. (그룹)")
+    @Test
+    void update_todo_for_group() {
+        // given
+        var title = "updated title";
+        var description = "updated description";
+        var dueDate = LocalDateTime.now();
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var groupId = 1L;
+        todo.assignGroup(new Group(groupId));
+
+        // when
+        todo.update(title, description, dueDate, updatedAt, status,groupId);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(todo.getTitle()).isEqualTo(title),
+                () -> assertThat(todo.getDescription()).isEqualTo(description),
+                () -> assertThat(todo.getDueDate()).isEqualTo(dueDate),
+                () -> assertThat(todo.getStatus()).isEqualTo(status),
+                () -> assertThat(todo.getUpdatedAt()).isEqualTo(updatedAt)
+        );
+    }
+
+    @DisplayName("할일의 그룹아이디와 일치하지 않으면 업데이트 실패한다 (그룹)")
+    @Test
+    void update_todo_for_group_fail() {
+        // given
+        var title = "updated title";
+        var description = "updated description";
+        var dueDate = LocalDateTime.now();
+        var status = TodoStatus.COMPLETED;
+        var updatedAt = LocalDateTime.now();
+        var groupId = 1L;
+        todo.assignGroup(new Group(2L));
+
+        // when
+        var exception = Assertions.assertThrows(BusinessException.class, () -> {
+            todo.update(title, description, dueDate, updatedAt, status, groupId);
+        });
+
+        // then
+        assertThat(exception.getMessage()).isEqualTo(ErrorMessages.TODO_NOT_IN_GROUP);
+    }
+
+
     @DisplayName("할일에 그룹을 할당한다.")
     @Test
     void assign_group() {

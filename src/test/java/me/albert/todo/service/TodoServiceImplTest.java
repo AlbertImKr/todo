@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import me.albert.todo.domain.Account;
+import me.albert.todo.domain.Group;
 import me.albert.todo.domain.Tag;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.domain.TodoPriority;
@@ -43,6 +44,41 @@ class TodoServiceImplTest {
 
     @Mock
     private TagService tagService;
+
+    @DisplayName("그룹 할일을 업데이트 한다.")
+    @Test
+    void update_group_todo() {
+        // given
+        var groupId = 1L;
+        var request = new TodoUpdateRequest(
+                "title", "description", LocalDateTime.now().plusDays(1), TodoStatus.COMPLETED);
+        var todo = new Todo(
+                "title", "description", LocalDateTime.now(), new Account(), LocalDateTime.now(),
+                LocalDateTime.now(), TodoStatus.PENDING, TodoPriority.MEDIUM
+        );
+        todo.assignGroup(new Group(groupId));
+        var todoId = 1L;
+        when(todoRepository.findById(todoId)).thenReturn(Optional.of(todo));
+
+        // when
+        todoService.updateGroupTodo(groupId, todoId, request);
+    }
+
+    @DisplayName("그룹 할일을 업데이트할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void update_group_todo_if_not_found() {
+        // given
+        var groupId = 1L;
+        var request = new TodoUpdateRequest(
+                "title", "description", LocalDateTime.now().plusDays(1), TodoStatus.COMPLETED);
+        var todoId = 1L;
+        when(todoRepository.findById(todoId)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.updateGroupTodo(groupId, todoId, request))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
 
     @DisplayName("그룹 아이디와 할 일 아이디로 할 일을 조회한다.")
     @Test

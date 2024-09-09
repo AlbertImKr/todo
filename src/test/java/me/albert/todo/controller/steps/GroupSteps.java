@@ -486,6 +486,39 @@ public class GroupSteps {
                 .extract();
     }
 
+    /**
+     * 그룹 할일 목록 조회 요청
+     *
+     * @param groupId     그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_수정_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken
+    ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 그룹_할일_수정_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
     public static long 그룹_생성_요청_후_아이디_가져온다(String accessToken) {
         var body = new HashMap<>();
         body.put("name", "그룹 이름");
