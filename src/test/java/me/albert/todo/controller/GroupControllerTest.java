@@ -124,6 +124,9 @@ class GroupControllerTest extends TodoAcceptanceTest {
                 그룹_할일_태그_할당_요청(groupId, todoId, tagsId.get(j), accessToken);
             }
             그룹_할일을_멥버에게_할당_요청(groupId, todoId, accountIds, accessToken);
+            var repeatSetting = new HashMap<>();
+            repeatSetting.put("recurrencePattern", "P1D");
+            그룹_할일_반복_설정_추가_요청(groupId, todoId, repeatSetting, accessToken, this.spec);
         }
 
         // when
