@@ -398,6 +398,79 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹 프로젝트 할일 할당 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 할일 할당 해제 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당 해제할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_해제_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 프로젝트 할일 할당 해제 요청
+     *
+     * @param groupId     그룹 ID
+     * @param projectId   프로젝트 ID
+     * @param todoIds     할당 해제할 할일 ID 목록
+     * @param accessToken 액세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_프로젝트_할일_할당_해제_요청(
+            Long groupId, Long projectId, List<Long> todoIds, String accessToken, RequestSpecification spec
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{groupId}/projects/{projectId}/todos", groupId, projectId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹 삭제 요청
      *
      * @param id          그룹 ID

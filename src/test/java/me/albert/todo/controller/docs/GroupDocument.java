@@ -66,6 +66,22 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter unassignTodoFromGroupProjectDocumentation() {
+        return document(
+                "groups/unassign-todo-project",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("projectId").description("프로젝트 ID")
+                ),
+                requestFields(
+                        fieldWithPath("todoIds").description("할 일 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_TODO_IDS))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter assignTodosToGroupDocumentation() {
         return document(
                 "groups/assign-todos",

@@ -15,6 +15,7 @@ import me.albert.todo.controller.dto.request.ProjectCreateRequest;
 import me.albert.todo.controller.dto.request.ProjectUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
+import me.albert.todo.controller.dto.request.UnAssignTodoToProjectRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
@@ -357,5 +358,23 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.assignTodosToProject(id, projectId, request.todoIds(), username);
+    }
+
+    /**
+     * 그룹에 할 일을 프로젝트에서 제거하는 API
+     *
+     * @param id        그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param request   할 일 제거 요청 DTO
+     * @param username  현재 사용자 이름
+     */
+    @DeleteMapping("/groups/{id}/projects/{projectId}/todos")
+    public void unassignTodoFromProject(
+            @PathVariable Long id,
+            @PathVariable Long projectId,
+            @Valid @RequestBody UnAssignTodoToProjectRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.unassignTodosFromProject(id, projectId, request.todoIds(), username);
     }
 }

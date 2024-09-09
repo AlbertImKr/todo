@@ -13,6 +13,7 @@ import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumen
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignTagFromGroupTodoDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.unassignTodoFromGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupProjectDocumentation;
@@ -37,6 +38,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_삭
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_생성;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_수정;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_해제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
@@ -71,6 +73,25 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 프로젝트에 할 일을 할당 해제 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void unassign_todo_from_group_project() {
+        // docs
+        this.spec.filter(unassignTodoFromGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_프로젝트_할일_할당_요청(groupId, projectId, List.of(todoId), accessToken);
+
+        // when
+        var response = 그룹_프로젝트_할일_할당_해제_요청(groupId, projectId, List.of(todoId), accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 프로젝트에 할 일을 할당 성공 시 200 상태 코드를 반환한다.")

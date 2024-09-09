@@ -203,7 +203,7 @@ public interface GroupService {
     /**
      * 그룹의 프로젝트를 삭제합니다.
      *
-     * @param groupId        그룹 ID
+     * @param groupId   그룹 ID
      * @param projectId 프로젝트 ID
      * @param username  사용자 이름
      */
@@ -212,10 +212,20 @@ public interface GroupService {
     /**
      * 그룹 프로젝트에 할 일을 할당합니다.
      *
-     * @param groupId       그룹 ID
+     * @param groupId   그룹 ID
      * @param projectId 프로젝트 ID
-     * @param todoIds  할 일 ID 목록
-     * @param username 사용자 이름
+     * @param todoIds   할 일 ID 목록
+     * @param username  사용자 이름
      */
     void assignTodosToProject(Long groupId, Long projectId, List<Long> todoIds, String username);
+
+    /**
+     * 그룹 프로젝트에서 할 일을 해제합니다.
+     *
+     * @param groupId   그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param todoIds   할 일 ID 목록
+     * @param username  사용자 이름
+     */
+    void unassignTodosFromProject(Long groupId, Long projectId, List<Long> todoIds, String username);
 }

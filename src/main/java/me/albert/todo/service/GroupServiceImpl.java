@@ -223,6 +223,15 @@ public class GroupServiceImpl implements GroupService {
         project.assignTodos(todos);
     }
 
+    @Transactional
+    @Override
+    public void unassignTodosFromProject(Long groupId, Long projectId, List<Long> todoIds, String username) {
+        validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        List<Todo> todos = todoService.getAllByIdInAndGroupId(todoIds, groupId);
+        project.unassignTodos(todos);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)
