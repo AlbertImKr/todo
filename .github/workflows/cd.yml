@@ -35,7 +35,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           HOST: ${{ secrets.HOST_ADDRESS }}
           USER: ${{ secrets.HOST_USERNAME }}
-          TAG: todo
+          TAG: todo:lastest
         run: |
           # Private key를 파일로 생성합니다.
           echo "$PRIVATE_KEY" > private_key.pem

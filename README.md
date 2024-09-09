@@ -1,6 +1,40 @@
 # TODO App
 [![Coverage Status](https://coveralls.io/repos/github/AlbertImKr/todo/badge.svg)](https://coveralls.io/github/AlbertImKr/todo)
 
+## 소스 빌드 및 실행 방법 메뉴얼
+
+1. 빌드 방법 
+
+- Gradle이 설치된 경우:
+
+```shell
+gradle build
+```
+
+- Gradle Wrapper 사용:
+
+```
+./gradlew build`
+``` 
+
+2. docker 실행
+
+`docker compose up -d`
+
+> [!TIP]
+> Docker Compose가 설치되어 있어야 합니다. Docker가 설치되어 있으면 기본적으로 함께 설치됩니다.
+
+3. 실행 (JPA )
+
+`java -jar build/libs/todo-0.0.1-SNAPSHOT.jar`
+
+> [!TIP]
+> `jpa.hibernate.ddl-auto`가 `create-drop`으로 설정되어 있어서 테이블이 자동으로 생성됩니다.
+
+## API 문서
+
+https://todo.albert-im.com/docs/index.html
+
 ## 기능 목록
 
 ### 유저
