@@ -253,4 +253,14 @@ public interface GroupService {
      * @param username 사용자 이름
      */
     void updateRecurringTask(Long groupId, Long todoId, Period period, String username);
+
+    /**
+     * 그룹 할일 상세 정보를 조회합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param username 사용자 이름
+     * @return 그룹 할일 상세 정보
+     */
+    GroupTodoDetailResponse getTodoDetail(Long groupId, Long todoId, String username);
 }

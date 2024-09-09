@@ -1033,6 +1033,42 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹 할일 조회 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_조회_요청(Long groupId, Long todoId, String accessToken) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{groupId}/todos/{todoId}", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 조회 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_조회_요청(Long groupId, Long todoId, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{groupId}/todos/{todoId}", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+
+    /**
      * 그룹 프로젝트별 할일 목록 조회 요청
      *
      * @param groupId     그룹 ID

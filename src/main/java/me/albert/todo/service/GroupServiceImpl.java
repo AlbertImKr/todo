@@ -245,6 +245,13 @@ public class GroupServiceImpl implements GroupService {
         todoService.updateRecurringTask(groupId, todoId, period);
     }
 
+    @Transactional
+    @Override
+    public GroupTodoDetailResponse getTodoDetail(Long groupId, Long todoId, String username) {
+        validateGroupMembership(groupId, username);
+        return todoService.getGroupTodoDetail(groupId, todoId);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)

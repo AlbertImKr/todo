@@ -10,6 +10,7 @@ import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentat
 import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupProjectDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.getGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupProjectTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
@@ -48,6 +49,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_반복_�
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_우선순위_수정_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_태그_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_태그_할당_해제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
@@ -78,6 +80,24 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 할일 디테일 조회 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void get_group_todo_detail() {
+        // docs
+        this.spec.filter(getGroupTodoDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+
+        // when
+        var response = 그룹_할일_조회_요청(groupId, todoId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 할일에 반복 설정을 추가 성공 시 200 상태 코드를 반환한다.")
@@ -681,7 +701,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         그룹_할일_할당_요청(groupId, todoIds, accessToken);
 
         // when
-        var todos = 그룹_할일_목록_조회_요청(groupId, accessToken).jsonPath().getList("id");
+        var todos = 그룹_할일_목록_조회_요청(groupId, accessToken).jsonPath().getList("content.id");
 
         // then
         assertThat(todos.size()).isEqualTo(2);

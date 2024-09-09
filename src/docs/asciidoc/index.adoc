@@ -895,3 +895,21 @@ include::{snippets}/groups/list-todos/http-response.adoc[]
 ==== 응답 필드 상세
 
 include::{snippets}/groups/list-todos/response-fields.adoc[]
+
+=== 그룹 할일 상세 조회 API
+
+==== URL 경로
+
+include::{snippets}/groups/get-todo/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/get-todo/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/get-todo/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/groups/get-todo/response-fields.adoc[]
