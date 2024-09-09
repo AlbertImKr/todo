@@ -18,6 +18,7 @@ import static me.albert.todo.controller.steps.AccountSteps.유저_가입_및_ID_
 import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_목록_조회_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_제거_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_추가_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_삭제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_생성_요청;
@@ -183,10 +184,54 @@ class GroupControllerTest extends TodoAcceptanceTest {
         removeUsersFromGroupBody.put("accountIds", List.of(accountIds.get(0)));
 
         // when
-        var removeResponse = 그룹_사용자_추가_요청(groupId, removeUsersFromGroupBody, accessToken, this.spec);
+        var removeResponse = 그룹_사용자_제거_요청(groupId, removeUsersFromGroupBody, accessToken, this.spec);
 
         // then
         assertThat(removeResponse.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹에 사용자를 제거 실패")
+    @Nested
+    class RemoveUserFromGroupFail {
+
+        long groupId;
+        long accountId;
+
+        @BeforeEach
+        void create_group_and_account() {
+            groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
+            accountId = 유저_가입_및_ID_반환("newUser1");
+        }
+
+        @DisplayName("그룹이 존재하지 않으면 404 상태 코드를 반환한다.")
+        @Test
+        void remove_user_from_group_with_not_exist_group() {
+            // given
+            var notExistGroupId = 100L;
+            var body = new HashMap<>();
+            body.put("accountIds", List.of(accountId));
+
+            // when
+            var response = 그룹_사용자_제거_요청(notExistGroupId, body, accessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(404);
+        }
+
+        @DisplayName("그룹에 포함하지 않는 사용자는 제거할 수 없다.")
+        @Test
+        void remove_user_from_group_with_not_group_member() {
+            // given
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
+            var body = new HashMap<>();
+            body.put("accountIds", List.of(accountId));
+
+            // when
+            var response = 그룹_사용자_제거_요청(groupId, body, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
     }
 
     @DisplayName("그룹에 사용자를 추가 성공 시 200 상태 코드를 반환한다.")
