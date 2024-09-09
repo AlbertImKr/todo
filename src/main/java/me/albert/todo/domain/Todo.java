@@ -206,9 +206,7 @@ public class Todo {
             String title, String description, LocalDateTime dueDate, LocalDateTime updatedAt, TodoStatus status,
             Long groupId
     ) {
-        if (this.group == null || !this.group.getId().equals(groupId)) {
-            throw new BusinessException(ErrorMessages.TODO_NOT_IN_GROUP, HttpStatus.BAD_REQUEST);
-        }
+        validateGroupId(groupId);
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -217,11 +215,20 @@ public class Todo {
     }
 
     public void updateStatus(TodoStatus status, LocalDateTime now, Long groupId) {
+        validateGroupId(groupId);
+        this.status = status;
+        this.updatedAt = now;
+    }
+
+    public void updatePriority(TodoPriority priority, Long groupId) {
+        validateGroupId(groupId);
+        this.priority = priority;
+    }
+
+    public void validateGroupId(Long groupId) {
         if (this.group == null || !this.group.getId().equals(groupId)) {
             throw new BusinessException(ErrorMessages.TODO_NOT_IN_GROUP, HttpStatus.BAD_REQUEST);
         }
-        this.status = status;
-        this.updatedAt = now;
     }
 
     @Override

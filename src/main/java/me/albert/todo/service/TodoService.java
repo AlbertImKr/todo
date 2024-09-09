@@ -208,4 +208,13 @@ public interface TodoService {
      * @param todoStatus 할 일 상태
      */
     void updateGroupTodoStatus(Long groupId, Long todoId, TodoStatus todoStatus);
+
+    /**
+     * 할 일의 우선순위를 업데이트합니다.
+     *
+     * @param projectId 프로젝트 ID
+     * @param todoId    할 일 ID
+     * @param priority  할 일 우선순위
+     */
+    void updateGroupTodoPriority(Long projectId, Long todoId, TodoPriority priority);
 }

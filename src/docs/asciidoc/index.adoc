@@ -701,3 +701,21 @@ include::{snippets}/groups/update-todo-status/request-fields.adoc[]
 ==== 응답
 
 include::{snippets}/groups/update-todo-status/http-response.adoc[]
+
+=== 그룹 할일 우선순위 업데이트 API
+
+==== URL 경로
+
+include::{snippets}/groups/update-todo-priority/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/update-todo-priority/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/update-todo-priority/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/update-todo-priority/http-response.adoc[]

@@ -195,6 +195,25 @@ public class GroupDocument {
         );
     }
 
+    public static @NotNull RestDocumentationFilter updateGroupTodoPriorityDocumentation() {
+        return document(
+                "groups/update-todo-priority",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("priority").description("할 일 우선순위")
+                                .attributes(key("constraints").value(Arrays.stream(TodoStatus.values())
+                                                                             .map(Enum::name)
+                                                                             .reduce((a, b) -> a + ", " + b)
+                                                                             .orElse("")))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter updateGroupTodoStatusDocumentation() {
         return document(
                 "groups/update-todo-status",

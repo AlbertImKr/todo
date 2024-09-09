@@ -9,6 +9,7 @@ import me.albert.todo.controller.dto.request.AssignTodoToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToGroupRequest;
 import me.albert.todo.controller.dto.request.DeleteUserToTodoRequest;
 import me.albert.todo.controller.dto.request.GroupRequest;
+import me.albert.todo.controller.dto.request.TodoPriorityUpdateRequest;
 import me.albert.todo.controller.dto.request.TodoStatusUpdateRequest;
 import me.albert.todo.controller.dto.request.UnassignTodoToGroupRequest;
 import me.albert.todo.service.GroupService;
@@ -231,5 +232,23 @@ public class GroupController {
             @CurrentUsername String username
     ) {
         groupService.updateTodoStatus(id, todoId, request.status(), username);
+    }
+
+    /**
+     * 그룹 할 일 우선순위 수정 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param request  할 일 우선순위 수정 요청 DTO
+     * @param username 현재 사용자 이름
+     */
+    @PutMapping("/groups/{id}/todos/{todoId}/priority")
+    public void updateTodoPriority(
+            @PathVariable Long id,
+            @PathVariable Long todoId,
+            @RequestBody TodoPriorityUpdateRequest request,
+            @CurrentUsername String username
+    ) {
+        groupService.updateTodoPriority(id, todoId, request.priority(), username);
     }
 }

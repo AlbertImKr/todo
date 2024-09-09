@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.util.List;
+import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.service.dto.request.TodoUpdateRequest;
 import me.albert.todo.service.dto.response.AccountResponse;
@@ -148,4 +149,14 @@ public interface GroupService {
      * @param username   사용자 이름
      */
     void updateTodoStatus(Long id, Long todoId, TodoStatus todoStatus, String username);
+
+    /**
+     * 그룹에 속한 할 일의 우선순위를 수정합니다.
+     *
+     * @param groupId  그룹 ID
+     * @param todoId   할 일 ID
+     * @param priority 할 일 우선순위
+     * @param username 사용자 이름
+     */
+    void updateTodoPriority(Long groupId, Long todoId, TodoPriority priority, String username);
 }

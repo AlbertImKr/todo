@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.albert.todo.domain.Account;
 import me.albert.todo.domain.Group;
 import me.albert.todo.domain.Todo;
+import me.albert.todo.domain.TodoPriority;
 import me.albert.todo.domain.TodoStatus;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.GroupRepository;
@@ -163,6 +164,13 @@ public class GroupServiceImpl implements GroupService {
     public void updateTodoStatus(Long groupId, Long todoId, TodoStatus status, String username) {
         validateGroupMembership(groupId, username);
         todoService.updateGroupTodoStatus(groupId, todoId, status);
+    }
+
+    @Transactional
+    @Override
+    public void updateTodoPriority(Long groupId, Long todoId, TodoPriority priority, String username) {
+        validateGroupMembership(groupId, username);
+        todoService.updateGroupTodoPriority(groupId, todoId, priority);
     }
 
     private Group validateGroupMembership(Long groupId, String username) {
