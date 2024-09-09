@@ -2,6 +2,7 @@ package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignMembersToGroupTodoDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.assignTagToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
@@ -31,11 +32,14 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_�
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_우선순위_수정_요청;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_태그_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_할당_해제_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일에_할당된_멤버_취소_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일을_멥버에게_할당_요청;
+import static me.albert.todo.controller.steps.TagSteps.태그_생성_및_ID_반환;
 import static me.albert.todo.controller.steps.TodoSteps.할일_생성_및_ID_반환;
+import static me.albert.todo.controller.steps.TodoSteps.할일_태그_할당_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -44,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import me.albert.todo.TodoAcceptanceTest;
+import me.albert.todo.controller.dto.request.AssignTagRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,6 +63,25 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 할일에 태그를 할당 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void assign_tag_to_group_todo() {
+        // docs
+        this.spec.filter(assignTagToGroupTodoDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+        그룹_할일_할당_요청(groupId, List.of(todoId), accessToken);
+        var tagId = 태그_생성_및_ID_반환(accessToken, "tag");
+
+        // when
+        var response = 그룹_할일_태그_할당_요청(groupId,todoId, tagId, accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 할일의 우선순위를 수정 성공 시 200 상태 코드를 반환한다.")

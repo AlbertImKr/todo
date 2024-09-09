@@ -620,6 +620,55 @@ public class GroupSteps {
     }
 
     /**
+     * 그룹 할일 태그 할당 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param tagId       태그 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_태그_할당_요청(
+            Long groupId, Long todoId, Long tagId, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("tagId", tagId);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/tags", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 태그 할당 요청
+     *
+     * @param groupId     그룹 ID
+     * @param todoId      할일 ID
+     * @param tagId       태그 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_태그_할당_요청(
+            Long groupId, Long todoId, Long tagId, String accessToken, RequestSpecification spec
+    ) {
+        var body = new HashMap<>();
+        body.put("tagId", tagId);
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/tags", groupId, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
      * 그룹 할일 상태 수정 요청
      *
      * @param groupId     그룹 ID

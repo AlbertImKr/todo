@@ -159,4 +159,14 @@ public interface GroupService {
      * @param username 사용자 이름
      */
     void updateTodoPriority(Long groupId, Long todoId, TodoPriority priority, String username);
+
+    /**
+     * 할 일에 태그를 할당합니다.
+     *
+     * @param groupId      그룹 ID
+     * @param todoId       할 일 ID
+     * @param tagId        태그 ID
+     * @param username     사용자 이름
+     */
+    void assignTag(Long groupId, Long todoId, Long tagId, String username);
 }
