@@ -1,6 +1,7 @@
 package me.albert.todo.controller;
 
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.assignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
@@ -8,6 +9,7 @@ import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupD
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
+import static me.albert.todo.controller.steps.AccountSteps.로그인_요청;
 import static me.albert.todo.controller.steps.AccountSteps.화원_가입_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_사용자_목록_조회_요청;
@@ -229,9 +231,12 @@ class GroupControllerTest extends TodoAcceptanceTest {
         );
     }
 
-    @DisplayName("그룹에 할 일을 할당 성공 시 200 상태 코드를 반환한다.")
+    @DisplayName("그룹 소유자가 할 일을 할당 성공 시 200 상태 코드를 반환한다.")
     @Test
-    void assign_todos() {
+    void owner_assign_todos_to_group_if_success() {
+        // docs
+        this.spec.filter(assignTodosToGroupDocumentation());
+
         // given
         var body = new HashMap<>();
         body.put("name", "group");
@@ -245,7 +250,41 @@ class GroupControllerTest extends TodoAcceptanceTest {
         todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
 
         // when
-        var assignResponse = 그룹_할일_할당_요청(groupId, todoIds, accessToken);
+        var assignResponse = 그룹_할일_할당_요청(groupId, todoIds, accessToken, this.spec);
+
+        // then
+        assertThat(assignResponse.statusCode()).isEqualTo(200);
+    }
+
+    @DisplayName("그룹 맴버가 할 일을 할당 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void member_assign_todos_to_group_if_success() {
+        // given
+        var body = new HashMap<>();
+        body.put("name", "group");
+        body.put("description", "description");
+        var response = 그룹_생성_요청(body, accessToken);
+        var groupId = response.jsonPath().getLong("id");
+        var signupBody = new HashMap<>();
+        signupBody.put("username", "newUser1");
+        signupBody.put("password", "Password1!");
+        signupBody.put("confirmPassword", "Password1!");
+        var memberId = 화원_가입_요청(signupBody).jsonPath().getLong("id");
+        var loginBody = new HashMap<>();
+        loginBody.put("username", "newUser");
+        loginBody.put("password", "Password1!");
+        var memberAccessToken = 로그인_요청(loginBody).jsonPath().getString("accessToken");
+
+        var firstTodoId = 할일_생성_및_ID_반환(memberAccessToken);
+        var secondTodoId = 할일_생성_및_ID_반환(memberAccessToken);
+        var todoIds = new HashMap<>();
+        todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+        var addMemberBody = new HashMap<>();
+        addMemberBody.put("accountIds", List.of(memberId));
+        그룹_사용자_추가_요청(groupId, addMemberBody, accessToken);
+
+        // when
+        var assignResponse = 그룹_할일_할당_요청(groupId, todoIds, memberAccessToken);
 
         // then
         assertThat(assignResponse.statusCode()).isEqualTo(200);
@@ -543,6 +582,24 @@ class GroupControllerTest extends TodoAcceptanceTest {
             // then
             assertThat(response.statusCode()).isEqualTo(403);
         }
+
+        @DisplayName("그룹 소유주 혹은 맴버가 아닌 사용자가 할 일을 할당하려고 하면 403 상태 코드를 반환한다.")
+        @Test
+        void assign_todo_with_not_group_member() {
+            // given
+            var otherAccessToken = getFixtureSecondAccountAccessToken();
+            var firstTodoId = 할일_생성_및_ID_반환(accessToken);
+            var secondTodoId = 할일_생성_및_ID_반환(accessToken);
+            var todoIds = new HashMap<>();
+            todoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
+
+            // when
+            var response = 그룹_할일_할당_요청(groupId, todoIds, otherAccessToken);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(403);
+        }
+
     }
 
     @Nested
