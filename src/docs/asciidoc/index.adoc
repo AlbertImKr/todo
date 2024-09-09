@@ -806,3 +806,20 @@ include::{snippets}/groups/delete-project/http-request.adoc[]
 
 include::{snippets}/groups/delete-project/http-response.adoc[]
 
+=== 그룹 프로젝트에 할일 할당 API
+
+==== URL 경로
+
+include::{snippets}/groups/assign-todo-project/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/assign-todo-project/http-request.adoc[]
+
+==== 요청 필드 상세
+
+include::{snippets}/groups/assign-todo-project/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/assign-todo-project/http-response.adoc[]

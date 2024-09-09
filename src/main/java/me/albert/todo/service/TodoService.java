@@ -235,4 +235,13 @@ public interface TodoService {
      * @param tagId   태그 ID
      */
     void unassignGroupTodoTag(Long groupId, Long todoId, Long tagId);
+
+    /**
+     * 그룹 할 일을 조회합니다.
+     *
+     * @param todoIds 할 일 ID 목록
+     * @param groupId 그룹 ID
+     * @return 할 일 목록
+     */
+    List<Todo> getAllByIdInAndGroupId(List<Long> todoIds, Long groupId);
 }

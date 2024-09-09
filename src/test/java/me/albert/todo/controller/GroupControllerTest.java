@@ -3,6 +3,7 @@ package me.albert.todo.controller;
 import static me.albert.todo.controller.docs.GroupDocument.addUserToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignMembersToGroupTodoDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTagToGroupTodoDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.assignTodoToGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.assignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDocumentation;
@@ -35,6 +36,7 @@ import static me.albert.todo.controller.steps.GroupSteps.그룹_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_삭제;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_생성;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_수정;
+import static me.albert.todo.controller.steps.GroupSteps.그룹_프로젝트_할일_할당_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_목록_조회_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_상태_수정_요청;
 import static me.albert.todo.controller.steps.GroupSteps.그룹_할일_수정_요청;
@@ -69,6 +71,24 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @BeforeEach
     void setUser() {
         accessToken = getFixtureFirstAccountAccessToken();
+    }
+
+    @DisplayName("그룹 프로젝트에 할 일을 할당 성공 시 200 상태 코드를 반환한다.")
+    @Test
+    void assign_todo_to_group_project() {
+        // docs
+        this.spec.filter(assignTodoToGroupProjectDocumentation());
+
+        // given
+        var groupId = 그룹_생성및_ID_반환("group", accessToken);
+        var projectId = 그룹_프로젝트_생성(groupId, "project", accessToken).jsonPath().getLong("id");
+        var todoId = 할일_생성_및_ID_반환(accessToken);
+
+        // when
+        var response = 그룹_프로젝트_할일_할당_요청(groupId, projectId, List.of(todoId), accessToken, this.spec);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(200);
     }
 
     @DisplayName("그룹 프로젝트를 삭제 성공 시 204 상태 코드를 반환한다.")

@@ -48,4 +48,6 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     Optional<Todo> findWithAllByIdAndOwnerAndGroupNull(Long id, Account owner);
 
     Optional<Todo> findByIdAndGroupId(Long todoId, Long groupId);
+
+    List<Todo> findAllByIdInAndGroupId(List<Long> todoIds, Long groupId);
 }

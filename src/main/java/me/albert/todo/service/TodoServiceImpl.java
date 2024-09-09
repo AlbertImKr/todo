@@ -251,6 +251,12 @@ public class TodoServiceImpl implements TodoService {
         todo.unassignTag(tag, groupId);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<Todo> getAllByIdInAndGroupId(List<Long> todoIds, Long groupId) {
+        return todoRepository.findAllByIdInAndGroupId(todoIds, groupId);
+    }
+
     public Todo getTodoById(Long todoId) {
         return todoRepository.findById(todoId)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));

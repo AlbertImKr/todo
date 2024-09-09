@@ -208,4 +208,14 @@ public interface GroupService {
      * @param username  사용자 이름
      */
     void deleteProject(Long groupId, Long projectId, String username);
+
+    /**
+     * 그룹 프로젝트에 할 일을 할당합니다.
+     *
+     * @param groupId       그룹 ID
+     * @param projectId 프로젝트 ID
+     * @param todoIds  할 일 ID 목록
+     * @param username 사용자 이름
+     */
+    void assignTodosToProject(Long groupId, Long projectId, List<Long> todoIds, String username);
 }

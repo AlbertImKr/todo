@@ -214,6 +214,15 @@ public class GroupServiceImpl implements GroupService {
         group.deleteProject(project);
     }
 
+    @Transactional
+    @Override
+    public void assignTodosToProject(Long groupId, Long projectId, List<Long> todoIds, String username) {
+        validateGroupMembership(groupId, username);
+        Project project = projectService.getProjectById(projectId);
+        List<Todo> todos = todoService.getAllByIdInAndGroupId(todoIds, groupId);
+        project.assignTodos(todos);
+    }
+
     private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)
