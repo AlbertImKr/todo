@@ -202,9 +202,19 @@ public class GroupController {
         return groupService.listAccounts(id, username);
     }
 
+    /**
+     * 그룹 할 일 목록 조회 API
+     *
+     * @param id       그룹 ID
+     * @param username 현재 사용자 이름
+     * @param pageable 페이지 정보
+     * @return 그룹 할 일 목록
+     */
     @GetMapping("/groups/{id}/todos")
-    public List<TodoResponse> listTodos(@PathVariable Long id, @CurrentUsername String username) {
-        return groupService.listTodos(id, username);
+    public Page<TodoResponse> listTodos(
+            @PathVariable Long id, @CurrentUsername String username, @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return groupService.listTodos(id, username, pageable);
     }
 
     /**
@@ -397,6 +407,14 @@ public class GroupController {
         return groupService.listProjectTodos(id, projectId, username, pageable);
     }
 
+    /**
+     * 그룹 할 일에 반복 작업을 추가하는 API
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param request  반복 작업 추가 요청 DTO
+     * @param username 현재 사용자 이름
+     */
     @PutMapping("/groups/{id}/todos/{todoId}/recurring-tasks")
     public void updateRecurringTask(
             @PathVariable Long id,

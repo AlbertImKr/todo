@@ -89,12 +89,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TodoResponse> listTodos(Long id, String username) {
-        Group group = groupRepository.findByIdAndOwnerUsername(id, username)
-                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
-        return group.getTodos().stream()
-                .map(TodoResponse::from)
-                .toList();
+    public Page<TodoResponse> listTodos(Long id, String username, Pageable pageable) {
+        validateGroupMembership(id, username);
+        return todoService.getAllByGroupId(id, pageable);
     }
 
     @Transactional

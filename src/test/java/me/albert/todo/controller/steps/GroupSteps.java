@@ -272,7 +272,9 @@ public class GroupSteps {
      * @param spec        docs 생성하기 위한 RequestSpecification
      * @return 프로젝트 ID
      */
-    public static ExtractableResponse<Response> 그룹_프로젝트_생성(long groupId, String name, String accessToken, RequestSpecification spec) {
+    public static ExtractableResponse<Response> 그룹_프로젝트_생성(
+            long groupId, String name, String accessToken, RequestSpecification spec
+    ) {
         var body = new HashMap<>();
         body.put("name", name);
 
@@ -322,7 +324,8 @@ public class GroupSteps {
      * @return 프로젝트 ID
      */
     public static ExtractableResponse<Response> 그룹_프로젝트_수정(
-            long groupId, long projectId, String name, String accessToken, RequestSpecification spec){
+            long groupId, long projectId, String name, String accessToken, RequestSpecification spec
+    ) {
         var body = new HashMap<>();
         body.put("name", name);
 
@@ -345,7 +348,8 @@ public class GroupSteps {
      * @return 프로젝트 ID
      */
     public static ExtractableResponse<Response> 그룹_프로젝트_삭제(
-            long groupId, long projectId, String accessToken){
+            long groupId, long projectId, String accessToken
+    ) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
@@ -364,7 +368,8 @@ public class GroupSteps {
      * @return 프로젝트 ID
      */
     public static ExtractableResponse<Response> 그룹_프로젝트_삭제(
-            long groupId, long projectId, String accessToken, RequestSpecification spec){
+            long groupId, long projectId, String accessToken, RequestSpecification spec
+    ) {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
@@ -994,11 +999,35 @@ public class GroupSteps {
         return 그룹_생성_요청(body, accessToken).jsonPath().getLong("id");
     }
 
+    /**
+     * 그룹 할일 목록 조회 요청
+     *
+     * @param id          그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
     public static ExtractableResponse<Response> 그룹_할일_목록_조회_요청(Long id, String accessToken) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .when()
-                .get("/groups/" + id + "/todos")
+                .get("/groups/{id}/todos", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 목록 조회 요청
+     *
+     * @param id          그룹 ID
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_목록_조회_요청(Long id, String accessToken, RequestSpecification spec) {
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .when()
+                .get("/groups/{id}/todos", id)
                 .then().log().all()
                 .extract();
     }
@@ -1029,7 +1058,9 @@ public class GroupSteps {
      * @param spec        docs 생성하기 위한 RequestSpecification
      * @return 응답
      */
-    public static ExtractableResponse<Response> 그룹_프로젝트별_할일_목록_조회_요청(Long groupId, Long projectId, String accessToken, RequestSpecification spec) {
+    public static ExtractableResponse<Response> 그룹_프로젝트별_할일_목록_조회_요청(
+            Long groupId, Long projectId, String accessToken, RequestSpecification spec
+    ) {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .when()
@@ -1047,7 +1078,9 @@ public class GroupSteps {
      * @param accessToken 엑세스 토큰
      * @return 응답
      */
-    public static ExtractableResponse<Response> 그룹_할일_반복_설정_추가_요청(Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken) {
+    public static ExtractableResponse<Response> 그룹_할일_반복_설정_추가_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken
+    ) {
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
@@ -1068,7 +1101,9 @@ public class GroupSteps {
      * @param spec        docs 생성하기 위한 RequestSpecification
      * @return 응답
      */
-    public static ExtractableResponse<Response> 그룹_할일_반복_설정_추가_요청(Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec) {
+    public static ExtractableResponse<Response> 그룹_할일_반복_설정_추가_요청(
+            Long groupId, Long todoId, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .body(body)

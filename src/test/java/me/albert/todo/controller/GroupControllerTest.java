@@ -11,6 +11,7 @@ import static me.albert.todo.controller.docs.GroupDocument.createGroupProjectDoc
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupProjectDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupProjectTodosDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.listGroupTodosDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.unassignMembersToGroupTodoDocumentation;
@@ -126,7 +127,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
             그룹_할일을_멥버에게_할당_요청(groupId, todoId, accountIds, accessToken);
             var repeatSetting = new HashMap<>();
             repeatSetting.put("recurrencePattern", "P1D");
-            그룹_할일_반복_설정_추가_요청(groupId, todoId, repeatSetting, accessToken, this.spec);
+            그룹_할일_반복_설정_추가_요청(groupId, todoId, repeatSetting, accessToken);
         }
 
         // when
@@ -640,6 +641,9 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @DisplayName("그룹 할일 목록 조회 성공 시 200 상태 코드를 반환한다.")
     @Test
     void listGroupTodos() {
+        // docs
+        this.spec.filter(listGroupTodosDocumentation());
+
         // given
         var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
 
@@ -650,16 +654,16 @@ class GroupControllerTest extends TodoAcceptanceTest {
         그룹_할일_할당_요청(groupId, todoIds, accessToken);
 
         // when
-        var response = 그룹_할일_목록_조회_요청(groupId, accessToken);
+        var response = 그룹_할일_목록_조회_요청(groupId, accessToken, this.spec);
 
         // then
         Assertions.assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(200),
-                () -> assertThat(response.jsonPath().getList("id").size()).isEqualTo(2),
-                () -> assertThat(response.jsonPath().getList("title").size()).isEqualTo(2),
-                () -> assertThat(response.jsonPath().getList("content").size()).isEqualTo(2),
-                () -> assertThat(response.jsonPath().getList("createdAt").size()).isEqualTo(2),
-                () -> assertThat(response.jsonPath().getList("updatedAt").size()).isEqualTo(2)
+                () -> assertThat(response.jsonPath().getList("content.id").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("content.title").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("content.description").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("content.createdAt").size()).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getList("content.updatedAt").size()).isEqualTo(2)
         );
     }
 

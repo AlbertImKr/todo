@@ -71,10 +71,11 @@ public interface GroupService {
      *
      * @param groupId  그룹 ID
      * @param username 사용자 이름
+     * @param pageable 페이지 정보
      * @return 그룹의 할일 목록
      * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
      */
-    List<TodoResponse> listTodos(Long groupId, String username);
+    Page<TodoResponse> listTodos(Long groupId, String username, Pageable pageable);
 
     /**
      * 그룹을 삭제합니다.
