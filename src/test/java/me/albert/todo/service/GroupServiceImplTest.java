@@ -3,6 +3,7 @@ package me.albert.todo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -39,6 +40,35 @@ class GroupServiceImplTest {
 
     @Mock
     private TodoService todoService;
+
+    @DisplayName("그룹의 유저 목록을 조회하면 예외가 발생하지 않아야 한다.")
+    @Test
+    void list_users_if_success() {
+        // given
+        var id = 1L;
+        var username = "test";
+        var account = new Account(1L);
+        var group = new Group("group", "description", account, LocalDateTime.now(), LocalDateTime.now());
+        when(groupRepository.findById(id)).thenReturn(Optional.of(group));
+        when(accountService.findByUsername(username)).thenReturn(account);
+
+        // when, then
+        assertThatCode(() -> groupService.listAccounts(id, username)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("그룹의 유저 목록을 조회할 때 그룹이 존재하지 않으면 예외가 발생해야 한다.")
+    @Test
+    void list_users_if_group_not_found() {
+        // given
+        var id = 1L;
+        var username = "test";
+        when(groupRepository.findById(id)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> groupService.listAccounts(id, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NOT_FOUND);
+    }
 
     @DisplayName("그룹에 유저를 삭제하면 예외가 발생하지 않아야 한다.")
     @Test

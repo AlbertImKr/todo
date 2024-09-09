@@ -576,4 +576,22 @@ include::{snippets}/groups/remove-users/http-request.adoc[]
 
 include::{snippets}/groups/remove-users/http-response.adoc[]
 
+=== 그룹에 속한 사용자 목록 조회 API
+
+==== URL 경로
+
+include::{snippets}/groups/list-users/path-parameters.adoc[]
+
+==== 요청
+
+include::{snippets}/groups/list-users/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/groups/list-users/http-response.adoc[]
+
+==== 응답 필드 상세
+
+include::{snippets}/groups/list-users/response-fields.adoc[]
+
 

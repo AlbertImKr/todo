@@ -8,6 +8,7 @@ import me.albert.todo.domain.Group;
 import me.albert.todo.domain.Todo;
 import me.albert.todo.exception.BusinessException;
 import me.albert.todo.repository.GroupRepository;
+import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -123,5 +124,19 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
         List<Account> accountsToRemove = accountService.findAllById(accountIds);
         group.removeAccounts(account, accountsToRemove);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AccountResponse> listAccounts(Long id, String username) {
+        Account currentAccount = accountService.findByUsername(username);
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!group.isOwner(currentAccount) && !group.isMember(currentAccount)) {
+            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
+        }
+        return group.getUsers().stream()
+                .map(AccountResponse::from)
+                .toList();
     }
 }

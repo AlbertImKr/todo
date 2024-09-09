@@ -26,6 +26,36 @@ class GroupTest {
         group = new Group(name, description, account, createdAt, updatedAt);
     }
 
+    @DisplayName("그룹에 포함된 유저인지 확인한다")
+    @Test
+    void contains_user() {
+        // given
+        var account1 = new Account(2L);
+        var account2 = new Account(3L);
+        group.addAccounts(account, List.of(account1, account2));
+
+        // when
+        var result = group.isMember(account1);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("그룹에 포함되지 않은 유저인지 확인한다")
+    @Test
+    void not_contains_user() {
+        // given
+        var account1 = new Account(2L);
+        var account2 = new Account(3L);
+        group.addAccounts(account, List.of(account1, account2));
+
+        // when
+        var result = group.isMember(new Account(4L));
+
+        // then
+        assertThat(result).isFalse();
+    }
+
     @DisplayName("그룹에서 유저를 제거 한다")
     @Test
     void remove_user() {

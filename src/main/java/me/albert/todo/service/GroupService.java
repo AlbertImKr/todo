@@ -1,6 +1,7 @@
 package me.albert.todo.service;
 
 import java.util.List;
+import me.albert.todo.service.dto.response.AccountResponse;
 import me.albert.todo.service.dto.response.GroupResponse;
 import me.albert.todo.service.dto.response.IdResponse;
 import me.albert.todo.service.dto.response.TodoResponse;
@@ -72,7 +73,7 @@ public interface GroupService {
     /**
      * 그룹을 삭제합니다.
      *
-     * @param groupId       그룹 ID
+     * @param groupId  그룹 ID
      * @param username 사용자 이름
      * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
      */
@@ -81,7 +82,7 @@ public interface GroupService {
     /**
      * 그룹에 사용자를 추가합니다.
      *
-     * @param groupId         그룹 ID
+     * @param groupId    그룹 ID
      * @param accountIds 사용자 ID 목록
      * @param username   사용자 이름
      * @throws me.albert.todo.exception.BusinessException 그룹이 존재하지 않거나 그룹의 소유자가 아닐 경우 발생
@@ -96,4 +97,13 @@ public interface GroupService {
      * @param username 사용자 이름
      */
     void removeAccounts(Long groupId, List<Long> longs, String username);
+
+    /**
+     * 그룹에 속한 사용자 목록을 조회합니다.
+     *
+     * @param id       그룹 ID
+     * @param username 사용자 이름
+     * @return 그룹에 속한 사용자 목록
+     */
+    List<AccountResponse> listAccounts(Long id, String username);
 }

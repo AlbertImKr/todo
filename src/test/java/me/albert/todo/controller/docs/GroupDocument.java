@@ -4,6 +4,7 @@ import static me.albert.todo.TodoAcceptanceTest.prettyPrintRequest;
 import static me.albert.todo.TodoAcceptanceTest.prettyPrintResponse;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
@@ -84,6 +85,22 @@ public class GroupDocument {
                 requestFields(
                         fieldWithPath("accountIds").description("사용자 ID 목록").attributes(
                                 key("constraints").value(ValidationMessages.EMPTY_ACCOUNT_IDS))
+                )
+        );
+    }
+
+    public static @NotNull RestDocumentationFilter listGroupUsersDocumentation() {
+        return document(
+                "groups/list-users",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("id").description("그룹 ID")
+                ),
+                responseFields(
+                        fieldWithPath("[].id").description("사용자 ID"),
+                        fieldWithPath("[].username").description("사용자 이름"),
+                        fieldWithPath("[].email").description("사용자 이메일")
                 )
         );
     }
