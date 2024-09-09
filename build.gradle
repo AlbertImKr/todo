@@ -69,6 +69,12 @@ tasks.named('test') {
     finalizedBy jacocoTestReport
 }
 
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
 asciidoctor {
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
