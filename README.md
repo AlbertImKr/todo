@@ -1,4 +1,5 @@
 # TODO App
+[![Coverage Status](https://coveralls.io/repos/github/AlbertImKr/todo/badge.svg)](https://coveralls.io/github/AlbertImKr/todo)
 
 ## 기능 목록
 
