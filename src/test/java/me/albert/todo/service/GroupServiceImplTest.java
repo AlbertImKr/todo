@@ -365,6 +365,25 @@ class GroupServiceImplTest {
                 .hasMessage(GroupServiceImpl.GROUP_NOT_FOUND);
     }
 
+    @DisplayName("그룹에서 할 일을 해제할 때 그룹의 맴버가 아니면 예외가 발생해야 한다.")
+    @Test
+    void unassign_todos_if_not_member() {
+        // given
+        Long groupId = 1L;
+        var todoIds = List.of(1L, 2L);
+        String username = "test";
+        when(accountService.findByUsername(username)).thenReturn(new Account());
+        var mockGroup = mock(Group.class);
+        when(groupRepository.findById(groupId)).thenReturn(Optional.of(mockGroup));
+        when(mockGroup.isOwner(any())).thenReturn(false);
+        when(mockGroup.isMember(any())).thenReturn(false);
+
+        // when, then
+        assertThatThrownBy(() -> groupService.unassignTodos(groupId, todoIds, username))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.GROUP_NOT_MEMBER);
+    }
+
     @DisplayName("그룹의 할 일 목록을 조회하면 예외가 발생하지 않아야 한다.")
     @Test
     void list_todos_if_success() {

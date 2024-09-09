@@ -293,6 +293,14 @@ public class GroupSteps {
                 .extract();
     }
 
+    /**
+     * 그룹 할일 할당 해제 요청
+     *
+     * @param id          그룹 ID
+     * @param body        할당 해제할 할일 ID 목록 요청 바디 (todoIds)
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
     public static ExtractableResponse<Response> 그룹_할일_할당_해제_요청(
             Long id, HashMap<Object, Object> body, String accessToken
     ) {
@@ -301,7 +309,28 @@ public class GroupSteps {
                 .body(body)
                 .contentType("application/json")
                 .when()
-                .delete("/groups/" + id + "/todos")
+                .delete("/groups/{id}/todos", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일 할당 해제 요청
+     *
+     * @param id          그룹 ID
+     * @param body        할당 해제할 할일 ID 목록 요청 바디 (todoIds)
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일_할당_해제_요청(
+            Long id, HashMap<Object, Object> body, String accessToken, RequestSpecification spec){
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .delete("/groups/{id}/todos", id)
                 .then().log().all()
                 .extract();
     }

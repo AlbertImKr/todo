@@ -6,6 +6,7 @@ import static me.albert.todo.controller.docs.GroupDocument.createGroupDocumentat
 import static me.albert.todo.controller.docs.GroupDocument.deleteGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.listGroupUsersDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.removeUsersFromGroupDocumentation;
+import static me.albert.todo.controller.docs.GroupDocument.unassignTodosToGroupDocumentation;
 import static me.albert.todo.controller.docs.GroupDocument.updateGroupDocumentation;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureFirstAccountAccessToken;
 import static me.albert.todo.controller.steps.AccountSteps.getFixtureSecondAccountAccessToken;
@@ -293,6 +294,9 @@ class GroupControllerTest extends TodoAcceptanceTest {
     @DisplayName("그룹에 할 일을 할당 해제 성공 시 200 상태 코드를 반환한다.")
     @Test
     void unassign_todos() {
+        // docs
+        this.spec.filter(unassignTodosToGroupDocumentation());
+
         // given
         var groupId = 그룹_생성_요청_후_아이디_가져온다(accessToken);
 
@@ -306,7 +310,7 @@ class GroupControllerTest extends TodoAcceptanceTest {
         unassignTodoIds.put("todoIds", List.of(firstTodoId, secondTodoId));
 
         // when
-        var unassignResponse = 그룹_할일_할당_해제_요청(groupId, unassignTodoIds, accessToken);
+        var unassignResponse = 그룹_할일_할당_해제_요청(groupId, unassignTodoIds, accessToken, this.spec);
 
         // then
         assertThat(unassignResponse.statusCode()).isEqualTo(200);
