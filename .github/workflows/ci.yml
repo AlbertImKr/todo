@@ -1,0 +1,22 @@
+name: ci
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 레포지토리를 체크아웃한다
+        uses: actions/checkout@v4
+      - name: 자바를 설치한다
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      - name: 어플리케이션을 빌드한다
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+      - name: CoverAlls를 실행한다
+        uses: coverallsapp/github-action@v2
