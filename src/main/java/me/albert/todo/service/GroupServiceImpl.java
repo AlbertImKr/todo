@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class GroupServiceImpl implements GroupService {
 
-    public static final String GROUP_NOT_FOUND = "그룹이 존재하지 않습니다.";
-
     private final GroupRepository groupRepository;
     private final AccountService accountService;
     private final TodoService todoService;
@@ -51,7 +49,7 @@ public class GroupServiceImpl implements GroupService {
     public void update(long groupId, String name, String description, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
         LocalDateTime updatedAt = LocalDateTime.now();
         group.update(account, name, description, updatedAt);
     }
@@ -68,11 +66,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void assignTodos(Long groupId, List<Long> todoIds, String username) {
         Account account = accountService.findByUsername(username);
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
-        if (!group.isOwner(account) && !group.isMember(account)) {
-            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
-        }
+        Group group = validateGroupMembership(groupId, username);
         List<Todo> todos = todoService.findAllByIdInAndOwner(todoIds, username);
         group.assignTodos(account, todos);
     }
@@ -81,11 +75,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void unassignTodos(Long groupId, List<Long> todoIds, String username) {
         Account account = accountService.findByUsername(username);
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException(GROUP_NOT_FOUND));
-        if (!group.isOwner(account) && !group.isMember(account)) {
-            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
-        }
+        Group group = validateGroupMembership(groupId, username);
         List<Todo> todos = todoService.findAllByIdInAndOwner(todoIds, username);
         group.unassignTodos(account, todos);
     }
@@ -94,7 +84,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<TodoResponse> listTodos(Long id, String username) {
         Group group = groupRepository.findByIdAndOwnerUsername(id, username)
-                .orElseThrow(() -> new BusinessException(GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
         return group.getTodos().stream()
                 .map(TodoResponse::from)
                 .toList();
@@ -135,12 +125,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional(readOnly = true)
     @Override
     public List<AccountResponse> listAccounts(Long id, String username) {
-        Account currentAccount = accountService.findByUsername(username);
-        Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
-        if (!group.isOwner(currentAccount) && !group.isMember(currentAccount)) {
-            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
-        }
+        Group group = validateGroupMembership(id, username);
         return group.getUsers().stream()
                 .map(AccountResponse::from)
                 .toList();
@@ -149,12 +134,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void assignTodoToUsers(Long groupId, Long todoId, List<Long> accountIds, String username) {
-        Account account = accountService.findByUsername(username);
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
-        if (!group.isOwner(account) && !group.isMember(account)) {
-            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
-        }
+        Group group = validateGroupMembership(groupId, username);
         Todo todo = todoService.findByIdAndGroupId(todoId, group.getId());
         List<Account> accounts = accountService.findAllById(accountIds);
         group.assignTodoToUsers(todo, accounts);
@@ -163,12 +143,17 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void unassignTodoFromUsers(Long groupId, Long todoId, List<Long> accountIds, String username) {
+        Group group = validateGroupMembership(groupId, username);
+        Todo todo = todoService.findByIdAndGroupId(todoId, group.getId());
+        List<Account> accounts = accountService.findAllById(accountIds);
+        group.unassignTodoFromUsers(todo, accounts);
+    }
+
+    private Group validateGroupMembership(Long groupId, String username) {
         Account account = accountService.findByUsername(username);
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
         group.validatePermission(account);
-        Todo todo = todoService.findByIdAndGroupId(todoId, group.getId());
-        List<Account> accounts = accountService.findAllById(accountIds);
-        group.unassignTodoFromUsers(todo, accounts);
+        return group;
     }
 }
