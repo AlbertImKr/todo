@@ -27,6 +27,19 @@ class TodoTest {
         );
     }
 
+    @DisplayName("할일에 그룹을 할당한다.")
+    @Test
+    void assign_group() {
+        // given
+        var group = new Group(1L);
+
+        // when
+        todo.assignGroup(group);
+
+        // then
+        assertThat(todo.getGroup()).isEqualTo(group);
+    }
+
     @DisplayName("할 일의 알림을 삭제 한다")
     @Test
     void delete_notifications() {

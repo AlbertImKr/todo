@@ -80,6 +80,20 @@ public class AccountSteps {
     }
 
     /**
+     * 유저를 가입시키고 ID를 반환한다.
+     *
+     * @param username
+     * @return ID
+     */
+    public static Long 유저_가입_및_ID_반환(String username) {
+        var registerBody = new HashMap<>();
+        registerBody.put("username", username);
+        registerBody.put("password", "Password1!");
+        registerBody.put("confirmPassword", "Password1!");
+        return 화원_가입_요청(registerBody).jsonPath().getLong("id");
+    }
+
+    /**
      * newUser의 엑세스 토큰을 가져온다.
      *
      * @return 엑세스 토큰

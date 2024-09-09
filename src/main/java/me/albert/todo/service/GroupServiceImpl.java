@@ -145,4 +145,18 @@ public class GroupServiceImpl implements GroupService {
                 .map(AccountResponse::from)
                 .toList();
     }
+
+    @Transactional
+    @Override
+    public void assignTodoToUsers(Long groupId, Long todoId, List<Long> accountIds, String username) {
+        Account account = accountService.findByUsername(username);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.GROUP_NOT_FOUND, HttpStatus.NOT_FOUND));
+        if (!group.isOwner(account) && !group.isMember(account)) {
+            throw new BusinessException(ErrorMessages.GROUP_NOT_MEMBER, HttpStatus.FORBIDDEN);
+        }
+        Todo todo = todoService.findByIdAndGroupId(todoId, group.getId());
+        List<Account> accounts = accountService.findAllById(accountIds);
+        group.assignTodoToUsers(todo, accounts);
+    }
 }

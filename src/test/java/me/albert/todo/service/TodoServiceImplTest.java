@@ -44,6 +44,32 @@ class TodoServiceImplTest {
     @Mock
     private TagService tagService;
 
+    @DisplayName("그룹 아이디와 할 일 아이디로 할 일을 조회한다.")
+    @Test
+    void find_by_group_and_id() {
+        // given
+        var todo = new Todo();
+        when(todoRepository.findByIdAndGroupId(1L, 1L)).thenReturn(Optional.of(todo));
+
+        // when
+        var response = todoService.findByIdAndGroupId(1L, 1L);
+
+        // then
+        assertThat(response).isEqualTo(todo);
+    }
+
+    @DisplayName("그룹 아이디와 할 일 아이디로 할 일을 조회할 때 할 일을 찾을 수 없는 경우 예외가 발생한다.")
+    @Test
+    void find_by_group_and_id_if_not_found() {
+        // given
+        when(todoRepository.findByIdAndGroupId(1L, 1L)).thenReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> todoService.findByIdAndGroupId(1L, 1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessage(ErrorMessages.TODO_NOT_FOUND);
+    }
+
     @DisplayName("할 일의 알림 설정을 삭제한다")
     @Test
     void delete_notifications() {

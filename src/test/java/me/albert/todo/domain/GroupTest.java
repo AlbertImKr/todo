@@ -26,6 +26,47 @@ class GroupTest {
         group = new Group(name, description, account, createdAt, updatedAt);
     }
 
+    @DisplayName("그룹 할일을 그룹 맴버에게 할당한다")
+    @Test
+    void assign_todo() {
+        // given
+        var todo = new Todo();
+        group.assignTodos(account, List.of(todo));
+
+        // when
+        group.assignTodoToUsers(todo, List.of(account));
+
+        // then
+        assertThat(todo.getAssignees()).contains(account);
+    }
+
+    @DisplayName("그룹에 포함하지 않은 할일을 그룹 맴버에게 할당하면 예외가 발생한다")
+    @Test
+    void assign_todo_if_not_contains_todo() {
+        // given
+        var todo = new Todo();
+
+        // when, then
+        assertThatThrownBy(() -> group.assignTodoToUsers(todo, List.of(account)))
+                .isInstanceOf(BusinessException.class);
+    }
+
+    @DisplayName("그룹 할일을 그룹 맴버가 아닌 사람에게 할당하면 할당 실패한다")
+    @Test
+    void assign_todo_if_not_group_member() {
+        // given
+        var todo = new Todo();
+        group.assignTodos(account, List.of(todo));
+        var otherAccount = new Account(2L);
+        group.addAccounts(account, List.of(otherAccount));
+
+        // when
+        group.assignTodoToUsers(todo, List.of(otherAccount));
+
+        // then
+        assertThat(todo.getAssignees()).isEmpty();
+    }
+
     @DisplayName("그룹에 포함된 유저인지 확인한다")
     @Test
     void contains_user() {

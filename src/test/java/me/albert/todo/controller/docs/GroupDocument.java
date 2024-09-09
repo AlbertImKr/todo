@@ -16,6 +16,22 @@ import org.springframework.restdocs.restassured.RestDocumentationFilter;
 
 public class GroupDocument {
 
+    public static @NotNull RestDocumentationFilter assignMembersToGroupTodoDocumentation() {
+        return document(
+                "groups/assign-members-todos",
+                prettyPrintRequest(),
+                prettyPrintResponse(),
+                pathParameters(
+                        parameterWithName("groupId").description("그룹 ID"),
+                        parameterWithName("todoId").description("할 일 ID")
+                ),
+                requestFields(
+                        fieldWithPath("accountIds").description("할당할 사용자 ID 목록").attributes(
+                                key("constraints").value(ValidationMessages.EMPTY_ACCOUNT_IDS))
+                )
+        );
+    }
+
     public static @NotNull RestDocumentationFilter assignTodosToGroupDocumentation() {
         return document(
                 "groups/assign-todos",

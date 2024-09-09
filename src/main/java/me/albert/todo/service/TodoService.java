@@ -180,4 +180,14 @@ public interface TodoService {
      * @return 할 일 목록
      */
     Page<TodoResponse> listByProject(Long projectId, String username, Pageable pageable);
+
+    /**
+     * 그룹 ID로 사용자의 할 일 목록을 조회합니다.
+     *
+     * @param todoId   할 일 ID
+     * @param groupId   그룹 ID
+     * @return 할 일 목록
+     * @throws me.albert.todo.exception.BusinessException 할 일을 찾을 수 없는 경우
+     */
+    Todo findByIdAndGroupId(Long todoId, Long groupId);
 }

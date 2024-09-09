@@ -50,6 +50,7 @@ public class Todo {
     private LocalDateTime updatedAt;
     @ManyToOne
     private Account owner;
+    @Getter
     @ManyToOne
     private Group group;
     @Getter
@@ -195,6 +196,10 @@ public class Todo {
             throw new BusinessException(ErrorMessages.TODO_UPDATE_NOT_ALLOWED, HttpStatus.FORBIDDEN);
         }
         this.notificationSettings.clear();
+    }
+
+    public void assignGroup(Group group) {
+        this.group = group;
     }
 
     @Override

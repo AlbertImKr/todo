@@ -209,4 +209,11 @@ public class TodoServiceImpl implements TodoService {
         Page<Todo> todos = todoRepository.findAllWithTagsByProjectIdAndOwner(projectId, owner, pageable);
         return todos.map(TodoResponse::from);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Todo findByIdAndGroupId(Long todoId, Long groupId) {
+        return todoRepository.findByIdAndGroupId(todoId, groupId)
+                .orElseThrow(() -> new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
 }

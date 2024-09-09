@@ -106,4 +106,14 @@ public interface GroupService {
      * @return 그룹에 속한 사용자 목록
      */
     List<AccountResponse> listAccounts(Long id, String username);
+
+    /**
+     * 할일을 사용자에게 할당합니다.
+     *
+     * @param id       그룹 ID
+     * @param todoId   할 일 ID
+     * @param longs    사용자 ID 목록
+     * @param username 사용자 이름
+     */
+    void assignTodoToUsers(Long id, Long todoId, List<Long> longs, String username);
 }
