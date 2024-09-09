@@ -70,6 +70,18 @@ public class Group {
         this.updatedAt = updatedAt;
     }
 
+    public Group(
+            long groupId, String name, String description, Account account, LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.id = groupId;
+        this.name = name;
+        this.description = description;
+        this.owner = account;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public boolean isOwner(Account account) {
         return owner.equals(account);
     }
@@ -87,7 +99,11 @@ public class Group {
         if (!isOwner(account)) {
             throw new BusinessException("할 일을 할당할 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
-        todos.stream().filter(todo -> !this.contains(todo)).forEach(todo -> this.todos.add(todo));
+        todos.stream().filter(todo -> !this.contains(todo))
+                .forEach(todo -> {
+                    this.todos.add(todo);
+                    todo.assignGroup(this);
+                });
     }
 
     public boolean contains(Todo todo) {
@@ -117,6 +133,15 @@ public class Group {
 
     public boolean isMember(Account currentAccount) {
         return users.contains(currentAccount);
+    }
+
+    public void assignTodoToUsers(Todo todo, List<Account> accounts) {
+        if (!this.contains(todo)) {
+            throw new BusinessException(ErrorMessages.TODO_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+        accounts.stream()
+                .filter(account -> !this.isMember(account))
+                .forEach(todo::assignUser);
     }
 
     @Override

@@ -6,6 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import java.util.HashMap;
+import java.util.List;
 
 public class GroupSteps {
 
@@ -19,6 +20,28 @@ public class GroupSteps {
     public static ExtractableResponse<Response> 그룹_사용자_추가_요청(
             Long id, HashMap<Object, Object> body, String accessToken
     ) {
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{id}/users", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹에 사용자 추가 요청
+     *
+     * @param id          그룹 ID
+     * @param accountIds  사용자 할당 요청 바디 (accountIds)
+     * @param accessToken 엑세스 토큰
+     */
+    public static ExtractableResponse<Response> 그룹_사용자_추가_요청(
+            Long id, List<Long> accountIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("accountIds", accountIds);
         return given().log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
@@ -122,6 +145,20 @@ public class GroupSteps {
                 .delete("/groups/{id}/users", id)
                 .then().log().all()
                 .extract();
+    }
+
+    /**
+     * 그룹 생성 요청
+     *
+     * @param name        그룹 이름
+     * @param accessToken 액세스 토큰
+     * @return 그룹 ID
+     */
+    public static Long 그룹_생성및_ID_반환(String name, String accessToken) {
+        var body = new HashMap<>();
+        body.put("name", name);
+        body.put("description", "description");
+        return 그룹_생성_요청(body, accessToken).jsonPath().getLong("id");
     }
 
     /**
@@ -271,6 +308,21 @@ public class GroupSteps {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 그룹_할일_할당_요청(
+            Long id, List<Long> todoIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("todoIds", todoIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{id}/todos", id)
+                .then().log().all()
+                .extract();
+    }
+
     /**
      * 그룹 할일 할당 요청
      *
@@ -324,13 +376,63 @@ public class GroupSteps {
      * @return 응답
      */
     public static ExtractableResponse<Response> 그룹_할일_할당_해제_요청(
-            Long id, HashMap<Object, Object> body, String accessToken, RequestSpecification spec){
+            Long id, HashMap<Object, Object> body, String accessToken, RequestSpecification spec
+    ) {
         return given(spec).log().all()
                 .auth().oauth2(accessToken)
                 .body(body)
                 .contentType("application/json")
                 .when()
                 .delete("/groups/{id}/todos", id)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일을 멥버에게 할당 요청
+     *
+     * @param group       그룹 ID
+     * @param todoId      할당할 할일 ID
+     * @param body        할당 요청 바디 (accountIds)
+     * @param accessToken 엑세스 토큰
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일을_멥버에게_할당_요청(
+            Long group, Long todoId, List<Long> accountIds, String accessToken
+    ) {
+        var body = new HashMap<>();
+        body.put("accountIds", accountIds);
+        return given().log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/users", group, todoId)
+                .then().log().all()
+                .extract();
+    }
+
+    /**
+     * 그룹 할일을 멥버에게 할당 요청
+     *
+     * @param group       그룹 ID
+     * @param todoId      할당할 할일 ID
+     * @param accountIds  할당될 멥버 ID 목록
+     * @param accessToken 엑세스 토큰
+     * @param spec        docs 생성하기 위한 RequestSpecification
+     * @return 응답
+     */
+    public static ExtractableResponse<Response> 그룹_할일을_멥버에게_할당_요청(
+            Long group, Long todoId, List<Long> accountIds, String accessToken, RequestSpecification spec
+    ) {
+        var body = new HashMap<>();
+        body.put("accountIds", accountIds);
+        return given(spec).log().all()
+                .auth().oauth2(accessToken)
+                .body(body)
+                .contentType("application/json")
+                .when()
+                .put("/groups/{groupId}/todos/{todoId}/users", group, todoId)
                 .then().log().all()
                 .extract();
     }

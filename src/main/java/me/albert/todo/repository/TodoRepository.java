@@ -46,4 +46,6 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     @EntityGraph(attributePaths = {"tags", "recurringTask", "project"})
     Optional<Todo> findWithAllByIdAndOwnerAndGroupNull(Long id, Account owner);
+
+    Optional<Todo> findByIdAndGroupId(Long todoId, Long groupId);
 }

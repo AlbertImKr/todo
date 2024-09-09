@@ -34,9 +34,11 @@ class AccountServiceImplTest {
     @Test
     void register_if_success() {
         // given
-        String username = "test";
-        String password = "password";
+        var username = "test";
+        var password = "password";
+        var account = new Account(1L);
         when(accountRepository.existsByUsername(username)).thenReturn(false);
+        when(accountRepository.save(new Account(username, password))).thenReturn(account);
 
         // when, then
         assertThatCode(() -> accountService.register(username, password))
