@@ -1,9 +1,10 @@
 # TODO App
+
 [![Coverage Status](https://coveralls.io/repos/github/AlbertImKr/todo/badge.svg)](https://coveralls.io/github/AlbertImKr/todo)
 
 ## 소스 빌드 및 실행 방법 메뉴얼
 
-1. 빌드 방법 
+1. 빌드 방법
 
 - Gradle이 설치된 경우:
 
@@ -14,19 +15,23 @@ gradle build
 - Gradle Wrapper 사용:
 
 ```
-./gradlew build`
+./gradlew build
 ``` 
 
 2. docker 실행
 
-`docker compose up -d`
+```shell
+docker compose up -d
+```
 
 > [!TIP]
 > Docker Compose가 설치되어 있어야 합니다. Docker가 설치되어 있으면 기본적으로 함께 설치됩니다.
 
 3. 실행 (JPA )
 
-`java -jar build/libs/todo-0.0.1-SNAPSHOT.jar`
+```shell
+java -jar build/libs/todo-0.0.1-SNAPSHOT.jar
+```
 
 > [!TIP]
 > `jpa.hibernate.ddl-auto`가 `create-drop`으로 설정되어 있어서 테이블이 자동으로 생성됩니다.
@@ -34,6 +39,10 @@ gradle build
 ## API 문서
 
 https://todo.albert-im.com/docs/index.html
+
+## 배포링크
+
+https://todo.albert-im.com
 
 ## 기능 목록
 
@@ -69,10 +78,11 @@ https://todo.albert-im.com/docs/index.html
 
 - [x]  **프로젝트 디테일 조회**: 프로젝트 상세 내용을 조회할 수 있습니다.
 - [x]  **프로젝트 목록 조회**: 프로젝트 목록을 조회할 수 있습니다.
-- [x]  **프로젝트 생성**: 프로젝트 생성할 수 있습니다.
+- [x]  **프로젝트 생성**: 프로젝트를 생성할 수 있습니다.
 - [x]  **프로젝트 업데이트**: 프로젝트를 업데이트할 수 있습니다.
 - [x]  **프로젝트 삭제**: 프로젝트를 삭제할 수 있습니다.
 - [x]  **프로젝트에 할일 할당**: 프로젝트에 할일을 할당할 수 있습니다.
+- [x]  **프로젝트에 할일 해제**: 프로젝트에 할일을 해제할 수 있습니다.
 
 ---
 
@@ -106,6 +116,12 @@ https://todo.albert-im.com/docs/index.html
 - [x]  **특정 그룹 할일에 우선순위 설정**: 할일의 우선순위를 설정할 수 있습니다.
 - [x]  **특정 그룹 할일을 유저에게 할당**: 특정 그룹의 할일을 유저에게 할당할 수 있습니다.
 - [x]  **특정 그룹 할일에서 유저 할당 해제**: 특정 그룹의 할일에서 유저 할당을 해제할 수 있습니다.
+- [x]  **특정 그룹 프로젝트 생성**: 특정 그룹에 프로젝트를 추가할 수 있습니다.
+- [x]  **특정 그룹 프로젝트 수정**: 특정 그룹의 프로젝트를 수정할 수 있습니다.
+- [x]  **특정 그룹 프로젝트 삭제**: 특정 그룹의 프로젝트를 삭제할 수 있습니다.
+- [x]  **특정 그룹 프로젝트에 할일 할당**: 특정 그룹의 프로젝트에 할일을 할당할 수 있습니다.
+- [x]  **특정 그룹 프로젝트에서 할일 해제**: 특정 그룹의 프로젝트에서 할일을 해제할 수 있습니다.
+- [x]  **특정 그룹 할일에 반복 설정 추가**: 특정 그룹 할일에 반복 설정을 추가할 수 있습니다.
 
 ---
 
@@ -122,6 +138,7 @@ https://todo.albert-im.com/docs/index.html
 - Java JWT: JSON Web Token 발급 및 인증을 수행합니다. 인증이 주요 목적이 아니기 때문에 간단히 구현할 예정이며 JWT는 널리 사용되는 인증 방법으로 적절한 보안성을 제공합니다.
 - Spring Data JPA: 데이터베이스 작업을 쉽게 처리할 수 있도록 ORM을 지원합니다. 데이터 액세스 레이어를 간편하게 관리하고 데이터베이스 작업을 효율적으로 처리할 수 있습니다.
 - Lombok: Java의 반복적인 코드 작성 작업을 줄이기 위해 사용합니다.
+- Spring Validation: : 사용자 입력 값의 유효성을 검사하는 데 사용됩니다.
 
 ### 테스트
 
@@ -150,12 +167,6 @@ https://todo.albert-im.com/docs/index.html
 - AWS Cloud: 가장 널리 사용되는 클라우드 서비스 제공자로 다양한 기능과 높은 안정성을 제공합니다.
     - AWS EC2
     - AWS RDS
-
-### 모니터링
-
-- Spring Boot Actuator: 애플리케이션의 상태를 모니터링하고 관리할 수 있는 도구입니다. 애플리케이션의 메트릭, 로그, 상태 정보를 제공하여 모니터링과 관리 작업을 쉽게 할 수 있습니다.
-- prometheus & Grafana: 시스템 메트릭을 모니터링하고 시각화합니다. Prometheus는 메트릭 수집 및 저장을 담당하고 Grafana는 시각화와 대시보드를 제공합니다. 함께 사용하여 효과적인
-  모니터링과 분석을 수행할 수 있습니다.
 
 ## ERD
 
@@ -203,54 +214,59 @@ https://todo.albert-im.com/docs/index.html
 |------------------------|-------------|--------------------|----|
 | `/projects/{id}`       | GET         | 프로젝트의 디테일 조회합니다.   | ✅  |
 | `/projects`            | GET         | 개인 프로젝트 목록을 조회합니다. | ✅  |
-| `/projects`            | POST        | 프로젝트을 생성합니다.       | ✅  |
+| `/projects`            | POST        | 프로젝트를 생성합니다.       | ✅  |
 | `/projects/{id}`       | PUT         | 프로젝트를 수정합니다.       | ✅  |
 | `/projects/{id}`       | DELETE      | 프로젝트를 삭제합니다.       | ✅  |
 | `/projects/{id}/todos` | PUT         | 프로젝트에 할일을 할당합니다.   | ✅  |
+| `/projects/{id}/todos` | DELETE      | 프로젝트의 할일을 해제합니다.   | ✅  |
 
 ---
 
-### 태그 API
+### 태그 API (개인 인증 필요)
 
-| Endpoint            | HTTP Method | 설명                | 상태 |
-|---------------------|-------------|-------------------|----|
-| `/tags`             | POST        | 새로운 태그를 생성합니다.    | ✅  |
-| `/tags?name={name}` | GET         | 태그이름으로 태그를 조회합니다. | ✅  |
+| Endpoint            | HTTP Method | 설명                 | 상태 |
+|---------------------|-------------|--------------------|----|
+| `/tags`             | POST        | 새로운 태그를 생성합니다.     | ✅  |
+| `/tags?name={name}` | GET         | 태그 이름으로 태그를 조회합니다. | ✅  |
 
 ---
 
 ### 그룹 API (그룹인증 필요)
 
-| Endpoint                                 | HTTP Method | 설명                             | 상태 |
-|------------------------------------------|-------------|--------------------------------|----|
-| `/groups`                                | POST        | 새로운 그룹을 생성할 수 있습니다.            | ✅  |
-| `/groups/{id}`                           | PUT         | 기존 그룹의 정보를 수정할 수 있습니다.         | ✅  |
-| `/groups/{id}`                           | DELETE      | 특정 그룹을 삭제할 수 있습니다.             | ✅  |
-| `/groups/{id}`                           | GET         | 특정 그룹의 상세 정보를 조회할 수 있습니다.      | ✅  |
-| `/groups/{id}/users`                     | GET         | 특정 그룹에 포함된 유저를 가져올 수 있습니다.     | ✅  |
-| `/groups/{id}/users`                     | POST        | 특정 그룹에 유저를 추가할 수 있습니다.         | ✅  |
-| `/groups/{id}/users`                     | DELETE      | 특정 그룹에서 유저를 삭제할 수 있습니다.        | ✅  |
-| `/groups/{id}/todos`                     | POST        | 특정 그룹에 할일을 추가할 수 있습니다.         | ✅  |
-| `/groups/{id}/todos/{todoId}`            | DELETE      | 특정 그룹에서 할일을 삭제할 수 있습니다.        | ✅  |
-| `/groups/{id}/todos/{todoId}`            | PUT         | 특정 그룹의 할일을 수정할 수 있습니다.         | ✅  |
-| `/groups/{id}/todos/{todoId}/status`     | PUT         | 특정 그룹의 할일 상태를 변경할 수 있습니다.      | ✅  |
-| `/groups/{id}/todos/{todoId}`            | GET         | 특정 그룹의 할일 상세 정보를 조회할 수 있습니다.   | ✅  |
-| `/groups/{id}/todos/{todoId}/tags`       | POST        | 특정 그룹의 할일에 태그를 추가할 수 있습니다.     | ✅  |
-| `/groups/{id}/todos/{todoId}/tags`       | DELETE      | 특정 그룹의 할일에서 태그를 삭제할 수 있습니다.    | ✅  |
-| `/groups/{id}/todos/{todoId}/projects`   | PUT         | 특정 그룹의 할일을 프로젝트 별로 분류할 수 있습니다. | ✅  |
-| `/groups/{id}/todos?project={projectId}` | GET         | 특정 그룹의 할일을 프로젝트 별로 조회할 수 있습니다. | ✅  |
-| `/groups/{id}/todos`                     | GET         | 특정 그룹의 모든 할일 목록을 조회할 수 있습니다.   | ✅  |
-| `/groups/{id}/todos/{todoId}/priority`   | PUT         | 특정 그룹의 할일에 우선순위를 설정할 수 있습니다.   | ✅  |
-| `/groups/{id}/todos/{todoId}/assign`     | POST        | 특정 그룹의 할일을 유저에게 할당할 수 있습니다.    | ✅  |
-| `/groups/{id}/todos/{todoId}/assign`     | DELETE      | 특정 그룹의 할일에서 유저 할당을 해제할 수 있습니다. | ✅  |
+| Endpoint                                           | HTTP Method | 설명                         | 상태 |
+|----------------------------------------------------|-------------|----------------------------|----|
+| `/groups`                                          | POST        | 새로운 그룹을 생성합니다.             | ✅  |
+| `/groups/{id}`                                     | PUT         | 기존 그룹의 정보를 수정합니다.          | ✅  |
+| `/groups/{id}`                                     | DELETE      | 특정 그룹을 삭제합니다.              | ✅  |
+| `/groups/{id}/users`                               | GET         | 특정 그룹에 포함된 유저를 조회합니다.      | ✅  |
+| `/groups/{id}/users`                               | POST        | 특정 그룹에 유저를 추가합니다.          | ✅  |
+| `/groups/{id}/users`                               | DELETE      | 특정 그룹에서 유저를 삭제합니다.         | ✅  |
+| `/groups/{id}/todos`                               | PUT         | 특정 그룹에 할일을 추가합니다.          | ✅  |
+| `/groups/{id}/todos`                               | DELETE      | 특정 그룹에서 할일을 삭제합니다.         | ✅  |
+| `/groups/{id}/todos/{todoId}`                      | PUT         | 특정 그룹의 할일을 수정합니다.          | ✅  |
+| `/groups/{id}/todos/{todoId}/status`               | PUT         | 특정 그룹의 할일 상태를 변경합니다.       | ✅  |
+| `/groups/{id}/todos/{todoId}`                      | GET         | 특정 그룹의 할일 상세 정보를 조회합니다.    | ✅  |
+| `/groups/{id}/todos/{todoId}/tags`                 | POST        | 특정 그룹의 할일에 태그를 추가합니다.      | ✅  |
+| `/groups/{id}/todos/{todoId}/tags/{tagId}`         | DELETE      | 특정 그룹의 할일에서 태그를 삭제합니다.     | ✅  |
+| `/groups/{id}/todos`                               | GET         | 특정 그룹의 모든 할일 목록을 조회합니다.    | ✅  |
+| `/groups/{id}/todos/{todoId}/priority`             | PUT         | 특정 그룹의 할일에 우선순위를 설정합니다.    | ✅  |
+| `/groups/{id}/todos/{todoId}/users`                | PUT         | 특정 그룹의 할일을 유저에게 할당합니다.     | ✅  |
+| `/groups/{id}/todos/{todoId}/users`                | DELETE      | 특정 그룹의 할일에서 유저 할당을 해제합니다.  | ✅  |
+| `/groups/{id}/projects`                            | POST        | 특정 그룹에 프로젝트를 추가합니다.        | ✅  |
+| `/groups/{id}/projects/{projectId}`                | PUT         | 특정 그룹의 프로젝트를 수정합니다.        | ✅  |
+| `/groups/{id}/projects/{projectId}`                | DELETE      | 특정 그룹의 프로젝트를 삭제합니다.        | ✅  |
+| `/groups/{groupId}/projects/{projectId}/todos`     | GET         | 특정 그룹의 프로젝트 할일 목록을 조회합니다.  | ✅  |
+| `/groups/{groupId}/projects/{projectId}/todos`     | PUT         | 특정 그룹의 프로젝트에 할일을 할당합니다.    | ✅  |
+| `/groups/{groupId}/projects/{projectId}/todos`     | DELETE      | 특정 그룹의 프로젝트의 할일을 해제합니다.    | ✅  |
+| `/groups/{groupId}/todos/{todoId}/recurring-tasks` | PUT         | 특정 그룹의 할일에 반복 설정을 업데이트합니다. | ✅  |
 
 ---
 
 ### 유저의 그룹 정보 API (그룹인증 필요)
 
-| Endpoint                 | HTTP Method | 설명                           | 상태 |
-|--------------------------|-------------|------------------------------|----|
-| `/users/{userId}/groups` | GET         | 유저가 속한 모든 그룹 정보를 가져올 수 있습니다. | ✅  |
+| Endpoint  | HTTP Method | 설명                      | 상태 |
+|-----------|-------------|-------------------------|----|
+| `/groups` | GET         | 유저가 속한 모든 그룹 정보를 조회합니다. | ✅  |
 
 ## WBS
 

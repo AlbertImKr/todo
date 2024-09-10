@@ -28,6 +28,9 @@ public class AccountDocument {
                                 key("constraints").value(ValidationMessages.ACCOUNT_PASSWORD_MESSAGE)),
                         fieldWithPath("confirmPassword").description("비밀번호 확인").attributes(
                                 key("constraints").value(ValidationMessages.ACCOUNT_CONFIRM_PASSWORD_MESSAGE))
+                ),
+                responseFields(
+                        fieldWithPath("id").description("아이디")
                 )
         );
     }
