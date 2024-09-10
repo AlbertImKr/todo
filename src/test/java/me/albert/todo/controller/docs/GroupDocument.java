@@ -273,6 +273,9 @@ public class GroupDocument {
                                 key("constraints").value(ValidationMessages.GROUP_NAME_MESSAGE)),
                         fieldWithPath("description").description("그룹 설명").attributes(
                                 key("constraints").value(ValidationMessages.GROUP_DESCRIPTION_MESSAGE))
+                ),
+                responseFields(
+                        fieldWithPath("id").description("그룹 ID")
                 )
         );
     }
